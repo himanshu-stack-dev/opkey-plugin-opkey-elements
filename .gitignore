@@ -1,0 +1,34 @@
+# System files
+.DS_Store
+Thumbs.db
+
+# IDE/editor junk
+*.sublime-workspace
+*.sublime-project
+*.code-workspace
+*.vscode/
+*.idea/
+
+# OS/permissions backups
+*.swp
+*.bak
+*.tmp
+
+# Node modules, if applicable
+node_modules/
+
+# Composer stuff, if used
+vendor/
+composer.lock
+
+# Log files
+*.log
+
+# Breakdance cache
+/cache/
+
+# Mac-specific folder clutter
+__MACOSX/
+
+# Element Studio temporary build files (if any appear)
+*.esbuild
