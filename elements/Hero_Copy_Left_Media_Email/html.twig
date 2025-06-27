@@ -1,0 +1,103 @@
+<div class="hero-text">
+  {# EYEBROW #}
+  {% set eyebrow = content.eyebrow.text | default('LOREM IPSUM DOLOR') %}
+  {% if eyebrow %}
+    <div class="eyebrow">{{ eyebrow }}</div>
+  {% endif %}
+  
+  {# HEADING #}
+  {% set heading = content.heading.text | default('Lorem ipsum dolor sit amet') %}
+  {% if heading %}
+    <h1>{{ heading }}</h1>
+  {% endif %}
+
+  {# SUBHEAD #}
+  {% set subhead = content.subhead.text | default('Lorem ipsum dolor sit amet consectetur adipiscing elit') %}
+  {% if subhead %}
+    <h4>{{ subhead }}</h4>
+  {% endif %}
+
+  {# BODY #}
+  {% set body = content.content.text | default('Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.') %}
+  {% if body %}
+    <p>{{ body }}</p>
+  {% endif %}
+
+  {# LIST TITLE #}
+  {% set list_title = content.list_title | default('List title placeholder') %}
+  {% if list_title %}
+    <h4>{{ list_title }}</h4>
+  {% endif %}
+
+  {# LIST #}
+  {% set list_items = content.list_items | default([
+    'Lorem ipsum dolor sit amet',
+    'Lorem ipsum dolor sit amet',
+    'Lorem ipsum dolor sit amet',
+    'Lorem ipsum dolor sit amet'
+  ]) %}
+  <ul>
+    {% for item in list_items %}
+      <li>{{ item }}</li>
+    {% endfor %}
+  </ul>
+
+  {# EMAIL #}
+  {% set email_embed = content.email.embed_code | default('
+  <div class="demo-gradient-border-wrapper">
+    <form class="demo-gradient-form">
+      <input
+        type="email"
+        placeholder="Business Email*"
+        required
+      />
+      <button type="submit" class="button-atom--primary">
+        <span class="demo-gradient-cta-text">Get a demo</span>
+      </button>
+    </form>
+  </div>
+  ') %}
+  {{ email_embed|raw }}
+  
+</div>
+
+{# MEDIA #}
+{% set media_type = content.media.image_or_video | default('image') %}
+{% if media_type == 'image' %}
+  <div class="hero-media">
+  {% if content.image.media %}
+      {{ macros.image(content.image.media, content.content.size, alt, lazyLoad) }}
+    {% else %}
+      <img src="/wp-content/uploads/2025/06/Placeholder.png" alt="Placeholder image" class="breakdance-image-object" style="width:100%; height:auto;" />
+    {% endif %}
+  </div>
+{% elseif media_type == 'video' %}
+  <div class="ee-video-container">
+    {% if content.video.video.provider == 'vimeo' %}
+      {% set isLazyLoad = content.vimeo.loading_method != 'embed' and not isBuilder %}
+      {% set srcAttribute = isLazyLoad ? 'data-src' : 'src' %}
+      <div class="ee-video ee-vimeo">
+        <iframe
+          class="ee-video {{ isLazyLoad ? 'lozad' : '' }}"
+          title="{{ content.video.video.title }}"
+          {{ srcAttribute }}="{{ content.video.video.embedUrl }}{{ content.vimeo.autoplay ? '&autoplay=1' }}{{ content.vimeo.hide_player_controls ? '&controls=0' : '&controls=1' }}{{ content.vimeo.loop ? '&loop=1' : '' }}{{ content.vimeo.mute ? '&muted=1' : '' }}{{ not content.vimeo.play_inline ? '&playsinline=0' : '' }}{{ content.vimeo.start_time ? '#t=' ~ content.vimeo.start_time.number : '' }}"
+          width="100%" height="100%" frameborder="0"
+          allow="autoplay; fullscreen; picture-in-picture" allowfullscreen>
+        </iframe>
+      </div>
+    {% endif %}
+    {% if content.video.video.provider == 'youtube' %}
+      {% set isLazyLoad = content.youtube.loading_method != 'embed' and not isBuilder %}
+      {% set srcAttribute = isLazyLoad ? 'data-src' : 'src' %}
+      <div class="ee-video ee-youtube">
+        <iframe
+          class="ee-video {{ isLazyLoad ? 'lozad' : '' }}"
+          title="{{ content.video.video.title }}"
+          {{ srcAttribute }}="{{ content.video.video.embedUrl }}{{ content.youtube.autoplay ? '&autoplay=1' }}{{ content.youtube.hide_player_controls ? '&controls=0' : '&controls=1' }}{{ content.youtube.loop ? '&loop=1' : '' }}{{ content.youtube.mute ? '&muted=1' : '' }}{{ not content.youtube.play_inline ? '&playsinline=0' : '' }}{{ content.youtube.start_time ? '&start=' ~ content.youtube.start_time.number : '' }}"
+          width="100%" height="100%" frameborder="0"
+          allow="autoplay; fullscreen; picture-in-picture" allowfullscreen>
+        </iframe>
+      </div>
+    {% endif %}
+  </div>
+{% endif %}

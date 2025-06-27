@@ -1,0 +1,117 @@
+<div class="hero-text">
+  {# EYEBROW #}
+  {% set eyebrow = content.eyebrow.text | default('LOREM IPSUM DOLOR') %}
+  {% if eyebrow %}
+    <div class="eyebrow">{{ eyebrow }}</div>
+  {% endif %}
+  
+  {# HEADING #}
+  {% set heading = content.heading.text | default('Lorem ipsum dolor sit amet') %}
+  {% if heading %}
+    <h1>{{ heading }}</h1>
+  {% endif %}
+
+  {# SUBHEAD #}
+  {% set subhead = content.subhead.text | default('Lorem ipsum dolor sit amet consectetur adipiscing elit') %}
+  {% if subhead %}
+    <h4>{{ subhead }}</h4>
+  {% endif %}
+
+  {# BODY #}
+  {% set body = content.content.text | default('Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.') %}
+  {% if body %}
+    <p>{{ body }}</p>
+  {% endif %}
+
+  {# LIST TITLE #}
+  {% set list_title = content.list_title | default('List title placeholder') %}
+  {% if list_title %}
+    <h4>{{ list_title }}</h4>
+  {% endif %}
+
+  {# LIST #}
+  {% set list_items = content.list_items | default([
+    'Lorem ipsum dolor sit amet',
+    'Lorem ipsum dolor sit amet',
+    'Lorem ipsum dolor sit amet',
+    'Lorem ipsum dolor sit amet'
+  ]) %}
+  <ul>
+    {% for item in list_items %}
+      <li>{{ item }}</li>
+    {% endfor %}
+  </ul>
+
+  {# BUTTONS #}
+  {% set primary_button = content.buttons.primary_button.text | default('Contact sales') %}
+  {% set secondary_button = content.buttons.secondary_button.text | default('Learn more') %}
+  {% if primary_button or secondary_button %}
+    <div class="hero-buttons">
+      {% if primary_button %}
+        {{ macros.atomV1ButtonHtml(content.buttons.primary_button, 'opkey-primary', path.to.button_design_preset_section, 'primary', primary_button) }}
+      {% endif %}
+      {% if secondary_button %}
+        {{ macros.atomV1ButtonHtml(content.buttons.secondary_button, 'opkey-link-text', path.to.button_design_preset_section, 'secondary', secondary_button) }}
+      {% endif %}
+    </div>
+  {% endif %}
+</div>
+
+{# FORM #}
+{% set default_form_embed_code %}
+<div class="hubspot-form-container hero-form">
+  <form class="hs-form">
+    <h3 class="hs-form-title">Fill out the form below</h3>
+    <div class="hs-form-row hs-form-row--split">
+      <input type="text" class="hs-input" placeholder="John Joe" />
+      <input type="text" class="hs-input" placeholder="Last Name*" />
+    </div>
+    <div class="hs-form-row">
+      <input type="email" class="hs-input" placeholder="Work Email*" />
+    </div>
+    <div class="hs-form-row">
+      <input type="tel" class="hs-input" placeholder="Phone Number*" />
+    </div>
+    <div class="hs-form-row">
+      <select class="hs-input">
+        <option value="">Select Application*</option>
+        <option>App 1</option>
+        <option>App 2</option>
+      </select>
+    </div>
+    <div class="hs-form-row">
+      <select class="hs-input">
+        <option value="">Select Industry*</option>
+        <option>Industry 1</option>
+        <option>Industry 2</option>
+      </select>
+    </div>
+    <div class="hs-form-row">
+      <select class="hs-input">
+        <option value="">Select Revenue*</option>
+        <option>$1-10M</option>
+        <option>$10-100M</option>
+      </select>
+    </div>
+    <div class="hs-form-row hs-form-row--captcha">
+      <label class="hs-checkbox">
+        <input type="checkbox" /> I'm not a robot
+      </label>
+      <div class="recaptcha-placeholder">
+        <!-- Dummy reCAPTCHA -->
+        <img src="https://www.gstatic.com/recaptcha/api2/logo_48.png" alt="reCAPTCHA" width="100" />
+        <span class="recaptcha-terms">Privacy - Terms</span>
+      </div>
+    </div>
+    <button class="hs-submit" type="submit">
+      <span class="button-text">Book a demo</span>
+    </button>
+    <p class="hs-terms">
+      By signing up, I accept the <a href="#">Terms of Use</a> and <a href="#">Privacy Policy</a>.
+    </p>
+  </form>
+</div>
+{% endset %}
+
+{# Renders custom embed if present, otherwise falls back to the default dummy form #}
+{{ content.form.embed_code | default(default_form_embed_code) }}
