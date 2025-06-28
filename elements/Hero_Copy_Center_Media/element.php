@@ -35,7 +35,7 @@ class Herocopycentermedia extends \Breakdance\Elements\Element
 
     static function name()
     {
-        return 'Hero – Copy Center + Media';
+        return 'Hero Center + Media';
     }
 
     static function className()

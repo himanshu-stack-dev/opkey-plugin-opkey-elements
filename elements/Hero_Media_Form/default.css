@@ -1,9 +1,12 @@
-.hero-text .hero-media {
+.module-container {
+  align-items:flex-start;
+}
+.module-text .module-media {
   margin:0;
   aspect-ratio:unset;
   max-width:510px;
 }
-.hero-text .hero-media img {
+.module-text .module-media img {
   width:100%;
   max-width:unset;
 }

@@ -35,7 +35,7 @@ class Herocentercopymediaemail extends \Breakdance\Elements\Element
 
     static function name()
     {
-        return 'Hero Center + Media + Email';
+        return 'Hero + Media + Email';
     }
 
     static function className()
