@@ -1,25 +1,22 @@
 <?php
 
 /**
- * Plugin Name: Breakdance Custom Elements
- * Plugin URI: https://breakdance.com/
- * Description: Boilerplate plugin to save your custom elements created with Element Studio.
- * Author: Breakdance
- * Author URI: https://breakdance.com/
- * License: GPLv2
- * Text Domain: breakdance
+ * Plugin Name: Opkey Custom Elements
+ * Description: Opkey custom elements created with Element Studio.
+ * Author: creens
+ * Text Domain: opkey
  * Domain Path: /languages/
  * Version: 0.0.1
  */
 
-namespace BreakdanceCustomElements;
+namespace OpkeyCustomElements;
 
 use function Breakdance\Util\getDirectoryPathRelativeToPluginFolder;
 
 add_action('breakdance_loaded', function () {
     \Breakdance\ElementStudio\registerSaveLocation(
         getDirectoryPathRelativeToPluginFolder(__DIR__) . '/elements',
-        'BreakdanceCustomElements',
+        'OpkeyCustomElements',
         'element',
         'Custom Elements',
         false
@@ -27,7 +24,7 @@ add_action('breakdance_loaded', function () {
 
     \Breakdance\ElementStudio\registerSaveLocation(
         getDirectoryPathRelativeToPluginFolder(__DIR__) . '/macros',
-        'BreakdanceCustomElements',
+        'OpkeyCustomElements',
         'macro',
         'Custom Macros',
         false,
@@ -35,7 +32,7 @@ add_action('breakdance_loaded', function () {
 
     \Breakdance\ElementStudio\registerSaveLocation(
         getDirectoryPathRelativeToPluginFolder(__DIR__) . '/presets',
-        'BreakdanceCustomElements',
+        'OpkeyCustomElements',
         'preset',
         'Custom Presets',
         false,

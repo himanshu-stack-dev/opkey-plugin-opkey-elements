@@ -8,7 +8,7 @@
   {# HEADING #}
   {% set heading = content.heading.text | default('Lorem ipsum dolor sit amet') %}
   {% if heading %}
-    <h1>{{ heading }}</h1>
+    <h2>{{ heading }}</h2>
   {% endif %}
 
   {# SUBHEAD #}
@@ -43,11 +43,11 @@
   {# MEDIA #}
   {% set media_type = content.media.image_or_video | default('image') %}
   {% if media_type == 'image' %}
-    <div class="hero-module module-media">
+    <div class="content-module module-media">
     {% if content.image.media %}
         {{ macros.image(content.image.media, content.content.size, alt, lazyLoad) }}
       {% else %}
-        <img src="/wp-content/uploads/2025/06/Placeholder.png" alt="Placeholder image" class="breakdance-image-object" style="width:100%; height:auto;" />
+        <img src="/wp-content/uploads/2025/06/Placeholder-1060x600-1.png" alt="Placeholder image" class="breakdance-image-object" style="width:100%; height:auto;" />
       {% endif %}
     </div>
   {% elseif media_type == 'video' %}

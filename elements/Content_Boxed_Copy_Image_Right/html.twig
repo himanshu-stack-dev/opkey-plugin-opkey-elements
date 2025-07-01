@@ -1,0 +1,130 @@
+<div class="module-container">
+  <div class="main-copy">
+    {# EYEBROW #}
+    {% set eyebrow = content.eyebrow.text | default('LOREM IPSUM DOLOR') %}
+    {% if eyebrow %}
+      <div class="eyebrow">{{ eyebrow }}</div>
+    {% endif %}
+
+    {# HEADING #}
+    {% set heading = content.heading.text | default('Lorem ipsum dolor sit amet') %}
+    {% if heading %}
+      <h2>{{ heading }}</h2>
+    {% endif %}
+
+    {# SUBHEAD #}
+    {% set subhead = content.subhead.text | default('Lorem ipsum dolor sit amet consectetur adipiscing elit') %}
+    {% if subhead %}
+      <h4>{{ subhead }}</h4>
+    {% endif %}
+
+    {# BODY #}
+    {% set body = content.content.text | default('Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.') %}
+    {% if body %}
+      <p>{{ body }}</p>
+    {% endif %}
+
+    {# BUTTONS #}
+    {% set primary_button = content.buttons.primary_button.text ?? 'Contact sales' %}
+    {% set has_secondary = content.buttons.secondary_button is defined and content.buttons.secondary_button.text is defined %}
+    {% set secondary_button_obj = has_secondary ? content.buttons.secondary_button : { text: 'Learn more', url: '#' } %}
+    {% set secondary_button_label = secondary_button_obj.text ?? 'Learn more' %}
+
+    {% if primary_button or secondary_button_label %}
+      <div class="content-module module-buttons">
+        {% if primary_button %}
+          {{ macros.atomV1ButtonHtml(content.buttons.primary_button, 'opkey-primary', path.to.button_design_preset_section, 'primary', primary_button) }}
+        {% endif %}
+        {% if secondary_button_label %}
+          {{ macros.atomV1ButtonHtml(secondary_button_obj, 'opkey-link-text', path.to.button_design_preset_section, 'secondary', secondary_button_label) }}
+        {% endif %}
+      </div>
+    {% endif %}
+  </div>
+
+  {# BOXED CONTENT #}
+  <div class="content-module boxed-content">
+    <div class="boxed-copy">
+      {# EYEBROW #}
+      {% set eyebrow = content.boxed_copy.eyebrow | default('LOREM IPSUM DOLOR') %}
+      {% if eyebrow %}
+        <div class="eyebrow">{{ eyebrow }}</div>
+      {% endif %}
+
+      {# HEADING #}
+      {% set heading = content.boxed_copy.heading | default('Lorem ipsum dolor sit amet') %}
+      {% if heading %}
+        <h3>{{ heading }}</h3>
+      {% endif %}
+
+      {# SUBHEAD #}
+      {% set subhead = content.boxed_copy.subhead | default('Lorem ipsum dolor sit amet consectetur adipiscing elit') %}
+      {% if subhead %}
+        <h4>{{ subhead }}</h4>
+      {% endif %}
+
+      {# BODY #}
+      {% set body = content.boxed_copy.content | default('Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.') %}
+      {% if body %}
+        <p>{{ body }}</p>
+      {% endif %}
+
+      {# BUTTONS #}
+      {% set primary_button_label = content.boxed_copy_buttons.primary_button.text ?? 'Contact sales' %}
+      {% set has_secondary = content.boxed_copy_buttons.secondary_button is defined and content.boxed_copy_buttons.secondary_button.text is defined %}
+      {% set secondary_button_obj = has_secondary ? content.boxed_copy_buttons.secondary_button : { text: 'Learn more', url: '#' } %}
+      {% set secondary_button_label = secondary_button_obj.text ?? 'Learn more' %}
+
+      {% if primary_button_label or secondary_button_label %}
+        <div class="content-module module-buttons">
+          {% if primary_button_label %}
+            {{ macros.atomV1ButtonHtml(content.boxed_copy_buttons.primary_button, 'opkey-primary', path.to.button_design_preset_section, 'primary', primary_button_label) }}
+          {% endif %}
+          {% if secondary_button_label %}
+            {{ macros.atomV1ButtonHtml(secondary_button_obj, 'opkey-link-text', path.to.button_design_preset_section, 'secondary', secondary_button_label) }}
+          {% endif %}
+        </div>
+      {% endif %}
+    </div>
+    {# MEDIA #}
+    {% set media_type = content.media.image_or_video | default('image') %}
+    {% if media_type == 'image' %}
+      <div class="content-module module-media">
+      {% if content.image.media %}
+          {{ macros.image(content.image.media, content.content.size, alt, lazyLoad) }}
+        {% else %}
+          <img src="/wp-content/uploads/2025/06/Placeholder-620x500-1.png" alt="Placeholder image" class="breakdance-image-object" style="width:100%; height:auto;" />
+        {% endif %}
+      </div>
+    {% elseif media_type == 'video' %}
+      <div class="ee-video-container">
+        {% if content.video.video.provider == 'vimeo' %}
+          {% set isLazyLoad = content.vimeo.loading_method != 'embed' and not isBuilder %}
+          {% set srcAttribute = isLazyLoad ? 'data-src' : 'src' %}
+          <div class="ee-video ee-vimeo">
+            <iframe
+              class="ee-video {{ isLazyLoad ? 'lozad' : '' }}"
+              title="{{ content.video.video.title }}"
+              {{ srcAttribute }}="{{ content.video.video.embedUrl }}{{ content.vimeo.autoplay ? '&autoplay=1' }}{{ content.vimeo.hide_player_controls ? '&controls=0' : '&controls=1' }}{{ content.vimeo.loop ? '&loop=1' : '' }}{{ content.vimeo.mute ? '&muted=1' : '' }}{{ not content.vimeo.play_inline ? '&playsinline=0' : '' }}{{ content.vimeo.start_time ? '#t=' ~ content.vimeo.start_time.number : '' }}"
+              width="100%" height="100%" frameborder="0"
+              allow="autoplay; fullscreen; picture-in-picture" allowfullscreen>
+            </iframe>
+          </div>
+        {% endif %}
+        {% if content.video.video.provider == 'youtube' %}
+          {% set isLazyLoad = content.youtube.loading_method != 'embed' and not isBuilder %}
+          {% set srcAttribute = isLazyLoad ? 'data-src' : 'src' %}
+          <div class="ee-video ee-youtube">
+            <iframe
+              class="ee-video {{ isLazyLoad ? 'lozad' : '' }}"
+              title="{{ content.video.video.title }}"
+              {{ srcAttribute }}="{{ content.video.video.embedUrl }}{{ content.youtube.autoplay ? '&autoplay=1' }}{{ content.youtube.hide_player_controls ? '&controls=0' : '&controls=1' }}{{ content.youtube.loop ? '&loop=1' : '' }}{{ content.youtube.mute ? '&muted=1' : '' }}{{ not content.youtube.play_inline ? '&playsinline=0' : '' }}{{ content.youtube.start_time ? '&start=' ~ content.youtube.start_time.number : '' }}"
+              width="100%" height="100%" frameborder="0"
+              allow="autoplay; fullscreen; picture-in-picture" allowfullscreen>
+            </iframe>
+          </div>
+        {% endif %}
+      </div>
+  </div>
+  {% endif %}
+</div>
