@@ -70,7 +70,8 @@
 
 {% if design.theme_color.color == 'purple' %}
     %%SELECTOR%% { background: #190D2C; color: #fff; }
-    %%SELECTOR%% h1, %%SELECTOR%% h4, %%SELECTOR%% p { color: #fff; }
+    %%SELECTOR%% h1, %%SELECTOR%% h4 { color: #fff; }
+	%%SELECTOR%% p, %%SELECTOR%% ul, %%SELECTOR%% ol { color: #CEDDDF; }
     /* PRIMARY BUTTON */
     %%SELECTOR%% .button-atom--primary::before { background: #81F0FD !important; }
     %%SELECTOR%% .button-atom--primary .button-atom__text { color: #81F0FD !important; }

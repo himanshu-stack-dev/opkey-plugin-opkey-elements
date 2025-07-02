@@ -247,7 +247,7 @@ class Columnsfourboxedicons extends \Breakdance\Elements\Element
         return ['0' =>  ['scripts' => ['%%BREAKDANCE_ELEMENTS_PLUGIN_URL%%dependencies-files/swiper@8/swiper-bundle.min.js','%%BREAKDANCE_ELEMENTS_PLUGIN_URL%%dependencies-files/breakdance-swiper/breakdance-swiper.js'],'styles' => ['%%BREAKDANCE_ELEMENTS_PLUGIN_URL%%dependencies-files/swiper@8/swiper-bundle.min.css','%%BREAKDANCE_ELEMENTS_PLUGIN_URL%%dependencies-files/swiper@8/breakdance-swiper-preset-defaults.css'],'inlineScripts' => [';(function(){
   const config = {
     slidesPerView: 1,
-    spaceBetween: 32,
+    spaceBetween: 20,
     grid: { rows: 1, fill: \'row\' },
     breakpoints: {
       600:  { slidesPerView: 3, slidesPerGroup: 3, grid: { rows: 1 } },
