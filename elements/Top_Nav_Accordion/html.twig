@@ -1,83 +1,169 @@
 <div class="module-container">
-  {# EYEBROW #}
-  {% set eyebrow = content.eyebrow.text | default('LOREM IPSUM DOLOR') %}
-  {% if eyebrow %}
-    <div class="eyebrow">{{ eyebrow }}</div>
-  {% endif %}
+  <div class="module-top-nav-accordion module-text">
+    {# EYEBROW #}
+    {% set eyebrow = content.eyebrow.text | default('LOREM IPSUM DOLOR') %}
+    {% if eyebrow %}
+      <div class="eyebrow">{{ eyebrow }}</div>
+    {% endif %}
 
-  {# HEADING #}
-  {% set heading = content.heading.text | default('Lorem ipsum dolor sit amet') %}
-  {% if heading %}
-    <h1>{{ heading }}</h1>
-  {% endif %}
+    {# HEADING #}
+    {% set heading = content.heading.text | default('Lorem ipsum dolor sit amet') %}
+    {% if heading %}
+      <h1>{{ heading }}</h1>
+    {% endif %}
 
-  {# SUBHEAD #}
-  {% set subhead = content.subhead.text | default('Lorem ipsum dolor sit amet consectetur adipiscing elit') %}
-  {% if subhead %}
-    <h4>{{ subhead }}</h4>
-  {% endif %}
+    {# SUBHEAD #}
+    {% set subhead = content.subhead.text | default('Lorem ipsum dolor sit amet consectetur adipiscing elit') %}
+    {% if subhead %}
+      <h4>{{ subhead }}</h4>
+    {% endif %}
 
-  {# BODY #}
-  {% set body = content.content.text | default('Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.') %}
-  {% if body %}
-    <p>{{ body }}</p>
-  {% endif %}
+    {# BODY #}
+    {% set body = content.content.text | default('Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.') %}
+    {% if body %}
+      <p>{{ body }}</p>
+    {% endif %}
+  </div>
 
-  {# BUTTONS #}
-  {% set primary_button = content.buttons.primary_button.text ?? 'Contact sales' %}
-  {% set has_secondary = content.buttons.secondary_button is defined and content.buttons.secondary_button.text is defined %}
-  {% set secondary_button_obj = has_secondary ? content.buttons.secondary_button : { text: 'Learn more', url: '#' } %}
-  {% set secondary_button_label = secondary_button_obj.text ?? 'Learn more' %}
+  {% set has_tabs = content.navigator.tabs is defined and content.navigator.tabs|length > 0 %}
+  {% set tabs = has_tabs 
+    ? content.navigator.tabs 
+    : [{
+        tab_title: 'Lorem ipsum dolor',
+        accordion: [{
+          content_icon: '/wp-content/uploads/2025/07/Icon_Automate-1.svg',
+          content_title: 'Lorem ipsum dolor sit amet consectetur sed do eiusmod',
+          content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.'
+        }],
+        tab_image_: '/wp-content/uploads/2025/06/Placeholder-620x500-1.png'
+      }]
+  %}
 
-  {% if primary_button or secondary_button_label %}
-    <div class="content-module module-buttons">
-      {% if primary_button %}
-        {{ macros.atomV1ButtonHtml(content.buttons.primary_button, 'opkey-primary', path.to.button_design_preset_section, 'primary', primary_button) }}
-      {% endif %}
-      {% if secondary_button_label %}
-        {{ macros.atomV1ButtonHtml(secondary_button_obj, 'opkey-link-text', path.to.button_design_preset_section, 'secondary', secondary_button_label) }}
-      {% endif %}
-    </div>
-  {% endif %}
+  <div class="module-navigator bde-accordion-nav-with-media">
 
-  {# MEDIA #}
-  {% set media_type = content.media.image_or_video | default('image') %}
-  {% if media_type == 'image' %}
-    <div class="hero-module module-media">
-    {% if content.image.media %}
-        {{ macros.image(content.image.media, content.content.size, alt, lazyLoad) }}
-      {% else %}
-        <img src="/wp-content/uploads/2025/06/Placeholder.png" alt="Placeholder image" class="breakdance-image-object" style="width:100%; height:auto;" />
-      {% endif %}
-    </div>
-  {% elseif media_type == 'video' %}
-    <div class="ee-video-container">
-      {% if content.video.video.provider == 'vimeo' %}
-        {% set isLazyLoad = content.vimeo.loading_method != 'embed' and not isBuilder %}
-        {% set srcAttribute = isLazyLoad ? 'data-src' : 'src' %}
-        <div class="ee-video ee-vimeo">
-          <iframe
-            class="ee-video {{ isLazyLoad ? 'lozad' : '' }}"
-            title="{{ content.video.video.title }}"
-            {{ srcAttribute }}="{{ content.video.video.embedUrl }}{{ content.vimeo.autoplay ? '&autoplay=1' }}{{ content.vimeo.hide_player_controls ? '&controls=0' : '&controls=1' }}{{ content.vimeo.loop ? '&loop=1' : '' }}{{ content.vimeo.mute ? '&muted=1' : '' }}{{ not content.vimeo.play_inline ? '&playsinline=0' : '' }}{{ content.vimeo.start_time ? '#t=' ~ content.vimeo.start_time.number : '' }}"
-            width="100%" height="100%" frameborder="0"
-            allow="autoplay; fullscreen; picture-in-picture" allowfullscreen>
-          </iframe>
+    <div class="breakdance-swiper-wrapper show-mobile" data-swiper-id="%%UNIQUESLUG%%">
+      <div class="swiper swiper-%%UNIQUESLUG%%">
+        <div class="swiper-wrapper">
+          {% for tab in tabs %}
+            <div class="swiper-slide">
+              {# Tab as trigger style (styled like .bde-accordion-trigger) #}
+              <button class="bde-accordion-trigger bde-mobile-tab-trigger" aria-expanded="false" tabindex="0">
+                <span class="bde-accordion-title">
+                  {{ tab.tab_title|default('Lorem ipsum dolor') }}
+                </span>
+              </button>
+              <div class="bde-accordion-panel" aria-hidden="false" style="max-height:none;">
+                <div class="bde-accordion-panel-content">
+                  {% set accordion_items = tab.accordion is defined and tab.accordion|length > 0 ? tab.accordion : [{
+                    content_icon: '/wp-content/uploads/2025/07/Icon_Automate-1.svg',
+                    content_title: 'Lorem ipsum dolor sit amet consectetur sed do eiusmod',
+                    content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.'
+                  }] %}
+                  {% for item in accordion_items %}
+                    {% set has_icon = (item.content_icon is iterable and item.content_icon.url is defined)
+                      or (item.content_icon is defined and item.content_icon is not empty) %}
+                    <div class="bde-accordion-item{{ has_icon ? ' has-icon' : '' }} open">
+                      <div class="bde-accordion-row">
+                        <div class="bde-mobile-accordion-item">
+                          {% if has_icon %}
+                            <span class="bde-accordion-icon">
+                              <img src="{{ item.content_icon is iterable ? item.content_icon.url : item.content_icon }}" alt="Icon" style="width:36px;height:36px;" />
+                            </span>
+                          {% endif %}
+                          <span class="bde-accordion-title">{{ item.content_title|default('Lorem ipsum dolor sit amet consectetur sed do eiusmod') }}</span>
+                        </div>
+                        <div class="bde-accordion-content breakdance-rich-text-styles">
+                          {{ item.content|default('Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.') }}
+                        </div>
+                      </div>
+                    </div>
+                  {% endfor %}
+                </div>
+                <div class="bde-accordion-media">
+                  {% set is_real_image = tab.tab_image_ is defined
+                    and tab.tab_image_
+                    and (tab.tab_image_.url is defined and tab.tab_image_.url|length > 0)
+                  %}
+                  {% if is_real_image %}
+                    {{ macros.getMedia(tab.tab_image_, content.content.size, content.content.lazyLoad) }}
+                  {% else %}
+                    <img src="/wp-content/uploads/2025/06/Placeholder-620x500-1.png" alt="Placeholder image" style="max-width:100%;height:auto;" />
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          {% endfor %}
         </div>
-      {% endif %}
-      {% if content.video.video.provider == 'youtube' %}
-        {% set isLazyLoad = content.youtube.loading_method != 'embed' and not isBuilder %}
-        {% set srcAttribute = isLazyLoad ? 'data-src' : 'src' %}
-        <div class="ee-video ee-youtube">
-          <iframe
-            class="ee-video {{ isLazyLoad ? 'lozad' : '' }}"
-            title="{{ content.video.video.title }}"
-            {{ srcAttribute }}="{{ content.video.video.embedUrl }}{{ content.youtube.autoplay ? '&autoplay=1' }}{{ content.youtube.hide_player_controls ? '&controls=0' : '&controls=1' }}{{ content.youtube.loop ? '&loop=1' : '' }}{{ content.youtube.mute ? '&muted=1' : '' }}{{ not content.youtube.play_inline ? '&playsinline=0' : '' }}{{ content.youtube.start_time ? '&start=' ~ content.youtube.start_time.number : '' }}"
-            width="100%" height="100%" frameborder="0"
-            allow="autoplay; fullscreen; picture-in-picture" allowfullscreen>
-          </iframe>
-        </div>
-      {% endif %}
+      </div>
+      <div class="slider-navigation">
+        <button class="swiper-button-prev swiper-button-prev-%%UNIQUESLUG%% custom-nav-btn"></button>
+        <div class="swiper-pagination swiper-pagination-%%UNIQUESLUG%%"></div>
+        <button class="swiper-button-next swiper-button-next-%%UNIQUESLUG%% custom-nav-btn"></button>
+      </div>
     </div>
-  {% endif %}
+
+    <div class="bde-accordion-tabs show-desktop">
+      <div class="bde-tab-list" role="tablist">
+        {% for tab in tabs %}
+          <button
+            class="bde-tab"
+            id="tab-{{ loop.index }}"
+            type="button"
+            role="tab"
+            aria-controls="tabpanel-{{ loop.index }}"
+            aria-selected="{{ loop.first ? 'true' : 'false' }}"
+          >
+            {{ tab.tab_title|default('Lorem ipsum dolor') }}
+          </button>
+        {% endfor %}
+      </div>
+      <div class="bde-tabpanels">
+        {% for tab in tabs %}
+          <div
+            class="bde-tabpanel"
+            id="tabpanel-{{ loop.index }}"
+            role="tabpanel"
+            aria-labelledby="tab-{{ loop.index }}"
+            {% if not loop.first %} style="display:none;"{% endif %}
+          >
+            <div class="bde-accordion-list">
+              {% set accordion_items = (tab.accordion is defined and tab.accordion|length > 0) 
+                ? tab.accordion 
+                : [{
+                    content_icon: '/wp-content/uploads/2025/07/Icon_Automate-1.svg',
+                    content_title: 'Lorem ipsum dolor sit amet consectetur sed do eiusmod',
+                    content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.'
+                  }] %}
+              {% for item in accordion_items %}
+                {% set has_icon = (item.content_icon is iterable and item.content_icon.url is defined)
+                  or (item.content_icon is defined and item.content_icon is not empty) %}
+                <div class="bde-accordion-item{{ has_icon ? ' has-icon' : '' }}">
+                  <button class="bde-accordion-trigger" aria-expanded="false">
+                    {% if has_icon %}
+                      <span class="bde-accordion-icon">
+                        <img src="{{ item.content_icon is iterable ? item.content_icon.url : item.content_icon }}" alt="Icon" style="width:36px;height:36px;" />
+                      </span>
+                    {% endif %}
+                    <span class="bde-accordion-title">{{ item.content_title|default('Lorem ipsum dolor sit amet consectetur sed do eiusmod') }}</span>
+                  </button>
+                  <div class="bde-accordion-panel">
+                    <div class="bde-accordion-content breakdance-rich-text-styles">
+                      {{ item.content|default('Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.') }}
+                    </div>
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+            <div class="bde-accordion-media">
+              {% if tab.tab_image_ %}
+                {{ macros.getMedia(tab.tab_image_, content.content.size, content.content.lazyLoad) }}
+              {% else %}
+                <img src="/wp-content/uploads/2025/06/Placeholder-620x500-1.png" alt="Placeholder image" style="max-width:100%;height:auto;" />
+              {% endif %}
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
 </div>

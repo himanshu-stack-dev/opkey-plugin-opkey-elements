@@ -172,316 +172,66 @@ class Topnavaccordion extends \Breakdance\Elements\Element
         false,
         [],
       ), c(
-        "buttons",
-        "Buttons",
-        [getPresetSection(
-      "EssentialElements\\AtomV1ButtonContent",
-      "Primary Button",
-      "primary_button",
-       ['type' => 'popout']
-     ), getPresetSection(
-      "EssentialElements\\AtomV1ButtonContent",
-      "Secondary Button",
-      "secondary_button",
-       ['type' => 'popout']
-     )],
-        ['type' => 'section', 'layout' => 'vertical'],
+        "navigator",
+        "Navigator",
+        [c(
+        "tabs",
+        "Tabs",
+        [c(
+        "tab_title",
+        "Tab Title",
+        [],
+        ['type' => 'text', 'layout' => 'vertical'],
         false,
         false,
         [],
       ), c(
-        "media",
-        "Media",
-        [c(
-        "image_or_video",
-        "Image or Video",
+        "tab_image_",
+        "Tab Image  ",
         [],
-        ['type' => 'button_bar', 'layout' => 'vertical', 'items' => [['value' => 'image', 'text' => 'Image'], ['text' => 'Video', 'value' => 'video']]],
+        ['type' => 'wpmedia', 'layout' => 'vertical'],
+        false,
+        false,
+        [],
+      ), c(
+        "accordion",
+        "Accordion",
+        [c(
+        "content_icon",
+        "Content Icon",
+        [],
+        ['type' => 'wpmedia', 'layout' => 'vertical'],
+        false,
+        false,
+        [],
+      ), c(
+        "content_title",
+        "Content Title",
+        [],
+        ['type' => 'text', 'layout' => 'vertical'],
+        false,
+        false,
+        [],
+      ), c(
+        "content",
+        "Content",
+        [],
+        ['type' => 'richtext', 'layout' => 'vertical'],
+        false,
+        false,
+        [],
+      )],
+        ['type' => 'repeater', 'layout' => 'vertical'],
+        false,
+        false,
+        [],
+      )],
+        ['type' => 'repeater', 'layout' => 'vertical', 'repeaterOptions' => ['titleTemplate' => '{title}', 'defaultTitle' => 'Untitled Tab', 'buttonName' => 'Add Tab']],
         false,
         false,
         [],
       )],
         ['type' => 'section', 'layout' => 'vertical'],
-        false,
-        false,
-        [],
-      ), c(
-        "image",
-        "Image",
-        [c(
-        "from",
-        "From",
-        [],
-        ['type' => 'button_bar', 'layout' => 'inline', 'items' => [['value' => 'media_library', 'text' => 'Media Library'], ['text' => 'URL', 'value' => 'url']]],
-        false,
-        false,
-        [],
-      ), c(
-        "media",
-        "Media",
-        [],
-        ['type' => 'wpmedia', 'layout' => 'vertical', 'mediaOptions' => ['acceptedFileTypes' => ['image'], 'multiple' => false], 'condition' => [[['path' => 'content.image.from', 'operand' => 'equals', 'value' => 'media_library']]]],
-        false,
-        false,
-        [],
-      ), c(
-        "url",
-        "URL",
-        [],
-        ['type' => 'text', 'layout' => 'vertical', 'variableOptions' => ['enabled' => false], 'textOptions' => ['multiline' => true], 'condition' => [[['path' => 'content.image.from', 'operand' => 'equals', 'value' => 'url']]]],
-        false,
-        false,
-        [],
-      ), c(
-        "alt",
-        "Alt",
-        [],
-        ['type' => 'dropdown', 'layout' => 'inline', 'items' => [['value' => 'from_media_library', 'text' => 'Media Library'], ['text' => 'Custom', 'value' => 'custom'], ['text' => 'Decorative', 'value' => 'decorative']], 'condition' => [[['path' => 'content.image.from', 'operand' => 'equals', 'value' => 'media_library']]]],
-        false,
-        false,
-        [],
-      ), c(
-        "custom_alt",
-        "Custom Alt",
-        [],
-        ['type' => 'text', 'layout' => 'vertical', 'textOptions' => ['multiline' => true], 'condition' => [[['path' => 'content.image.from', 'operand' => 'equals', 'value' => 'media_library'], ['path' => 'content.image.alt', 'operand' => 'equals', 'value' => 'custom']]]],
-        false,
-        false,
-        [],
-      )],
-        ['type' => 'section', 'layout' => 'vertical', 'condition' => [[['path' => 'content.media.image_or_video', 'operand' => 'equals', 'value' => 'image']]]],
-        false,
-        false,
-        [],
-      ), c(
-        "video",
-        "Video",
-        [c(
-        "video",
-        "Video",
-        [],
-        ['type' => 'video', 'layout' => 'vertical', 'videoOptions' => ['providers' => ['youtube', 'vimeo', 'dailymotion']]],
-        false,
-        false,
-        [],
-      ), c(
-        "ratio",
-        "Ratio",
-        [],
-        ['type' => 'dropdown', 'layout' => 'inline', 'items' => [['text' => '16:9', 'label' => 'Label', 'value' => '56.25%'], ['text' => '16:10', 'label' => 'Label', 'value' => '62.5%'], ['text' => '4:3', 'value' => '75%'], ['text' => '1:1', 'value' => '100%'], ['text' => '21:9', 'value' => '42.85%'], ['text' => '3:2', 'value' => '66.67%'], ['text' => 'Custom', 'value' => 'custom']]],
-        false,
-        false,
-        [],
-      ), c(
-        "custom_width",
-        "Custom width",
-        [],
-        ['type' => 'number', 'layout' => 'inline', 'condition' => ['path' => 'content.video.ratio', 'operand' => 'equals', 'value' => 'custom']],
-        false,
-        false,
-        [],
-      ), c(
-        "custom_height",
-        "Custom height",
-        [],
-        ['type' => 'number', 'layout' => 'inline', 'condition' => ['path' => 'content.video.ratio', 'operand' => 'equals', 'value' => 'custom']],
-        false,
-        false,
-        [],
-      ), c(
-        "title",
-        "Title",
-        [],
-        ['type' => 'text', 'layout' => 'inline'],
-        false,
-        false,
-        [],
-      )],
-        ['type' => 'section', 'layout' => 'vertical', 'condition' => [[['path' => 'content.media.image_or_video', 'operand' => 'equals', 'value' => 'video']]]],
-        false,
-        false,
-        [],
-      ), c(
-        "youtube",
-        "YouTube",
-        [c(
-        "loading_method",
-        "Load Method",
-        [],
-        ['type' => 'dropdown', 'layout' => 'inline', 'items' => [['text' => 'Lightweight', 'value' => 'lightweight'], ['value' => 'lazyload', 'text' => 'Lazy load'], ['text' => 'Full Embed', 'value' => 'embed']]],
-        false,
-        false,
-        [],
-      ), c(
-        "background_image",
-        "Background Image",
-        [],
-        ['type' => 'wpmedia', 'layout' => 'vertical', 'condition' => [[['path' => 'content.youtube.loading_method', 'operand' => 'equals', 'value' => 'lightweight']]]],
-        false,
-        false,
-        [],
-      ), c(
-        "logo",
-        "Logo",
-        [],
-        ['type' => 'wpmedia', 'layout' => 'vertical', 'condition' => [[['path' => 'content.youtube.loading_method', 'operand' => 'equals', 'value' => 'lightweight']]]],
-        false,
-        false,
-        [],
-      ), c(
-        "title",
-        "Title",
-        [],
-        ['type' => 'text', 'layout' => 'vertical', 'condition' => [[['path' => 'content.youtube.loading_method', 'operand' => 'equals', 'value' => 'lightweight']]]],
-        false,
-        false,
-        [],
-      ), c(
-        "autoplay",
-        "Autoplay",
-        [],
-        ['type' => 'toggle', 'layout' => 'inline', 'condition' => ['path' => 'content.youtube.loading_method', 'operand' => 'is none of', 'value' => ['lightweight']]],
-        false,
-        false,
-        [],
-      ), c(
-        "loop",
-        "Loop",
-        [],
-        ['type' => 'toggle', 'layout' => 'inline'],
-        false,
-        false,
-        [],
-      ), c(
-        "mute",
-        "Mute",
-        [],
-        ['type' => 'toggle', 'layout' => 'inline'],
-        false,
-        false,
-        [],
-      ), c(
-        "modest_branding",
-        "Modest Branding",
-        [],
-        ['type' => 'toggle', 'layout' => 'inline', 'condition' => ['path' => 'content.youtube.hide_player_controls', 'operand' => 'is not set', 'value' => '']],
-        false,
-        false,
-        [],
-      ), c(
-        "hide_player_controls",
-        "Hide Player Controls",
-        [],
-        ['type' => 'toggle', 'layout' => 'inline'],
-        false,
-        false,
-        [],
-      ), c(
-        "play_inline",
-        "Play Inline",
-        [],
-        ['type' => 'toggle', 'layout' => 'inline'],
-        false,
-        false,
-        [],
-      ), c(
-        "privacy_mode",
-        "Privacy mode",
-        [],
-        ['type' => 'toggle', 'layout' => 'inline', 'condition' => ['path' => 'content.youtube.loading_method', 'operand' => 'not equals', 'value' => 'lightweight']],
-        false,
-        false,
-        [],
-      ), c(
-        "start_time",
-        "Start Time",
-        [],
-        ['type' => 'unit', 'layout' => 'inline', 'unitOptions' => ['types' => ['s'], 'defaultType' => 's']],
-        false,
-        false,
-        [],
-      ), c(
-        "end_time",
-        "End Time",
-        [],
-        ['type' => 'unit', 'layout' => 'inline', 'unitOptions' => ['types' => ['s'], 'defaultType' => 's']],
-        false,
-        false,
-        [],
-      ), c(
-        "suggested_videos",
-        "Suggested Videos",
-        [],
-        ['type' => 'dropdown', 'layout' => 'inline', 'items' => [['value' => 'same_channel', 'text' => 'From same channel'], ['text' => 'Recommendations', 'value' => 'recommendations']], 'condition' => ['path' => 'content.youtube.loop', 'operand' => 'is not set', 'value' => '']],
-        false,
-        false,
-        [],
-      )],
-        ['type' => 'section', 'layout' => 'vertical', 'condition' => [[['path' => 'content.video.video.source', 'operand' => 'is none of', 'value' => ['vimeo', 'dailymotion']], ['path' => 'content.media.image_or_video', 'operand' => 'equals', 'value' => 'video']]]],
-        false,
-        false,
-        [],
-      ), c(
-        "vimeo",
-        "Vimeo",
-        [c(
-        "loading_method",
-        "Load Method",
-        [],
-        ['type' => 'dropdown', 'layout' => 'inline', 'items' => [['text' => 'Lightweight', 'value' => 'lightweight'], ['text' => 'Lazy Load', 'value' => 'lazyload'], ['text' => 'Full embed', 'value' => 'embed']]],
-        false,
-        false,
-        [],
-      ), c(
-        "autoplay",
-        "Autoplay",
-        [],
-        ['type' => 'toggle', 'layout' => 'inline', 'condition' => ['path' => 'content.youtube.loading_method', 'operand' => 'not equals', 'value' => 'lightweight']],
-        false,
-        false,
-        [],
-      ), c(
-        "play_inline",
-        "Play Inline",
-        [],
-        ['type' => 'toggle', 'layout' => 'inline', 'condition' => ['path' => 'content.vimeo.loading_method', 'operand' => 'not equals', 'value' => 'lightweight']],
-        false,
-        false,
-        [],
-      ), c(
-        "loop",
-        "Loop",
-        [],
-        ['type' => 'toggle', 'layout' => 'inline', 'condition' => ['path' => 'content.vimeo.loading_method', 'operand' => 'not equals', 'value' => 'lightweight']],
-        false,
-        false,
-        [],
-      ), c(
-        "mute",
-        "Mute",
-        [],
-        ['type' => 'toggle', 'layout' => 'inline', 'condition' => ['path' => 'content.vimeo.loading_method', 'operand' => 'not equals', 'value' => 'lightweight']],
-        false,
-        false,
-        [],
-      ), c(
-        "hide_player_controls",
-        "Hide Player Controls",
-        [],
-        ['type' => 'toggle', 'layout' => 'inline', 'condition' => ['path' => 'content.vimeo.loading_method', 'operand' => 'not equals', 'value' => 'lightweight']],
-        false,
-        false,
-        [],
-      ), c(
-        "start_time",
-        "Start Time",
-        [],
-        ['type' => 'unit', 'layout' => 'inline', 'unitOptions' => ['types' => ['s'], 'defaultType' => 's']],
-        false,
-        false,
-        [],
-      )],
-        ['type' => 'section', 'layout' => 'vertical', 'condition' => [[['path' => 'content.video.video.source', 'operand' => 'is none of', 'value' => ['dailymotion', 'youtube']], ['path' => 'content.media.image_or_video', 'operand' => 'equals', 'value' => 'video']]]],
         false,
         false,
         [],
@@ -495,27 +245,246 @@ class Topnavaccordion extends \Breakdance\Elements\Element
 
     static function dependencies()
     {
-        return ['0' =>  ['scripts' => ['%%BREAKDANCE_ELEMENTS_PLUGIN_URL%%dependencies-files/lite-youtube@0.2/lite-yt-embed.js'],'title' => 'lite-youtube','styles' => ['%%BREAKDANCE_ELEMENTS_PLUGIN_URL%%dependencies-files/lite-youtube@0.2/lite-yt-embed.css'],],'1' =>  ['title' => 'lite-vimeo','inlineScripts' => ['const backgroundImage = \'{{content.vimeo.background_image.url}}\';
-if (backgroundImage != \'\') {
-  const container = document.querySelector(\'%%SELECTOR%% .ee-video-container\');
-  const poster = container.querySelector(\'.ee-vimeo-poster\');
-  if (poster) {
-    poster.addEventListener(\'click\', function() {
-      const liteVimeo = document.createElement(\'lite-vimeo\');
-      liteVimeo.setAttribute(\'videoid\', \'{{ content.video.video.videoId }}\');
-      liteVimeo.setAttribute(\'autoload\', \'\');
-      liteVimeo.setAttribute(\'autoplay\', \'\');
-      {% if content.vimeo.start_time %}
-      liteVimeo.setAttribute(\'videoPlay\', \'{{content.vimeo.start_time.style}}\');
-      {% endif %}
-      liteVimeo.classList.add(\'ee-video\');
-      container.appendChild(liteVimeo);
-      container.removeChild(poster);
-      liteVimeo.click();
+        return ['0' =>  ['inlineScripts' => [';(function(){
+  const config = {
+    slidesPerView: 1,
+    spaceBetween: 20,
+    observer: true,
+    observeParents: true,
+    observeSlideChildren: true,
+    navigation: {
+      nextEl: \'.slider-navigation .swiper-button-next-%%UNIQUESLUG%%\',
+      prevEl: \'.slider-navigation .swiper-button-prev-%%UNIQUESLUG%%\'
+    },
+    pagination: {
+      el: \'.slider-navigation .swiper-pagination-%%UNIQUESLUG%%\',
+      clickable: true,
+      type: \'bullets\'
+    }
+  };
+
+  function initColumnsSlider() {
+    document
+      .querySelectorAll(\'.swiper-%%UNIQUESLUG%%\')
+      .forEach(el => {
+        if (!el.swiper) {
+          new Swiper(el, config);
+        } else {
+          el.swiper.update();
+        }
+      });
+  }
+
+  initColumnsSlider();
+
+  window.addEventListener(\'resize\', initColumnsSlider);
+
+  if (window.BREAKDANCE) {
+    window.BREAKDANCE.on(\'builder:loaded builder:rendered\', initColumnsSlider);
+  }
+})();
+',';(function() {
+  const module = document.querySelector(\'.autogenerated-bce-topnavaccordion\');
+  if (!module) return;
+
+  function isMobile() {
+    return window.matchMedia(\'(max-width: 1023px)\').matches;
+  }
+
+  // ---- MOBILE LOGIC ----
+
+  let mobilePanelsOpen = false; // Track state so Swiper stays in sync
+
+  function getMobileTabPairs() {
+    const pairs = [];
+    const tabTriggers = module.querySelectorAll(\'.show-mobile .bde-mobile-tab-trigger\');
+    tabTriggers.forEach(trigger => {
+      const panel = trigger.nextElementSibling;
+      if (panel && panel.classList.contains(\'bde-accordion-panel\')) {
+        pairs.push({trigger, panel});
+      }
+    });
+    return pairs;
+  }
+
+  function closePanel(pair) {
+    pair.panel.style.display = \'none\';
+    pair.panel.setAttribute(\'aria-hidden\', \'true\');
+    pair.trigger.setAttribute(\'aria-expanded\', \'false\');
+    const item = pair.trigger.closest(\'.bde-accordion-item\');
+    if (item) item.classList.remove(\'open\');
+  }
+
+  function openPanel(pair) {
+    pair.panel.style.display = \'\';
+    pair.panel.setAttribute(\'aria-hidden\', \'false\');
+    pair.trigger.setAttribute(\'aria-expanded\', \'true\');
+    const item = pair.trigger.closest(\'.bde-accordion-item\');
+    if (item) item.classList.add(\'open\');
+  }
+
+  function setAllMobilePanels(open, tabPairs) {
+    tabPairs.forEach(pair => {
+      open ? openPanel(pair) : closePanel(pair);
+    });
+    mobilePanelsOpen = open;
+  }
+
+  function initMobileTabs() {
+    const tabPairs = getMobileTabPairs();
+    setAllMobilePanels(false, tabPairs); // Hide all on load
+
+    // Remove previous click handlers to avoid stacking
+    tabPairs.forEach(pair => pair.trigger.onclick = null);
+
+    // All panels open/close in sync
+    tabPairs.forEach((pair) => {
+      pair.trigger.onclick = function() {
+        setAllMobilePanels(!mobilePanelsOpen, tabPairs);
+      };
+    });
+
+    // Swiper slide change: keep all in sync
+    const swiperEl = document.querySelector(\'.swiper-%%UNIQUESLUG%%\');
+    if (swiperEl && swiperEl.swiper) {
+      swiperEl.swiper.on(\'slideChange\', function () {
+        setAllMobilePanels(mobilePanelsOpen, tabPairs);
+      });
+    }
+  }
+
+  // ---- DESKTOP LOGIC ----
+
+  function getVisiblePanelAccordions(tabPanels) {
+    const activePanel = tabPanels.find(panel => panel.style.display !== \'none\');
+    if (!activePanel) return { triggers: [], panels: [] };
+    const triggers = Array.from(activePanel.querySelectorAll(\'.bde-accordion-trigger\'));
+    const panels = Array.from(activePanel.querySelectorAll(\'.bde-accordion-panel\'));
+    return { triggers, panels };
+  }
+
+  function initDesktopTabs(tabButtons, tabPanels) {
+    tabButtons.forEach((btn, i) => {
+      btn.addEventListener(\'click\', function() {
+        tabButtons.forEach((b, j) => {
+          const selected = i === j;
+          b.setAttribute(\'aria-selected\', selected ? \'true\' : \'false\');
+          tabPanels[j].style.display = selected ? \'\' : \'none\';
+        });
+
+        // When switching to a new tab, open its FIRST accordion
+        tabPanels.forEach((panel, j) => {
+          const triggers = Array.from(panel.querySelectorAll(\'.bde-accordion-trigger\'));
+          const panelsArr = Array.from(panel.querySelectorAll(\'.bde-accordion-panel\'));
+          triggers.forEach((t, k) => {
+            t.setAttribute(\'aria-expanded\', i === j && k === 0 ? \'true\' : \'false\');
+            panelsArr[k].setAttribute(\'aria-hidden\', i === j && k === 0 ? \'false\' : \'true\');
+            panelsArr[k].style.maxHeight = i === j && k === 0 ? (panelsArr[k].scrollHeight + \'px\') : \'0px\';
+            if (i === j && k === 0) {
+              panelsArr[k].removeAttribute(\'hidden\');
+              t.closest(\'.bde-accordion-item\').classList.add(\'open\');
+            } else {
+              t.closest(\'.bde-accordion-item\').classList.remove(\'open\');
+            }
+          });
+        });
+      });
+    });
+
+    // Set only the first tabpanel visible by default
+    tabPanels.forEach((panel, i) => {
+      panel.style.display = i === 0 ? \'\' : \'none\';
+    });
+    tabButtons.forEach((btn, i) => {
+      btn.setAttribute(\'aria-selected\', i === 0 ? \'true\' : \'false\');
     });
   }
-}'],'scripts' => ['%%BREAKDANCE_ELEMENTS_PLUGIN_URL%%dependencies-files/lite-vimeo-embed@0.1/lite-vimeo.js'],],'2' =>  ['title' => 'lozad','scripts' => ['%%BREAKDANCE_ELEMENTS_PLUGIN_URL%%dependencies-files/lozard@1/lozad.min.js'],'inlineScripts' => ['const observer = lozad();
-observer.observe();'],],];
+
+  function initDesktopAccordions(tabPanels) {
+    // Toggle accordions within the visible tab panel
+    const allTriggers = Array.from(module.querySelectorAll(\'.show-desktop .bde-accordion-trigger\'));
+    allTriggers.forEach(btn => {
+      btn.onclick = null; // Remove previous handlers!
+      btn.addEventListener(\'click\', function() {
+        const { triggers, panels } = getVisiblePanelAccordions(tabPanels);
+        triggers.forEach((t, i) => {
+          const isClicked = t === btn;
+          const isAlreadyOpen = t.getAttribute(\'aria-expanded\') === \'true\';
+          if (isClicked) {
+            const open = !isAlreadyOpen;
+            t.setAttribute(\'aria-expanded\', open ? \'true\' : \'false\');
+            panels[i].setAttribute(\'aria-hidden\', open ? \'false\' : \'true\');
+            panels[i].style.maxHeight = open ? (panels[i].scrollHeight + \'px\') : \'0px\';
+            if (open) {
+              panels[i].removeAttribute(\'hidden\');
+              t.closest(\'.bde-accordion-item\').classList.add(\'open\');
+            } else {
+              t.closest(\'.bde-accordion-item\').classList.remove(\'open\');
+            }
+          } else {
+            t.setAttribute(\'aria-expanded\', \'false\');
+            panels[i].setAttribute(\'aria-hidden\', \'true\');
+            panels[i].style.maxHeight = \'0px\';
+            t.closest(\'.bde-accordion-item\').classList.remove(\'open\');
+          }
+        });
+      });
+    });
+  }
+
+  function initDesktop() {
+    const tabButtons = Array.from(module.querySelectorAll(\'.bde-tab\'));
+    const tabPanels = Array.from(module.querySelectorAll(\'.bde-tabpanel\'));
+
+    // Only show first tab and first accordion open
+    tabPanels.forEach((panel, i) => {
+      panel.style.display = i === 0 ? \'\' : \'none\';
+      const triggers = Array.from(panel.querySelectorAll(\'.bde-accordion-trigger\'));
+      const panelsArr = Array.from(panel.querySelectorAll(\'.bde-accordion-panel\'));
+      triggers.forEach((t, k) => {
+        t.setAttribute(\'aria-expanded\', i === 0 && k === 0 ? \'true\' : \'false\');
+        panelsArr[k].setAttribute(\'aria-hidden\', i === 0 && k === 0 ? \'false\' : \'true\');
+        panelsArr[k].style.maxHeight = i === 0 && k === 0 ? (panelsArr[k].scrollHeight + \'px\') : \'0px\';
+        if (i === 0 && k === 0) {
+          panelsArr[k].removeAttribute(\'hidden\');
+          t.closest(\'.bde-accordion-item\').classList.add(\'open\');
+        } else {
+          t.closest(\'.bde-accordion-item\').classList.remove(\'open\');
+        }
+      });
+    });
+    tabButtons.forEach((btn, i) => {
+      btn.setAttribute(\'aria-selected\', i === 0 ? \'true\' : \'false\');
+    });
+
+    initDesktopTabs(tabButtons, tabPanels);
+    initDesktopAccordions(tabPanels);
+  }
+
+  // ---- INIT SWITCHER ----
+
+  function initAll() {
+    if (isMobile()) {
+      initMobileTabs();
+    } else {
+      initDesktop();
+    }
+  }
+
+  // --- On load
+  initAll();
+
+  // --- On resize, re-init if switching between mobile/desktop
+  let prevIsMobile = isMobile();
+  window.addEventListener(\'resize\', () => {
+    const currIsMobile = isMobile();
+    if (currIsMobile !== prevIsMobile) {
+      prevIsMobile = currIsMobile;
+      initAll();
+    }
+  });
+})();
+'],'scripts' => ['%%BREAKDANCE_ELEMENTS_PLUGIN_URL%%dependencies-files/swiper@8/swiper-bundle.min.js','%%BREAKDANCE_ELEMENTS_PLUGIN_URL%%dependencies-files/breakdance-swiper/breakdance-swiper.js'],'styles' => ['%%BREAKDANCE_ELEMENTS_PLUGIN_URL%%dependencies-files/swiper@8/swiper-bundle.min.css','%%BREAKDANCE_ELEMENTS_PLUGIN_URL%%dependencies-files/swiper@8/breakdance-swiper-preset-defaults.css'],],];
     }
 
     static function settings()
@@ -530,7 +499,26 @@ observer.observe();'],],];
 
     static public function actions()
     {
-        return false;
+        return [
+
+'onPropertyChange' => [['script' => 'window.BreakdanceSwiper().update({
+  id: \'%%UNIQUESLUG%%\',
+  selector: \'.swiper-%%UNIQUESLUG%%\',
+  settings: {"slidesPerView":1,"spaceBetween":32,"grid":{"rows":1,"fill":"row"},"breakpoints":{"600":{"slidesPerView":3,"slidesPerGroup":3,"grid":{"rows":1}},"1024":{"slidesPerView":4,"slidesPerGroup":4,"grid":{"rows":2,"fill":"row"}}},"navigation":{"nextEl":".slider-navigation .swiper-button-next-%%UNIQUESLUG%%","prevEl":".slider-navigation .swiper-button-prev-%%UNIQUESLUG%%"}},
+  paginationSettings: {"el":".slider-navigation .swiper-pagination-%%UNIQUESLUG%%","clickable":true,"type":"bullets"}
+});',
+],],
+
+'onBeforeDeletingElement' => [['script' => 'window.BreakdanceSwiper().destroy(\'%%UNIQUESLUG%%\');',
+],],
+
+'onMountedElement' => [['script' => 'window.BreakdanceSwiper().update({
+  id: \'%%UNIQUESLUG%%\',
+  selector: \'.swiper-%%UNIQUESLUG%%\',
+  settings: {"slidesPerView":1,"spaceBetween":32,"grid":{"rows":1,"fill":"row"},"breakpoints":{"600":{"slidesPerView":3,"slidesPerGroup":3,"grid":{"rows":1}},"1024":{"slidesPerView":4,"slidesPerGroup":4,"grid":{"rows":2,"fill":"row"}}},"navigation":{"nextEl":".slider-navigation .swiper-button-next-%%UNIQUESLUG%%","prevEl":".slider-navigation .swiper-button-prev-%%UNIQUESLUG%%"}},
+  paginationSettings: {"el":".slider-navigation .swiper-pagination-%%UNIQUESLUG%%","clickable":true,"type":"bullets"}
+});',
+],],];
     }
 
     static function nestingRule()
