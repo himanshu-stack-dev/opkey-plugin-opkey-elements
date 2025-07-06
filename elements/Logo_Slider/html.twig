@@ -45,39 +45,39 @@
   {% endif %}
 
   {# SLIDER #}
-  {% set logos = [
-    '/wp-content/uploads/2025/07/Placeholder_180x70.png',
-    '/wp-content/uploads/2025/07/Placeholder_180x70.png',
-    '/wp-content/uploads/2025/07/Placeholder_180x70.png',
-    '/wp-content/uploads/2025/07/Placeholder_180x70.png',
-    '/wp-content/uploads/2025/07/Placeholder_180x70.png',
-    '/wp-content/uploads/2025/07/Placeholder_180x70.png'
-  ] %}
-  <div class="un-image-carousel-container full-bleed-row">
-    <div class="un-logo-bar__marquee-content carousel-type__{{ design.list.animation.animation_type }}">
-      {% if content.setting.logos %}
-        {% for repeat in [1,2,3,4,5,6] %}
-          {% for item in content.setting.logos %}
-            {% if item.link %}
-              {{ macros.linkStart(item.link, 'un-logo-bar__logo-wrapper') }}
-                {{ macros.image(item.image, item.size, item.alt, false) }}
-              {{ macros.linkEnd() }}
-            {% else %}
-              <div class="un-logo-bar__logo-wrapper">
-                {{ macros.image(item.image, item.size, item.alt, false) }}
-              </div>
-            {% endif %}
-          {% endfor %}
-        {% endfor %}
-      {% else %}
-        {% for repeat in [1,2,3,4] %}
-          {% for logo in logos %}
-            <div class="un-logo-bar__logo-wrapper">
-              <img src="{{ logo }}">
-            </div>
-          {% endfor %}
-        {% endfor %}
-      {% endif %}
-    </div>
+   {% set logos = [
+     '/wp-content/uploads/2025/07/Placeholder_180x70.png',
+     '/wp-content/uploads/2025/07/Placeholder_180x70.png',
+     '/wp-content/uploads/2025/07/Placeholder_180x70.png',
+     '/wp-content/uploads/2025/07/Placeholder_180x70.png',
+     '/wp-content/uploads/2025/07/Placeholder_180x70.png',
+     '/wp-content/uploads/2025/07/Placeholder_180x70.png'
+   ] %}
+
+   {# Prefer user's logos, fallback to defaults #}
+   {% set logo_items = (content.logos.logo ?? content.logos.logos ?? content.logos) | default(logos) %}
+
+  <div class="un-logo-bar__marquee-content carousel-type__marquee">
+   {% for repeat in [1,2,3,4,5,6] %}
+     {% for item in logo_items %}
+       {% if item.image is defined or item.link is defined %}
+         {# It's a real user item object #}
+         {% if item.link %}
+           {{ macros.linkStart(item.link, 'un-logo-bar__logo-wrapper') }}
+             {{ macros.image(item.image, item.size, item.alt, false) }}
+           {{ macros.linkEnd() }}
+         {% else %}
+           <div class="un-logo-bar__logo-wrapper">
+             {{ macros.image(item.image, item.size, item.alt, false) }}
+           </div>
+         {% endif %}
+       {% else %}
+         {# It's a plain string fallback #}
+         <div class="un-logo-bar__logo-wrapper">
+           <img src="{{ item }}" alt="Logo placeholder">
+         </div>
+       {% endif %}
+     {% endfor %}
+   {% endfor %}
   </div>
 </div>

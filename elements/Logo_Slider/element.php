@@ -198,11 +198,19 @@ class Logoslider extends \Breakdance\Elements\Element
         false,
         [],
       ), c(
-        "setting",
-        "Setting",
-        [c(
         "logos",
         "Logos",
+        [c(
+        "message",
+        "Message",
+        [],
+        ['type' => 'alert_box', 'layout' => 'vertical', 'alertBoxOptions' => ['style' => 'info', 'content' => '<p>Minimum 4 logos for a smooth scroll.</p>']],
+        false,
+        false,
+        [],
+      ), c(
+        "logo",
+        "Logo",
         [c(
         "image",
         "Image",
