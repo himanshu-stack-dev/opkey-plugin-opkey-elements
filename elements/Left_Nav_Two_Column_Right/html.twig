@@ -1,0 +1,172 @@
+<div class="module-container">
+  <div class="module-top-nav-accordion module-text">
+    {# EYEBROW #}
+    {% set eyebrow = content.eyebrow.text | default('LOREM IPSUM DOLOR') %}
+    {% if eyebrow %}
+      <div class="eyebrow">{{ eyebrow }}</div>
+    {% endif %}
+
+    {# HEADING #}
+    {% set heading = content.heading.text | default('Lorem ipsum dolor sit amet') %}
+    {% if heading %}
+      <h2>{{ heading }}</h2>
+    {% endif %}
+
+    {# SUBHEAD #}
+    {% set subhead = content.subhead.text | default('Lorem ipsum dolor sit amet consectetur adipiscing elit') %}
+    {% if subhead %}
+      <h4>{{ subhead }}</h4>
+    {% endif %}
+
+    {# BODY #}
+    {% set body = content.content.text | default('Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.') %}
+    {% if body %}
+      <p>{{ body }}</p>
+    {% endif %}
+  </div>
+
+  {# Define tab categories #}
+  {% set tabs = content.tabs.tab | default([
+    { label: "Lorem ipsum dolor", key: "cat1" },
+    { label: "Dolor sit amet", key: "cat2" }
+  ]) %}
+
+  {# Set default active category to the first tab #}
+  {% set active_category = tabs[0].key %}
+
+  {# Default card data for both categories #}
+  {% set default_columns = [
+    {
+      icon: null,
+      category: "cat1",
+      heading: "RESOURCE TYPE",
+      content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+      button: { text: "Learn more", url: "#" }
+    },
+    {
+      icon: null,
+      category: "cat1",
+      heading: "RESOURCE TYPE",
+      content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+      button: { text: "Learn more", url: "#" }
+    },
+    {
+      icon: null,
+      category: "cat1",
+      heading: "RESOURCE TYPE",
+      content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+      button: { text: "Learn more", url: "#" }
+    },
+    {
+      icon: null,
+      category: "cat1",
+      heading: "RESOURCE TYPE",
+      content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+      button: { text: "Learn more", url: "#" }
+    },
+    {
+      icon: null,
+      category: "cat2",
+      heading: "RESOURCE TYPE",
+      content: "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.",
+      button: { text: "Learn more", url: "#" }
+    },
+    {
+      icon: null,
+      category: "cat2",
+      heading: "RESOURCE TYPE",
+      content: "Quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+      button: { text: "Learn more", url: "#" }
+    }
+  ] %}
+
+  {# Use real columns if present, otherwise fall back #}
+  {% set columns = (content.columns is defined and content.columns.column is defined and content.columns.column|length > 0)
+    ? content.columns.column
+    : default_columns %}
+
+  <div class="module-content-row">
+    {# Vertical tabs for desktop #}
+    <div class="tab-nav bde-tab-list desktop-only">
+      {% for tab in tabs %}
+        <button
+          class="bde-tab"
+          id="tab-{{ loop.index }}"
+          type="button"
+          role="tab"
+          aria-controls="tabpanel-{{ loop.index }}"
+          aria-selected="{{ loop.first ? 'true' : 'false' }}"
+        >
+          {{ tab.tab_title|default('Lorem ipsum dolor') }}
+        </button>
+      {% endfor %}
+      <div class="slider-navigation desktop-only">
+        <button class="swiper-button-prev swiper-button-prev-%%UNIQUESLUG%% custom-nav-btn"></button>
+        <div class="swiper-pagination swiper-pagination-%%UNIQUESLUG%%"></div>
+        <button class="swiper-button-next swiper-button-next-%%UNIQUESLUG%% custom-nav-btn"></button>
+      </div>
+    </div>
+    {# Dropdown for mobile/tablet #}
+    <div class="tab-dropdown mobile-only">
+      <select id="category-select-%%UNIQUESLUG%%">
+        {% for tab in tabs %}
+          <option value="{{ tab.key }}" {{ tab.key == active_category ? 'selected' : '' }}>{{ tab.label }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="breakdance-swiper-wrapper" data-swiper-id="%%UNIQUESLUG%%">
+      <div class="swiper swiper-%%UNIQUESLUG%%">
+        <div class="swiper-wrapper">
+          {% for item in columns %}
+            {% if item.category is not defined or item.category == active_category %}
+              <div class="swiper-slide">
+                <div class="card">
+                  <div>
+                    <svg preserveAspectRatio="none" viewBox="0 0 5 452" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M5 1V1C2.79086 1 1 2.79087 1 5V447C1 449.209 2.79086 451 5 451V451" stroke="currentColor"/>
+                    </svg>
+                    <div class="icon">
+                      <img src="/wp-content/uploads/2025/06/icon-robot.svg" alt="Robot icon" class="breakdance-image-object" style="width:60px; height:auto; margin-bottom: 1rem;" />
+                    </div>
+                    <div class="mobile-eyebrow">
+                      <span class="resource-type" style="color: #12a4b4; letter-spacing: 0.03em; font-weight: 600; font-size: 1rem; text-transform: uppercase;">
+                        {{ (item.heading is defined and item.heading|length > 0) ? item.heading : 'RESOURCE TYPE' }}
+                      </span>
+                    </div>
+                    <p>
+                      {{ (item.content is defined and item.content|length > 0) 
+                        ? item.content 
+                        : 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.' }}
+                    </p>
+                    {% set button_obj = (item.button is defined and item.button.text|default('')|length > 0) 
+                      ? item.button 
+                      : { text: 'Learn more', url: '#' } %}
+                    {% if button_obj.text %}
+                      <div class="content-module module-buttons">
+                        {{ macros.atomV1ButtonHtml(
+                          button_obj,
+                          'opkey-link-text',
+                          path.to.button_design_preset_section,
+                          'secondary',
+                          button_obj.text
+                        ) }}
+                      </div>
+                    {% endif %}
+                  </div>
+                  <svg class="right" preserveAspectRatio="none" viewBox="0 0 5 452" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 1V1C2.79086 1 1 2.79087 1 5V447C1 449.209 2.79086 451 5 451V451" stroke="currentColor"/>
+                  </svg>
+                </div>
+              </div>
+            {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+      <div class="slider-navigation mobile-only">
+        <button class="swiper-button-prev swiper-button-prev-%%UNIQUESLUG%% custom-nav-btn"></button>
+        <div class="swiper-pagination swiper-pagination-%%UNIQUESLUG%%"></div>
+        <button class="swiper-button-next swiper-button-next-%%UNIQUESLUG%% custom-nav-btn"></button>
+      </div>
+    </div>
+    </div>
+</div>
