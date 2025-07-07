@@ -1,0 +1,48 @@
+<div class="module-container">
+  <div class="cta-wrapper">
+    <div class="module-text">
+      {# EYEBROW #}
+      {% set eyebrow = content.eyebrow.text | default('LOREM IPSUM DOLOR') %}
+      {% if eyebrow %}
+        <div class="eyebrow">{{ eyebrow }}</div>
+      {% endif %}
+      {# HEADING #}
+      {% set heading = content.heading.text | default('Lorem ipsum dolor sit amet') %}
+      {% if heading %}
+        <h2>{{ heading }}</h2>
+      {% endif %}
+      {# BODY #}
+      {% set body = content.content.text | default('Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.') %}
+      {% if body %}
+        <p>{{ body }}</p>
+      {% endif %}
+
+      {# BUTTONS #}
+      {% set remove_buttons = content.buttons.remove_ is defined and content.buttons.remove_ == true %}
+      {% if not remove_buttons %}
+        {% set primary_button = content.buttons.primary_button.text | default('Learn More') %}
+        {% if primary_button %}
+        <div class="content-module module-buttons">
+          {% if primary_button %}
+            {{ macros.atomV1ButtonHtml(content.buttons.primary_button, 'opkey-link-text', path.to.button_design_preset_section, 'secondary', primary_button) }}
+          {% endif %}
+        </div>
+        {% endif %}
+      {% endif %}
+    </div>
+    {# IMAGE with robust fallback #}
+    {% set image_set = (content.image.image is defined and content.image.image.url is not empty) %}
+    {% set alt = (image_set and content.image.image.alt is defined) ? content.image.image.alt : 'Placeholder image' %}
+    <div class="module-image">
+      {% if image_set %}
+        {{ macros.image(content.image.image, content.content.size, alt, lazyLoad) }}
+      {% else %}
+        <img src="https://opkey.local/wp-content/uploads/2025/07/Placeholder_510x300.png"
+             alt="Placeholder image"
+             width="510"
+             height="300"
+             loading="lazy" />
+      {% endif %}
+    </div>
+  </div>
+</div>
