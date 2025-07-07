@@ -1,0 +1,36 @@
+{% if design.theme_color.color == 'purple' %}
+    %%SELECTOR%%, %%SELECTOR%% .cta-wrapper, %%SELECTOR%% .cta-diagonal::after { background: #190D2C; color: #fff; }
+	%%SELECTOR%% .module-container { background: linear-gradient(90deg, #190D2C 0%, #A956FF 100%); }
+    %%SELECTOR%% h3 { color: #fff; }
+	%%SELECTOR%% .eyebrow:before, %%SELECTOR%% .eyebrow:after { 	filter:invert(100); }
+	/* PRIMARY BUTTON */
+    %%SELECTOR%% .button-atom--primary::before { background: #81F0FD !important; }
+    %%SELECTOR%% .button-atom--primary .button-atom__text { color: #81F0FD !important; }
+    %%SELECTOR%% .button-atom--primary:hover .button-atom__text,
+    %%SELECTOR%% .button-atom--primary:focus .button-atom__text { color: #000 !important; }
+    %%SELECTOR%% .button-atom--primary .button-atom__text::before { background: #000; }
+    %%SELECTOR%% .button-atom--primary .button-atom__text::after {
+      border-top: .125rem solid #000;
+      border-right: .125rem solid #000;
+    }
+    /* TEXT LINK BUTTON */
+    %%SELECTOR%% .opkey-link-text .button-atom__text { color: #fff !important; }
+    %%SELECTOR%% .opkey-link-text .button-atom__text::before,
+    %%SELECTOR%% .opkey-link-text .button-atom__text::after {
+      border-top: 2px solid #fff !important;
+      border-right: 2px solid #fff !important;
+    }
+    %%SELECTOR%% .opkey-link-text:hover .button-atom__text,
+    %%SELECTOR%% .opkey-link-text .button-atom__text:hover,
+    %%SELECTOR%% .opkey-link-text .button-atom__text:focus { color: #81F0FD !important; }
+    %%SELECTOR%% .opkey-link-text .button-atom__text:hover::before,
+    %%SELECTOR%% .opkey-link-text .button-atom__text:focus::before,
+    %%SELECTOR%% .opkey-link-text .button-atom__text:hover::after,
+    %%SELECTOR%% .opkey-link-text .button-atom__text:focus::after {
+      border-top: 2px solid #81F0FD !important;
+      border-right: 2px solid #81F0FD !important;
+    }
+{% elseif design.theme_color.color == 'light-gray' %}
+	%%SELECTOR%% .module-container { background: linear-gradient(90deg, #EDF7F9 0%, #be72f8 100%); }
+	%%SELECTOR%%, %%SELECTOR%% .cta-wrapper { background: #EDF7F9; }
+{% endif %}
