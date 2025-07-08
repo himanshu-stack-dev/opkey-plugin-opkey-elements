@@ -1,0 +1,123 @@
+<div class="module-container">
+  <div class="module-columns module-text">
+    {# EYEBROW #}
+    {% set eyebrow = content.eyebrow.text | default('LOREM IPSUM DOLOR') %}
+    {% if eyebrow %}
+      <div class="eyebrow">{{ eyebrow }}</div>
+    {% endif %}
+
+    {# HEADING #}
+    {% set heading = content.heading.text | default('Lorem ipsum dolor sit amet') %}
+    {% if heading %}
+      <h2>{{ heading }}</h2>
+    {% endif %}
+
+    {# SUBHEAD #}
+    {% set subhead = content.subhead.text | default('Lorem ipsum dolor sit amet consectetur adipiscing elit') %}
+    {% if subhead %}
+      <h4>{{ subhead }}</h4>
+    {% endif %}
+
+    {# BODY #}
+    {% set body = content.content.text | default('Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.') %}
+    {% if body %}
+      <p>{{ body }}</p>
+    {% endif %}
+
+    {# BUTTONS #}
+    {% set remove_buttons = content.buttons.remove_ is defined and content.buttons.remove_ == true %}
+
+    {% if not remove_buttons %}
+    {% set primary_button = content.buttons.primary_button.text ?? 'Contact sales' %}
+    {% set has_secondary = content.buttons.secondary_button is defined and content.buttons.secondary_button.text is defined %}
+    {% set secondary_button_obj = has_secondary ? content.buttons.secondary_button : { text: 'Learn more', url: '#' } %}
+    {% set secondary_button_label = secondary_button_obj.text ?? 'Learn more' %}
+
+    {% if primary_button or secondary_button_label %}
+      <div class="content-module module-buttons">
+        {% if primary_button %}
+          {{ macros.atomV1ButtonHtml(content.buttons.primary_button, 'opkey-primary', path.to.button_design_preset_section, 'primary', primary_button) }}
+        {% endif %}
+        {% if secondary_button_label %}
+          {{ macros.atomV1ButtonHtml(secondary_button_obj, 'opkey-link-text', path.to.button_design_preset_section, 'secondary', secondary_button_label) }}
+        {% endif %}
+      </div>
+    {% endif %}
+  {% endif %}
+  </div>
+
+  {# COLUMNS #}  
+  {# Fallback/default columns #}
+  {% set default_columns = [
+    {
+      image: null,
+      eyebrow: "Resource Type",
+      heading: "Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod",
+      content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+      button: { text: "Learn more", url: "#" }
+    },
+    {
+      image: null,
+      eyebrow: "Resource Type",
+      heading: "Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod",
+      content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+      button: { text: "Learn more", url: "#" }
+    },
+    {
+      image: null,
+      eyebrow: "Resource Type",
+      heading: "Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod",
+      content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+      button: { text: "Learn more", url: "#" }
+    }
+  ] %}
+
+  {# Use columns if they exist, otherwise fallback to two defaults #}
+  {% set columns = content.columns.column | length > 0 ? content.columns.column : default_columns %}
+
+  <div class="columns">
+    {% for item in columns %}
+    <div class="quote-content">
+      <div class="gradient-wrapper">
+        <div class="column">
+          <div class="column-container">
+            {% for item in content.columns.quotes %}
+              <{{content.content.title_html_tag|default('h4')}} class="bde-basicslider__title">
+                {{ item.title|default('Lorem ipsum dolor sit amet consectetur adipiscing elit') }}
+              </{{content.content.title_html_tag|default('h4')}}>
+
+              <p>{{ item.text|default('Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.') }}</p>
+              
+              <div class="quote-attribution">
+                <div class="headshot">
+                  {% if item.headshot is not empty %}
+                    {{ macros.image(item.headshot, content.content.size, alt|default('Placeholder headshot'), lazyLoad) }}
+                  {% else %}
+                    <img src="/wp-content/uploads/2025/07/Placeholder_headshot.png" alt="Placeholder headshot" loading="lazy">
+                  {% endif %}
+                </div>
+                <div class="name-company">
+                  <div class="name">{{ item.name|default('Lorem Dolor') }}</div>
+                  <div class="company">{{ item.role_company|default('Lorem ipsum, Company') }}</div>
+                </div>
+              </div>
+
+              {% if item.button.text or true %}
+                {{ macros.atomV1ButtonHtml(
+                  {
+                    text: item.button.text|default('Learn more'),
+                    url: item.button.url|default('#')
+                  },
+                  'bde-basicslider__button opkey-link-text',
+                  design.button,
+                  'content.columns.quotes[' ~ loop.index0 ~ '].button.text'
+                ) }}
+              {% endif %}
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</div>
