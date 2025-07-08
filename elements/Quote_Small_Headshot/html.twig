@@ -10,10 +10,11 @@
     {% if heading %}
       <h2>{{ heading }}</h2>
     {% endif %}
-    {# BODY #}
-    {% set body = content.content.text | default('Lorem ipsum dolor sit amet consectetur adipiscing elit.') %}
-    {% if body %}
-      <p>{{ body }}</p>
+
+    {# SUBHEAD #}
+    {% set subhead = content.subhead.text | default('Lorem ipsum dolor sit amet consectetur adipiscing elit') %}
+    {% if subhead %}
+      <h4>{{ subhead }}</h4>
     {% endif %}
 
     {# BUTTONS #}
@@ -43,8 +44,8 @@
         <div class="breakdance-swiper-wrapper" data-swiper-id="%%ID%%">
           <div class="swiper swiper-%%UNIQUESLUG%%">
             <div class="swiper-wrapper">
-              {% if content.content.slides and content.content.slides|length > 0 %}
-                {% for item in content.content.slides %}
+              {% if content.quotes.slides and content.quotes.slides|length > 0 %}
+                {% for item in content.quotes.slides %}
                   <div class="swiper-slide">
                     <div class="bde-basicslider__slide">
                       <div class="bde-basicslider__content">
@@ -75,7 +76,7 @@
                             },
                             'bde-basicslider__button opkey-link-text',
                             design.button,
-                            'content.content.slides[' ~ loop.index0 ~ '].button.text'
+                            'content.quotes.slides[' ~ loop.index0 ~ '].button.text'
                           ) }}
                         {% endif %}
                       </div>
@@ -106,7 +107,7 @@
                         },
                         'bde-basicslider__button opkey-link-text',
                         design.button,
-                        'content.content.slides[0].button.text'
+                        'content.quotes.slides[0].button.text'
                       ) }}
                     </div>
                   </div>

@@ -140,13 +140,13 @@ class Quotesmallheadshot extends \Breakdance\Elements\Element
         false,
         [],
       ), c(
-        "image",
-        "Image",
+        "subhead",
+        "Subhead",
         [c(
-        "image",
-        "Image",
+        "text",
+        "Text",
         [],
-        ['type' => 'wpmedia', 'layout' => 'vertical'],
+        ['type' => 'text', 'layout' => 'vertical', 'textOptions' => ['multiline' => true]],
         false,
         false,
         [],
@@ -156,8 +156,34 @@ class Quotesmallheadshot extends \Breakdance\Elements\Element
         false,
         [],
       ), c(
-        "content",
-        "Content",
+        "buttons",
+        "Buttons",
+        [c(
+        "remove_",
+        "Remove?",
+        [],
+        ['type' => 'toggle', 'layout' => 'inline'],
+        false,
+        false,
+        [],
+      ), getPresetSection(
+      "EssentialElements\\AtomV1ButtonContent",
+      "Primary Button",
+      "primary_button",
+       ['condition' => [[['path' => 'content.buttons.remove_', 'operand' => 'is not set', 'value' => '']]], 'type' => 'popout']
+     ), getPresetSection(
+      "EssentialElements\\AtomV1ButtonContent",
+      "Secondary Button",
+      "secondary_button",
+       ['condition' => [[['path' => 'content.buttons.remove_', 'operand' => 'is not set', 'value' => '']]], 'type' => 'popout']
+     )],
+        ['type' => 'section', 'layout' => 'vertical'],
+        false,
+        false,
+        [],
+      ), c(
+        "quotes",
+        "Quotes",
         [c(
         "slides",
         "Slides",
