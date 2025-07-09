@@ -28,26 +28,25 @@
     {% set remove_buttons = content.buttons.remove_ is defined and content.buttons.remove_ == true %}
 
     {% if not remove_buttons %}
-    {% set primary_button = content.buttons.primary_button.text ?? 'Contact sales' %}
-    {% set has_secondary = content.buttons.secondary_button is defined and content.buttons.secondary_button.text is defined %}
-    {% set secondary_button_obj = has_secondary ? content.buttons.secondary_button : { text: 'Learn more', url: '#' } %}
-    {% set secondary_button_label = secondary_button_obj.text ?? 'Learn more' %}
+      {% set primary_button = content.buttons.primary_button.text ?? 'Contact sales' %}
+      {% set has_secondary = content.buttons.secondary_button is defined and content.buttons.secondary_button.text is defined %}
+      {% set secondary_button_obj = has_secondary ? content.buttons.secondary_button : { text: 'Learn more', url: '#' } %}
+      {% set secondary_button_label = secondary_button_obj.text ?? 'Learn more' %}
 
-    {% if primary_button or secondary_button_label %}
-      <div class="content-module module-buttons">
-        {% if primary_button %}
-          {{ macros.atomV1ButtonHtml(content.buttons.primary_button, 'opkey-primary', path.to.button_design_preset_section, 'primary', primary_button) }}
-        {% endif %}
-        {% if secondary_button_label %}
-          {{ macros.atomV1ButtonHtml(secondary_button_obj, 'opkey-link-text', path.to.button_design_preset_section, 'secondary', secondary_button_label) }}
-        {% endif %}
-      </div>
+      {% if primary_button or secondary_button_label %}
+        <div class="content-module module-buttons">
+          {% if primary_button %}
+            {{ macros.atomV1ButtonHtml(content.buttons.primary_button, 'opkey-primary', path.to.button_design_preset_section, 'primary', primary_button) }}
+          {% endif %}
+          {% if secondary_button_label %}
+            {{ macros.atomV1ButtonHtml(secondary_button_obj, 'opkey-link-text', path.to.button_design_preset_section, 'secondary', secondary_button_label) }}
+          {% endif %}
+        </div>
+      {% endif %}
     {% endif %}
-  {% endif %}
   </div>
 
-  {# COLUMNS #}  
-  {# Fallback/default columns #}
+  {# COLUMNS #}
   {% set default_columns = [
     {
       heading: "Lorem ipsum dolor sit amet consectetur adipiscing elit",
@@ -66,9 +65,8 @@
     }
   ] %}
 
-  {# Defensive fallback for columns #}
-  {% set has_columns = content.columns is defined and content.columns.column is defined and content.columns.column|length > 0 %}
-  {% set columns = has_columns ? content.columns.column : default_columns %}
+  {% set has_quotes = content.columns is defined and content.columns.quotes is defined and content.columns.quotes|length > 0 %}
+  {% set columns = has_quotes ? content.columns.quotes : default_columns %}
 
   <div class="columns">
     {% for item in columns %}
@@ -77,10 +75,15 @@
           <div class="column">
             <div class="column-container">
               <h4 class="bde-basicslider__title">
-                {{ item.heading|default('Lorem ipsum dolor sit amet consectetur adipiscing elit') }}
+                {{ item.heading is defined and item.heading|trim|length > 0
+                  ? item.heading
+                  : 'Lorem ipsum dolor sit amet consectetur adipiscing elit' }}
               </h4>
-              <p>{{ item.content|default('Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.') }}</p>
-              
+              <p>
+                {{ item.content is defined and item.content|trim|length > 0
+                  ? item.content
+                  : 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.' }}
+              </p>
               <div class="quote-attribution">
                 <div class="headshot">
                   {% if item.headshot is defined and item.headshot is not empty %}
@@ -90,16 +93,33 @@
                   {% endif %}
                 </div>
                 <div class="name-company">
-                  <div class="name">{{ item.name|default('Lorem Dolor') }}</div>
-                  <div class="company">{{ item.role_company|default('Lorem ipsum, Company') }}</div>
+                  <div class="name">
+                    {{ item.name is defined and item.name|trim|length > 0
+                      ? item.name
+                      : 'Lorem Dolor' }}
+                  </div>
+                  <div class="company">
+                    {{ item.role_company is defined and item.role_company|trim|length > 0
+                      ? item.role_company
+                      : 'Lorem ipsum, Company' }}
+                  </div>
                 </div>
               </div>
-
-              {% if item.button.text is defined and item.button.text %}
+              {% if item.button is defined and item.button.text is defined and item.button.text|trim|length > 0 %}
                 {{ macros.atomV1ButtonHtml(
                   {
-                    text: item.button.text|default('Learn more'),
+                    text: item.button.text,
                     url: item.button.url|default('#')
+                  },
+                  'bde-basicslider__button opkey-link-text',
+                  design.button,
+                  'columns[' ~ loop.index0 ~ '].button.text'
+                ) }}
+              {% else %}
+                {{ macros.atomV1ButtonHtml(
+                  {
+                    text: 'Learn more',
+                    url: '#'
                   },
                   'bde-basicslider__button opkey-link-text',
                   design.button,
