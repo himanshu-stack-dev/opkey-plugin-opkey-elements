@@ -50,47 +50,40 @@
   {# Fallback/default columns #}
   {% set default_columns = [
     {
-      image: null,
-      eyebrow: "Resource Type",
-      heading: "Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod",
+      heading: "Lorem ipsum dolor sit amet consectetur adipiscing elit",
       content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
       button: { text: "Learn more", url: "#" }
     },
     {
-      image: null,
-      eyebrow: "Resource Type",
-      heading: "Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod",
+      heading: "Lorem ipsum dolor sit amet consectetur adipiscing elit",
       content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
       button: { text: "Learn more", url: "#" }
     },
     {
-      image: null,
-      eyebrow: "Resource Type",
-      heading: "Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod",
+      heading: "Lorem ipsum dolor sit amet consectetur adipiscing elit",
       content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
       button: { text: "Learn more", url: "#" }
     }
   ] %}
 
-  {# Use columns if they exist, otherwise fallback to two defaults #}
-  {% set columns = content.columns.column | length > 0 ? content.columns.column : default_columns %}
+  {# Defensive fallback for columns #}
+  {% set has_columns = content.columns is defined and content.columns.column is defined and content.columns.column|length > 0 %}
+  {% set columns = has_columns ? content.columns.column : default_columns %}
 
   <div class="columns">
     {% for item in columns %}
-    <div class="quote-content">
-      <div class="gradient-wrapper">
-        <div class="column">
-          <div class="column-container">
-            {% for item in content.columns.quotes %}
-              <{{content.content.title_html_tag|default('h4')}} class="bde-basicslider__title">
-                {{ item.title|default('Lorem ipsum dolor sit amet consectetur adipiscing elit') }}
-              </{{content.content.title_html_tag|default('h4')}}>
-
-              <p>{{ item.text|default('Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.') }}</p>
+      <div class="quote-content">
+        <div class="gradient-wrapper">
+          <div class="column">
+            <div class="column-container">
+              <h4 class="bde-basicslider__title">
+                {{ item.heading|default('Lorem ipsum dolor sit amet consectetur adipiscing elit') }}
+              </h4>
+              <p>{{ item.content|default('Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.') }}</p>
               
               <div class="quote-attribution">
                 <div class="headshot">
-                  {% if item.headshot is not empty %}
+                  {% if item.headshot is defined and item.headshot is not empty %}
                     {{ macros.image(item.headshot, content.content.size, alt|default('Placeholder headshot'), lazyLoad) }}
                   {% else %}
                     <img src="/wp-content/uploads/2025/07/Placeholder_headshot.png" alt="Placeholder headshot" loading="lazy">
@@ -102,7 +95,7 @@
                 </div>
               </div>
 
-              {% if item.button.text or true %}
+              {% if item.button.text is defined and item.button.text %}
                 {{ macros.atomV1ButtonHtml(
                   {
                     text: item.button.text|default('Learn more'),
@@ -110,11 +103,10 @@
                   },
                   'bde-basicslider__button opkey-link-text',
                   design.button,
-                  'content.columns.quotes[' ~ loop.index0 ~ '].button.text'
+                  'columns[' ~ loop.index0 ~ '].button.text'
                 ) }}
               {% endif %}
-              </div>
-            {% endfor %}
+            </div>
           </div>
         </div>
       </div>
