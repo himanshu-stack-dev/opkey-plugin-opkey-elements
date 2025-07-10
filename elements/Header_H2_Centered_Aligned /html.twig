@@ -1,0 +1,46 @@
+<div class="module-container">
+  {# EYEBROW #}
+  {% set eyebrow = content.eyebrow.text | default('LOREM IPSUM DOLOR') %}
+  {% if eyebrow %}
+    <div class="eyebrow">{{ eyebrow }}</div>
+  {% endif %}
+
+  {# HEADING #}
+  {% set heading = content.heading.text | default('Lorem ipsum dolor sit amet') %}
+  {% if heading %}
+    <h2>{{ heading }}</h2>
+  {% endif %}
+
+  {# SUBHEAD #}
+  {% set subhead = content.subhead.text | default('Lorem ipsum dolor sit amet consectetur adipiscing elit') %}
+  {% if subhead %}
+    <h4>{{ subhead }}</h4>
+  {% endif %}
+
+  {# BODY #}
+  {% set body = content.content.text | default('Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.') %}
+  {% if body %}
+    <p>{{ body }}</p>
+  {% endif %}
+
+  {# BUTTONS #}
+  {% set remove_buttons = content.buttons.remove_ is defined and content.buttons.remove_ == true %}
+
+  {% if not remove_buttons %}
+    {% set primary_button = content.buttons.primary_button.text ?? 'Contact sales' %}
+    {% set has_secondary = content.buttons.secondary_button is defined and content.buttons.secondary_button.text is defined %}
+    {% set secondary_button_obj = has_secondary ? content.buttons.secondary_button : { text: 'Learn more', url: '#' } %}
+    {% set secondary_button_label = secondary_button_obj.text ?? 'Learn more' %}
+
+    {% if primary_button or secondary_button_label %}
+      <div class="content-module module-buttons">
+        {% if primary_button %}
+          {{ macros.atomV1ButtonHtml(content.buttons.primary_button, 'opkey-primary', path.to.button_design_preset_section, 'primary', primary_button) }}
+        {% endif %}
+        {% if secondary_button_label %}
+          {{ macros.atomV1ButtonHtml(secondary_button_obj, 'opkey-link-text', path.to.button_design_preset_section, 'secondary', secondary_button_label) }}
+        {% endif %}
+      </div>
+    {% endif %}
+  {% endif %}
+</div>
