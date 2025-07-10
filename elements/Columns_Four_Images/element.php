@@ -174,16 +174,24 @@ class Columnsfourimages extends \Breakdance\Elements\Element
       ), c(
         "buttons",
         "Buttons",
-        [getPresetSection(
+        [c(
+        "remove_",
+        "Remove?",
+        [],
+        ['type' => 'toggle', 'layout' => 'inline', 'textOptions' => ['multiline' => null]],
+        false,
+        false,
+        [],
+      ), getPresetSection(
       "EssentialElements\\AtomV1ButtonContent",
       "Primary Button",
       "primary_button",
-       ['type' => 'popout']
+       ['condition' => [[['path' => 'content.buttons.remove_', 'operand' => 'is not set', 'value' => '']]], 'type' => 'popout']
      ), getPresetSection(
       "EssentialElements\\AtomV1ButtonContent",
       "Secondary Button",
       "secondary_button",
-       ['type' => 'popout']
+       ['condition' => [[['path' => 'content.buttons.remove_', 'operand' => 'is not set', 'value' => '']]], 'type' => 'popout']
      )],
         ['type' => 'section', 'layout' => 'vertical'],
         false,
@@ -309,7 +317,7 @@ observer.observe();'],],];
 
     static function dynamicPropertyPaths()
     {
-        return [['accepts' => 'string', 'path' => 'content.content.text'], ['accepts' => 'string', 'path' => 'content.content.link.url'], ['accepts' => 'string', 'path' => 'content.buttons.add_button.button.text'], ['accepts' => 'string', 'path' => 'content.buttons.add_button.button.link.url'], ['accepts' => 'string', 'path' => 'content.buttons.secondary_button.text'], ['accepts' => 'string', 'path' => 'content.buttons.secondary_button.link.url'], ['accepts' => 'string', 'path' => 'content.columns.box.button.text'], ['accepts' => 'string', 'path' => 'content.columns.box.button.link.url']];
+        return [['accepts' => 'string', 'path' => 'content.content.text'], ['accepts' => 'string', 'path' => 'content.content.link.url'], ['accepts' => 'string', 'path' => 'content.buttons.add_button.button.text'], ['accepts' => 'string', 'path' => 'content.buttons.add_button.button.link.url'], ['accepts' => 'string', 'path' => 'content.buttons.secondary_button.text'], ['accepts' => 'string', 'path' => 'content.buttons.secondary_button.link.url'], ['accepts' => 'string', 'path' => 'content.columns.box.button.text'], ['accepts' => 'string', 'path' => 'content.columns.box.button.link.url'], ['accepts' => 'string', 'path' => 'content.buttons.primary_button.text'], ['accepts' => 'string', 'path' => 'content.buttons.primary_button.link.url']];
     }
 
     static function additionalClasses()
