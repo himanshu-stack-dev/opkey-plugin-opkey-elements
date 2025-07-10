@@ -29,6 +29,7 @@ composer.lock
 
 # Mac-specific folder clutter
 __MACOSX/
+._*
 
 # Element Studio temporary build files (if any appear)
 *.esbuild
