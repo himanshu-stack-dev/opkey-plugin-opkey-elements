@@ -178,7 +178,7 @@ class Columnsfourimages extends \Breakdance\Elements\Element
         "remove_",
         "Remove?",
         [],
-        ['type' => 'toggle', 'layout' => 'inline', 'textOptions' => ['multiline' => null]],
+        ['type' => 'toggle', 'layout' => 'inline', 'textOptions' => ['multiline' => false]],
         false,
         false,
         [],
