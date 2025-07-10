@@ -174,16 +174,24 @@ class Columnsthreecasestudystats extends \Breakdance\Elements\Element
       ), c(
         "buttons",
         "Buttons",
-        [getPresetSection(
+        [c(
+        "remove_",
+        "Remove?",
+        [],
+        ['type' => 'toggle', 'layout' => 'inline', 'textOptions' => ['multiline' => false]],
+        false,
+        false,
+        [],
+      ), getPresetSection(
       "EssentialElements\\AtomV1ButtonContent",
       "Primary Button",
       "primary_button",
-       ['type' => 'popout']
+       ['condition' => [[['path' => 'content.buttons.remove_', 'operand' => 'is not set', 'value' => '']]], 'type' => 'popout']
      ), getPresetSection(
       "EssentialElements\\AtomV1ButtonContent",
       "Secondary Button",
       "secondary_button",
-       ['type' => 'popout']
+       ['condition' => [[['path' => 'content.buttons.remove_', 'operand' => 'is not set', 'value' => '']]], 'type' => 'popout']
      )],
         ['type' => 'section', 'layout' => 'vertical'],
         false,

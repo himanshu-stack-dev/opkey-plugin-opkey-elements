@@ -17,14 +17,14 @@
         <p>{{ body }}</p>
       {% endif %}
 
-      {# BUTTONS #}
-      {% set remove_buttons = content.buttons.remove_ is defined and content.buttons.remove_ == true %}
-      {% if not remove_buttons %}
-        {% set primary_button = content.buttons.primary_button.text | default('Learn More') %}
+      {# BUTTON #}
+      {% set remove_button = content.button.remove_ is defined and content.button.remove_ == true %}
+      {% if not remove_button %}
+        {% set primary_button = content.button.primary_button.text | default('Learn More') %}
         {% if primary_button %}
         <div class="content-module module-buttons">
           {% if primary_button %}
-            {{ macros.atomV1ButtonHtml(content.buttons.primary_button, 'opkey-link-text', path.to.button_design_preset_section, 'secondary', primary_button) }}
+            {{ macros.atomV1ButtonHtml(content.button.primary_button, 'opkey-link-text', path.to.button_design_preset_section, 'secondary', primary_button) }}
           {% endif %}
         </div>
         {% endif %}

@@ -140,6 +140,27 @@ class CTAimage extends \Breakdance\Elements\Element
         false,
         [],
       ), c(
+        "button",
+        "Button",
+        [c(
+        "remove_",
+        "Remove?",
+        [],
+        ['type' => 'toggle', 'layout' => 'inline'],
+        false,
+        false,
+        [],
+      ), getPresetSection(
+      "EssentialElements\\AtomV1ButtonContent",
+      "Primary Button",
+      "primary_button",
+       ['condition' => [[['path' => 'content.buttons.remove_', 'operand' => 'is not set', 'value' => '']]], 'type' => 'popout']
+     )],
+        ['type' => 'section', 'layout' => 'vertical'],
+        false,
+        false,
+        [],
+      ), c(
         "image",
         "Image",
         [c(
