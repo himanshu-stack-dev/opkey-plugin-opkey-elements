@@ -18,19 +18,19 @@
 <div class="module-container">
   <div class="module-text">
     {# EYEBROW #}
-    {% set eyebrow = content.eyebrow.text | default(defaults.eyebrow) %}
+    {% set eyebrow = content.eyebrow.text %}
     {% if eyebrow %}
       <div class="eyebrow">{{ eyebrow }}</div>
     {% endif %}
 
     {# HEADING #}
-    {% set heading = content.heading.text | default(defaults.heading) %}
+    {% set heading = content.heading.text  %}
     {% if heading %}
       <h2>{{ heading }}</h2>
     {% endif %}
 
     {# SUBHEAD #}
-    {% set subhead = content.subhead.text | default(defaults.subhead) %}
+    {% set subhead = content.subhead.text  %}
     {% if subhead %}
       <h4>{{ subhead }}</h4>
     {% endif %}
@@ -76,24 +76,24 @@
                     <div>
                       <div class="bde-basicslider__content">
                         <div class="bde-basicslider__text">
-                          {{ item.text|default(defaults.quote.text) }}
+                          {{ item.text }}
                           <div class="name-company">
-                            <div class="name">{{ item.name|default(defaults.quote.name) }}</div>
-                            <div class="company">{{ item.role_company|default(defaults.quote.company) }}</div>
+                            <div class="name">{{ item.name }}</div>
+                            <div class="company">{{ item.role_company }}</div>
                           </div>
                         </div>
                         <div class="quote-attribution">
                           <div class="headshot">
                             {% if item.headshot is defined and item.headshot is not empty 
                                   and (item.headshot.url is defined or item.headshot.ID is defined or item.headshot.id is defined) %}
-                              {{ macros.image(item.headshot, content.content.size, alt|default('Placeholder headshot'), lazyLoad) }}
+                              {{ macros.image(item.headshot, content.content.size, alt, lazyLoad) }}
                             {% else %}
                               <img src="{{ defaults.quote.headshot }}" alt="Placeholder headshot" loading="lazy">
                             {% endif %}
                           </div>
                           <div class="name-company mobile">
-                            <div class="name">{{ item.name|default(defaults.quote.name) }}</div>
-                            <div class="company">{{ item.role_company|default(defaults.quote.company) }}</div>
+                            <div class="name">{{ item.name }}</div>
+                            <div class="company">{{ item.role_company }}</div>
                           </div>
                         </div>
                       </div>

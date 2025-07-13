@@ -2,17 +2,17 @@
   <div class="gradient-wrapper">
     <div class="module-text">
       {# EYEBROW #}
-      {% set eyebrow = content.eyebrow.text | default('LOREM IPSUM DOLOR') %}
+      {% set eyebrow = content.eyebrow.text %}
       {% if eyebrow %}
         <div class="eyebrow">{{ eyebrow }}</div>
       {% endif %}
       {# HEADING #}
-      {% set heading = content.heading.text | default('Lorem ipsum dolor sit amet') %}
+      {% set heading = content.heading.text  %}
       {% if heading %}
         <h2>{{ heading }}</h2>
       {% endif %}
       {# BODY #}
-      {% set body = content.content.text | default('Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.') %}
+      {% set body = content.content.text  %}
       {% if body %}
         <p>{{ body }}</p>
       {% endif %}
@@ -20,7 +20,7 @@
       {# BUTTON #}
       {% set remove_button = content.button.remove_ is defined and content.button.remove_ == true %}
       {% if not remove_button %}
-        {% set primary_button = content.button.primary_button.text | default('Learn More') %}
+        {% set primary_button = content.button.primary_button.text  %}
         {% if primary_button %}
         <div class="content-module module-buttons">
           {% if primary_button %}

@@ -70,7 +70,7 @@ class Leftnavtwocolumnright extends \Breakdance\Elements\Element
 
     static function defaultProperties()
     {
-        return false;
+        return ['content' => ['eyebrow' => ['text' => 'Lorem ipsum dolor'], 'heading' => ['text' => 'Lorem ipsum dolor sit amet'], 'subhead' => ['text' => 'Lorem ipsum dolor sit amet consectetur adipiscing elit'], 'content' => ['text' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.'], 'buttons' => ['remove_' => false, 'primary_button' => ['text' => 'Contact sales', 'link' => '#'], 'secondary_button' => ['text' => 'Learn more', 'link' => '#']]]];
     }
 
     static function defaultChildren()
@@ -167,32 +167,6 @@ class Leftnavtwocolumnright extends \Breakdance\Elements\Element
         false,
         [],
       )],
-        ['type' => 'section', 'layout' => 'vertical'],
-        false,
-        false,
-        [],
-      ), c(
-        "buttons",
-        "Buttons",
-        [c(
-        "remove_",
-        "Remove?",
-        [],
-        ['type' => 'toggle', 'layout' => 'inline'],
-        false,
-        false,
-        [],
-      ), getPresetSection(
-      "EssentialElements\\AtomV1ButtonContent",
-      "Primary Button",
-      "primary_button",
-       ['condition' => [[['path' => 'content.buttons.remove_', 'operand' => 'is not set', 'value' => '']]], 'type' => 'popout']
-     ), getPresetSection(
-      "EssentialElements\\AtomV1ButtonContent",
-      "Secondary Button",
-      "secondary_button",
-       ['condition' => [[['path' => 'content.buttons.remove_', 'operand' => 'is not set', 'value' => '']]], 'type' => 'popout']
-     )],
         ['type' => 'section', 'layout' => 'vertical'],
         false,
         false,

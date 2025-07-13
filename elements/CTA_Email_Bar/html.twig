@@ -12,12 +12,12 @@
   <div class="gradient-wrapper">
     <div class="module-text">
       {# EYEBROW #}
-      {% set eyebrow = content.eyebrow.text | default('LOREM IPSUM DOLOR') %}
+      {% set eyebrow = content.eyebrow.text %}
       {% if eyebrow %}
         <div class="eyebrow">{{ eyebrow }}</div>
       {% endif %}
       {# HEADING #}
-      {% set heading = content.heading.text | default('Lorem ipsum dolor sit amet') %}
+      {% set heading = content.heading.text  %}
       {% if heading %}
         <h2>{{ heading }}</h2>
       {% endif %}
@@ -26,20 +26,7 @@
     {% set diagonalColor = design.theme_color.color == 'purple' ? '4EC7D4' : 'be72f8' %}
     <div class="cta-diagonal"></div>
     {# EMAIL #}
-    {% set email_embed = content.email.embed_code | default('
-    <div class="demo-gradient-border-wrapper">
-      <form class="demo-gradient-form">
-        <input
-          type="email"
-          placeholder="Business Email*"
-          required
-        />
-        <button type="submit" class="button-atom--primary">
-          <span class="demo-gradient-cta-text">Get a demo</span>
-        </button>
-      </form>
-    </div>
-    ') %}
+    {% set email_embed = content.email.embed_code  %}
     {{ email_embed|raw }}
   </div>
 </div>

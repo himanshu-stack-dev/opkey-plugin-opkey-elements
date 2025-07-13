@@ -1,41 +1,47 @@
 <div class="module-container">
   <div class="module-text">
     {# EYEBROW #}
-    {% set eyebrow = content.eyebrow.text | default('LOREM IPSUM DOLOR') %}
+    {% set eyebrow = content.eyebrow.text %}
     {% if eyebrow %}
       <div class="eyebrow">{{ eyebrow }}</div>
     {% endif %}
     {# HEADING #}
-    {% set heading = content.heading.text | default('Lorem ipsum dolor sit amet') %}
+    {% set heading = content.heading.text  %}
     {% if heading %}
       <h2>{{ heading }}</h2>
     {% endif %}
 
     {# SUBHEAD #}
-    {% set subhead = content.subhead.text | default('Lorem ipsum dolor sit amet consectetur adipiscing elit') %}
+    {% set subhead = content.subhead.text  %}
     {% if subhead %}
       <h4>{{ subhead }}</h4>
     {% endif %}
 
     {# BUTTONS #}
-    {% set remove_buttons = content.buttons.remove_ is defined and content.buttons.remove_ == true %}
+    {% set pb = content.buttons.primary_button|default({}) %}
+    {% set sb = content.buttons.secondary_button|default({}) %}
 
-    {% if not remove_buttons %}
-      {% set primary_button = content.buttons.primary_button.text ?? 'Contact sales' %}
-      {% set has_secondary = content.buttons.secondary_button is defined and content.buttons.secondary_button.text is defined %}
-      {% set secondary_button_obj = has_secondary ? content.buttons.secondary_button : { text: 'Learn more', url: '#' } %}
-      {% set secondary_button_label = secondary_button_obj.text ?? 'Learn more' %}
-
-      {% if primary_button or secondary_button_label %}
-        <div class="content-module module-buttons">
-          {% if primary_button %}
-            {{ macros.atomV1ButtonHtml(content.buttons.primary_button, 'opkey-primary', path.to.button_design_preset_section, 'primary', primary_button) }}
-          {% endif %}
-          {% if secondary_button_label %}
-            {{ macros.atomV1ButtonHtml(secondary_button_obj, 'opkey-link-text', path.to.button_design_preset_section, 'secondary', secondary_button_label) }}
-          {% endif %}
-        </div>
-      {% endif %}
+    {% if pb.text|default('')|trim or sb.text|default('')|trim %}
+      <div class="content-module module-buttons">
+        {% if pb.text|default('')|trim %}
+          {{ macros.atomV1ButtonHtml(
+               pb,
+               'opkey-primary',
+               path.to.button_design_preset_section,
+               'primary',
+               pb.text|trim
+             ) }}
+        {% endif %}
+        {% if sb.text|default('')|trim %}
+          {{ macros.atomV1ButtonHtml(
+               sb,
+               'opkey-link-text',
+               path.to.button_design_preset_section,
+               'secondary',
+               sb.text|trim
+             ) }}
+        {% endif %}
+      </div>
     {% endif %}
   </div>
   <div class="module-quote">
@@ -49,30 +55,30 @@
                   <div class="swiper-slide">
                     <div class="bde-basicslider__slide">
                       <div class="bde-basicslider__content">
-                        <{{content.content.title_html_tag|default('h4')}} class="bde-basicslider__title">
-                          {{ item.title|default('Lorem ipsum dolor sit amet consectetur adipiscing elit') }}
-                        </{{content.content.title_html_tag|default('h4')}}>
+                        <{{content.content.title_html_tag}} class="bde-basicslider__title">
+                          {{ item.title }}
+                        </{{content.content.title_html_tag}}>
                         <div class="bde-basicslider__text">
-                          {{ item.text|default('Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.') }}
+                          {{ item.text }}
                         </div>
                         <div class="quote-attribution">
                           <div class="headshot">
                             {% if item.headshot is not empty %}
-                              {{ macros.image(item.headshot, content.content.size, alt|default('Placeholder headshot'), lazyLoad) }}
+                              {{ macros.image(item.headshot, content.content.size, alt, lazyLoad) }}
                             {% else %}
                               <img src="/wp-content/uploads/2025/07/Placeholder_headshot.png" alt="Placeholder headshot" loading="lazy">
                             {% endif %}
                           </div>
                           <div class="name-company">
-                            <div class="name">{{ item.name|default('Lorem Dolor') }}</div>
-                            <div class="company">{{ item.role_company|default('Lorem ipsum, Company') }}</div>
+                            <div class="name">{{ item.name }}</div>
+                            <div class="company">{{ item.role_company }}</div>
                           </div>
                         </div>
                         {% if item.button.text or true %}
                           {{ macros.atomV1ButtonHtml(
                             {
-                              text: item.button.text|default('Learn more'),
-                              url: item.button.url|default('#')
+                              text: item.button.text,
+                              url: item.button.url
                             },
                             'bde-basicslider__button opkey-link-text',
                             design.button,

@@ -4,6 +4,7 @@ namespace BreakdanceCustomElements;
 
 use function Breakdance\Elements\c;
 use function Breakdance\Elements\PresetSections\getPresetSection;
+use function OpkeyCustomElements\getSharedDefaults;
 
 
 \Breakdance\ElementStudio\registerElementForEditing(
@@ -70,7 +71,9 @@ class Columnsthreecasestudystats extends \Breakdance\Elements\Element
 
     static function defaultProperties()
     {
-        return false;
+        return [
+            'content' => getSharedDefaults(),
+        ];
     }
 
     static function defaultChildren()

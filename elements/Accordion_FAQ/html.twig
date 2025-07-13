@@ -1,87 +1,105 @@
 <div class="module-container">
   {# EYEBROW #}
-  {% set eyebrow = content.eyebrow.text | default('LOREM IPSUM DOLOR') %}
+  {% set eyebrow = content.eyebrow.text %}
   {% if eyebrow %}
     <div class="eyebrow">{{ eyebrow }}</div>
   {% endif %}
 
   {# HEADING #}
-  {% set heading = content.heading.text | default('Lorem ipsum dolor sit amet') %}
+  {% set heading = content.heading.text %}
   {% if heading %}
     <h2>{{ heading }}</h2>
   {% endif %}
 
   {# SUBHEAD #}
-  {% set subhead = content.subhead.text | default('Lorem ipsum dolor sit amet consectetur adipiscing elit') %}
+  {% set subhead = content.subhead.text %}
   {% if subhead %}
     <h4>{{ subhead }}</h4>
   {% endif %}
 
   {# BODY #}
-  {% set body = content.content.text | default('Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.') %}
+  {% set body = content.content.text %}
   {% if body %}
     <p>{{ body }}</p>
   {% endif %}
 
   {# BUTTONS #}
-    {% set remove_buttons = content.buttons.remove_ is defined and content.buttons.remove_ == true %}
+  {% set pb = content.buttons.primary_button|default({}) %}
+  {% set sb = content.buttons.secondary_button|default({}) %}
 
-    {% if not remove_buttons %}
-      {% set primary_button = content.buttons.primary_button.text ?? 'Contact sales' %}
-      {% set has_secondary = content.buttons.secondary_button is defined and content.buttons.secondary_button.text is defined %}
-      {% set secondary_button_obj = has_secondary ? content.buttons.secondary_button : { text: 'Learn more', url: '#' } %}
-      {% set secondary_button_label = secondary_button_obj.text ?? 'Learn more' %}
-
-      {% if primary_button or secondary_button_label %}
-        <div class="content-module module-buttons">
-          {% if primary_button %}
-            {{ macros.atomV1ButtonHtml(content.buttons.primary_button, 'opkey-primary', path.to.button_design_preset_section, 'primary', primary_button) }}
-          {% endif %}
-          {% if secondary_button_label %}
-            {{ macros.atomV1ButtonHtml(secondary_button_obj, 'opkey-link-text', path.to.button_design_preset_section, 'secondary', secondary_button_label) }}
-          {% endif %}
-        </div>
+  {% if pb.text|default('')|trim or sb.text|default('')|trim %}
+    <div class="content-module module-buttons">
+      {% if pb.text|default('')|trim %}
+        {{ macros.atomV1ButtonHtml(
+             pb,
+             'opkey-primary',
+             path.to.button_design_preset_section,
+             'primary',
+             pb.text|trim
+           ) }}
       {% endif %}
-    {% endif %}
+      {% if sb.text|default('')|trim %}
+        {{ macros.atomV1ButtonHtml(
+             sb,
+             'opkey-link-text',
+             path.to.button_design_preset_section,
+             'secondary',
+             sb.text|trim
+           ) }}
+      {% endif %}
+    </div>
+  {% endif %}
 
   <div class="accordion-module">
-    {% set default_accordion_items = [
-      {
-        question: "Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod?",
-        answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi.",
-      },
-      {
-        question: "Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod?",
-        answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi.",
-      },
-      {
-        question: "Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod?",
-        answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi.",
-      }
-    ] %}
+    {# Only render if the user has added at least one item #}
+    {% if content.settings is defined 
+          and content.settings.items is defined 
+          and content.settings.items|length > 0 %}
+      
+      {% for item in content.settings.items %}
+        <div class="bde-faq__item">
+          {# Question button #}
+          <{{ design.typography.title_tag|default('h3') }} class="bde-faq__title-tag">
+            <button
+              id="bde-faq-{{ content.id }}-button-{{ loop.index }}"
+              aria-expanded="false"
+              aria-controls="bde-faq-{{ content.id }}-{{ loop.index }}"
+              class="bde-faq__question js-faq-item"
+            >
+              <h3>{{ item.question }}</h3>
+              <div aria-hidden="true" class="bde-faq__icon bde-faq__icon--rotate">
+                <img src="/wp-content/uploads/2025/07/Dropdown-Arrow.svg" alt="" aria-hidden="true" />
+              </div>
+            </button>
+          </{{ design.typography.title_tag|default('h3') }}>
 
-    {% set has_items = content.settings is defined and content.settings.items is defined and content.settings.items|length > 0 %}
-    {% set accordion_items = has_items ? content.settings.items : default_accordion_items %}
-
-    {% for item in accordion_items %}
-      <div class="bde-faq__item">
-        <{{ design.typography.title_tag|default('h3')}} class="bde-faq__title-tag">
-          <button id="bde-faq-%%ID%%-button-{{ loop.index }}" aria-expanded="false" aria-controls="bde-faq-%%ID%%-{{ loop.index }}" class="bde-faq__question js-faq-item">
-            <h3>{{ item.question|default('Sample question?') }}</h3>
-            <div aria-hidden="true" class="bde-faq__icon bde-faq__icon--rotate">
-              <img src="/wp-content/uploads/2025/07/Dropdown-Arrow.svg" alt="" aria-hidden="true" />
+          {# Answer panel #}
+          <div
+            role="region"
+            aria-labelledby="bde-faq-{{ content.id }}-button-{{ loop.index }}"
+            id="bde-faq-{{ content.id }}-{{ loop.index }}"
+            class="bde-faq__answer"
+          >
+            <div class="bde-faq__answer-content">
+              <div class="breakdance-rich-text-styles">
+                {{ item.answer }}
+              </div>
+              
+              {# Optional button per item #}
+              {% if item.button is defined and item.button.text|trim %}
+                {{ macros.atomV1ButtonHtml(
+                    item.button,
+                    'bde-faq__btn',
+                    design.item.button,
+                    'content.settings.items[' ~ loop.index0 ~ '].button.text'
+                  ) 
+                }}
+              {% endif %}
             </div>
-          </button>
-        </{{ design.typography.title_tag|default('h3')}}>
-        <div role="region" aria-labelledby="bde-faq-%%ID%%-button-{{ loop.index }}" id="bde-faq-%%ID%%-{{ loop.index }}" class="bde-faq__answer">
-          <div class="bde-faq__answer-content">
-            <div class="breakdance-rich-text-styles">{{ item.answer|default('Sample answer text goes here.') }}</div>
-            {% if item.button is defined and item.button.text %}
-              {{ macros.atomV1ButtonHtml(item.button, 'bde-faq__btn', design.item.button, 'content.settings.items[' ~ loop.index0 ~ '].button.text') }}
-            {% endif %}
           </div>
         </div>
-      </div>
-    {% endfor %}
+      {% endfor %}
+
+    {% endif %}
   </div>
 </div>

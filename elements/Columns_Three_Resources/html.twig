@@ -1,25 +1,25 @@
 <div class="module-container">
   <div class="module-columns module-text">
     {# EYEBROW #}
-    {% set eyebrow = content.eyebrow.text | default('LOREM IPSUM DOLOR') %}
+    {% set eyebrow = content.eyebrow.text %}
     {% if eyebrow %}
       <div class="eyebrow">{{ eyebrow }}</div>
     {% endif %}
 
     {# HEADING #}
-    {% set heading = content.heading.text | default('Lorem ipsum dolor sit amet') %}
+    {% set heading = content.heading.text  %}
     {% if heading %}
       <h2>{{ heading }}</h2>
     {% endif %}
 
     {# SUBHEAD #}
-    {% set subhead = content.subhead.text | default('Lorem ipsum dolor sit amet consectetur adipiscing elit') %}
+    {% set subhead = content.subhead.text  %}
     {% if subhead %}
       <h4>{{ subhead }}</h4>
     {% endif %}
 
     {# BODY #}
-    {% set body = content.content.text | default('Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.') %}
+    {% set body = content.content.text  %}
     {% if body %}
       <p>{{ body }}</p>
     {% endif %}
@@ -28,10 +28,10 @@
     {% set remove_buttons = content.buttons.remove_ is defined and content.buttons.remove_ == true %}
 
     {% if not remove_buttons %}
-    {% set primary_button = content.buttons.primary_button.text ?? 'Contact sales' %}
+    {% set primary_button = content.buttons.primary_button.text  %}
     {% set has_secondary = content.buttons.secondary_button is defined and content.buttons.secondary_button.text is defined %}
     {% set secondary_button_obj = has_secondary ? content.buttons.secondary_button : { text: 'Learn more', url: '#' } %}
-    {% set secondary_button_label = secondary_button_obj.text ?? 'Learn more' %}
+    {% set secondary_button_label = secondary_button_obj.text  %}
 
     {% if primary_button or secondary_button_label %}
       <div class="content-module module-buttons">
@@ -83,8 +83,8 @@
             <path d="M5 1V1C2.79086 1 1 2.79087 1 5V447C1 449.209 2.79086 451 5 451V451" stroke="currentColor"/>
           </svg>
           <div class="column-image">
-            {% set image_link = item.button.url ?? '#' %}
-            <a href="{{ image_link }}" class="column-image-link" aria-label="{{ item.button.text ?? 'Learn more' }}">
+            {% set image_link = item.button.url  %}
+            <a href="{{ image_link }}" class="column-image-link" aria-label="{{ item.button.text  }}">
               {% if item.image %}
                 {{ macros.image(item.image, content.content.size, alt, lazyLoad) }}
               {% else %}
@@ -94,16 +94,16 @@
           </div>
           <div class="column-text">
             {# Eybrow fallback #}
-            <span class="mobile-eyebrow">{{ item.eyebrow | default('Resource Type') }}</span>
+            <span class="mobile-eyebrow">{{ item.eyebrow  }}</span>
 
             {# Heading fallback #}
-            <h3>{{ item.heading | default('Lorem ipsum dolor sit amet') }}</h3>
+            <h3>{{ item.heading  }}</h3>
 
             {# Body fallback #}
-            <p>{{ item.content | default('Lorem ipsum dolor sit amet') }}</p>
+            <p>{{ item.content  }}</p>
 
             {# BUTTON with fallback #}
-            {% set button_obj = (item.button is defined and item.button.text|default('')|length > 0) 
+            {% set button_obj = (item.button is defined and item.button.text|length > 0) 
               ? item.button 
               : { text: 'Learn more', url: '#' } %}
             {% if button_obj.text %}

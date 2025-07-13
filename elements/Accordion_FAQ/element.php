@@ -4,6 +4,7 @@ namespace BreakdanceCustomElements;
 
 use function Breakdance\Elements\c;
 use function Breakdance\Elements\PresetSections\getPresetSection;
+use function OpkeyCustomElements\getSharedDefaults;
 
 
 \Breakdance\ElementStudio\registerElementForEditing(
@@ -70,7 +71,20 @@ class Accordionfaq extends \Breakdance\Elements\Element
 
     static function defaultProperties()
     {
-        return false;
+        $shared = \OpkeyCustomElements\getSharedDefaults();
+
+        $shared['settings'] = [
+            'items' => [
+                [
+                    'question' => 'Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod?',
+                    'answer'   => '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi.</p>',
+                ],
+            ],
+        ];
+
+        return [
+            'content' => $shared,
+        ];
     }
 
     static function defaultChildren()
@@ -174,29 +188,27 @@ class Accordionfaq extends \Breakdance\Elements\Element
       ), c(
         "buttons",
         "Buttons",
-        [c(
-        "remove_",
-        "Remove?",
-        [],
-        ['type' => 'toggle', 'layout' => 'inline'],
+        [
+          getPresetSection(
+            "EssentialElements\\AtomV1ButtonContent",
+            "Primary Button",
+            "primary_button",
+            [ 'type' => 'popout' ]
+          ),
+          getPresetSection(
+            "EssentialElements\\AtomV1ButtonContent",
+            "Secondary Button",
+            "secondary_button",
+            [ 'type' => 'popout' ]
+          ),
+        ],
+        [
+          'type'   => 'section',
+          'layout' => 'vertical',
+        ],
         false,
         false,
-        [],
-      ), getPresetSection(
-      "EssentialElements\\AtomV1ButtonContent",
-      "Primary Button",
-      "primary_button",
-       ['condition' => [[['path' => 'content.buttons.remove_', 'operand' => 'is not set', 'value' => '']]], 'type' => 'popout']
-     ), getPresetSection(
-      "EssentialElements\\AtomV1ButtonContent",
-      "Secondary Button",
-      "secondary_button",
-       ['condition' => [[['path' => 'content.buttons.remove_', 'operand' => 'is not set', 'value' => '']]], 'type' => 'popout']
-     )],
-        ['type' => 'section', 'layout' => 'vertical'],
-        false,
-        false,
-        [],
+        []
       ), c(
         "settings",
         "Settings",

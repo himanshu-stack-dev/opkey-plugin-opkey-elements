@@ -70,7 +70,7 @@ class Heromediaform extends \Breakdance\Elements\Element
 
     static function defaultProperties()
     {
-        return false;
+        return ['content' => ['eyebrow' => ['text' => 'Lorem ipsum dolor'], 'heading' => ['text' => 'Lorem ipsum dolor sit amet'], 'subhead' => ['text' => 'Lorem ipsum dolor sit amet consectetur adipiscing elit'], 'content' => ['text' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.'], 'buttons' => ['remove_' => false, 'primary_button' => ['text' => 'Contact sales', 'link' => '#'], 'secondary_button' => ['text' => 'Learn more', 'link' => '#']], 'columns' => ['column' => []], 'media' => ['image_or_video' => 'image'], 'image' => ['from' => 'url', 'url' => 'https://opkey.local/wp-content/plugins/opkey-elements/elements/Hero_Media_Form/assets/Placeholder-510x310.png', 'media' => 0, 'alt' => ['type' => 'custom', 'customAlt' => 'Placeholder image'], 'lazyLoad' => false]]];
     }
 
     static function defaultChildren()
@@ -163,22 +163,6 @@ class Heromediaform extends \Breakdance\Elements\Element
         "Text",
         [],
         ['type' => 'richtext', 'layout' => 'vertical'],
-        false,
-        false,
-        [],
-      )],
-        ['type' => 'section', 'layout' => 'vertical'],
-        false,
-        false,
-        [],
-      ), c(
-        "email",
-        "Email",
-        [c(
-        "embed_code",
-        "Embed Code",
-        [],
-        ['type' => 'code', 'layout' => 'vertical'],
         false,
         false,
         [],

@@ -1,48 +1,54 @@
 <div class="module-container">
   <div class="module-columns module-text">
     {# EYEBROW #}
-    {% set eyebrow = content.eyebrow.text | default('LOREM IPSUM DOLOR') %}
+    {% set eyebrow = content.eyebrow.text %}
     {% if eyebrow %}
       <div class="eyebrow">{{ eyebrow }}</div>
     {% endif %}
 
     {# HEADING #}
-    {% set heading = content.heading.text | default('Lorem ipsum dolor sit amet') %}
+    {% set heading = content.heading.text  %}
     {% if heading %}
       <h2>{{ heading }}</h2>
     {% endif %}
 
     {# SUBHEAD #}
-    {% set subhead = content.subhead.text | default('Lorem ipsum dolor sit amet consectetur adipiscing elit') %}
+    {% set subhead = content.subhead.text  %}
     {% if subhead %}
       <h4>{{ subhead }}</h4>
     {% endif %}
 
     {# BODY #}
-    {% set body = content.content.text | default('Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.') %}
+    {% set body = content.content.text  %}
     {% if body %}
       <p>{{ body }}</p>
     {% endif %}
 
     {# BUTTONS #}
-    {% set remove_buttons = content.buttons.remove_ is defined and content.buttons.remove_ == true %}
+    {% set pb = content.buttons.primary_button|default({}) %}
+    {% set sb = content.buttons.secondary_button|default({}) %}
 
-    {% if not remove_buttons %}
-      {% set primary_button = content.buttons.primary_button.text ?? 'Contact sales' %}
-      {% set has_secondary = content.buttons.secondary_button is defined and content.buttons.secondary_button.text is defined %}
-      {% set secondary_button_obj = has_secondary ? content.buttons.secondary_button : { text: 'Learn more', url: '#' } %}
-      {% set secondary_button_label = secondary_button_obj.text ?? 'Learn more' %}
-
-      {% if primary_button or secondary_button_label %}
-        <div class="content-module module-buttons">
-          {% if primary_button %}
-            {{ macros.atomV1ButtonHtml(content.buttons.primary_button, 'opkey-primary', path.to.button_design_preset_section, 'primary', primary_button) }}
-          {% endif %}
-          {% if secondary_button_label %}
-            {{ macros.atomV1ButtonHtml(secondary_button_obj, 'opkey-link-text', path.to.button_design_preset_section, 'secondary', secondary_button_label) }}
-          {% endif %}
-        </div>
-      {% endif %}
+    {% if pb.text|default('')|trim or sb.text|default('')|trim %}
+      <div class="content-module module-buttons">
+        {% if pb.text|default('')|trim %}
+          {{ macros.atomV1ButtonHtml(
+               pb,
+               'opkey-primary',
+               path.to.button_design_preset_section,
+               'primary',
+               pb.text|trim
+             ) }}
+        {% endif %}
+        {% if sb.text|default('')|trim %}
+          {{ macros.atomV1ButtonHtml(
+               sb,
+               'opkey-link-text',
+               path.to.button_design_preset_section,
+               'secondary',
+               sb.text|trim
+             ) }}
+        {% endif %}
+      </div>
     {% endif %}
   </div>
 
@@ -98,7 +104,6 @@
     }
   ] %}
 
-  {# THIS is the crucial fix: #}
   {% set has_columns = content.columns is defined and content.columns.column is defined and content.columns.column|length > 0 %}
   {% set columns = has_columns ? content.columns.column : default_columns %}
 
@@ -106,15 +111,21 @@
     {% for item in columns %}
       <div class="column">
         <div class="column-container">
-          <div class="column-image" style="margin-bottom: 1em;">
-            {% if item.headshot is defined and item.headshot %}
-              {% if item.headshot.url is defined %}
-                <img src="{{ item.headshot.url }}" alt="{{ item.headshot.alt|default(item.name|default('Team member')) }}" class="breakdance-image-object" style="width:100%; height:auto; border-radius: 999px 999px 16px 16px / 999px 999px 28px 28px; background: #eaf8fa;" />
-              {% else %}
-                <img src="{{ item.headshot }}" alt="{{ item.name|default('Team member') }}" class="breakdance-image-object" style="width:100%; height:auto; border-radius: 999px 999px 16px 16px / 999px 999px 28px 28px; background: #eaf8fa;" />
-              {% endif %}
+          <div class="column-image" style="margin-bottom:1em;">
+            {% if item.headshot.url is defined and item.headshot.url %}
+              {{ macros.image(
+                   item.headshot,
+                   content.content.size,
+                   item.headshot.alt.customAlt|default(item.name),
+                   item.headshot.lazyLoad|default(false)
+              ) }}
             {% else %}
-              <img src="/wp-content/uploads/2025/07/Placeholder.png" alt="Placeholder image" class="breakdance-image-object" style="width:100%; height:auto; border-radius: 999px 999px 16px 16px / 999px 999px 28px 28px; background: #eaf8fa;" />
+              <img
+                src="{{ item.headshot|default('/wp-content/uploads/2025/07/Placeholder.png') }}"
+                alt="{{ item.name|default('') }}"
+                class="breakdance-image-object"
+                style="width:100%;height:auto;border-radius:999px;background:#eaf8fa;"
+              />
             {% endif %}
           </div>
           <div class="column-text">
@@ -125,7 +136,7 @@
             </h4>
             <div class="linkedin-row">
               {% if item.linkedin is defined and item.linkedin.url is defined %}
-                <a href="{{ item.linkedin.url|default('#') }}" target="_blank" rel="noopener" aria-label="LinkedIn: {{ item.name|default('Team member') }}">
+                <a href="{{ item.linkedin.url }}" target="_blank" rel="noopener" aria-label="LinkedIn: {{ item.name }}">
                   <img src="/wp-content/uploads/2025/07/Social_LinkedIn.svg" alt="" style="width:19px; height:19px;" />
                 </a>
               {% endif %}

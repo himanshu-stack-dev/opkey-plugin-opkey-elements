@@ -1,47 +1,34 @@
 <div class="module-container">
   {# EYEBROW #}
-  {% set eyebrow = content.eyebrow.text | default('LOREM IPSUM DOLOR') %}
+  {% set eyebrow = content.eyebrow.text %}
   {% if eyebrow %}
     <div class="eyebrow">{{ eyebrow }}</div>
   {% endif %}
 
   {# HEADING #}
-  {% set heading = content.heading.text | default('Lorem ipsum dolor sit amet') %}
+  {% set heading = content.heading.text  %}
   {% if heading %}
     <h1>{{ heading }}</h1>
   {% endif %}
 
   {# SUBHEAD #}
-  {% set subhead = content.subhead.text | default('Lorem ipsum dolor sit amet consectetur adipiscing elit') %}
+  {% set subhead = content.subhead.text  %}
   {% if subhead %}
     <h4>{{ subhead }}</h4>
   {% endif %}
 
   {# BODY #}
-  {% set body = content.content.text | default('Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.') %}
+  {% set body = content.content.text  %}
   {% if body %}
     <p>{{ body }}</p>
   {% endif %}
 
   {# EMAIL #}
-  {% set email_embed = content.email.embed_code | default('
-  <div class="demo-gradient-border-wrapper">
-    <form class="demo-gradient-form">
-      <input
-        type="email"
-        placeholder="Business Email*"
-        required
-      />
-      <button type="submit" class="button-atom--primary">
-        <span class="demo-gradient-cta-text">Get a demo</span>
-      </button>
-    </form>
-  </div>
-  ') %}
+  {% set email_embed = content.email.embed_code  %}
   {{ email_embed|raw }}
 
   {# MEDIA #}
-  {% set media_type = content.media.image_or_video | default('image') %}
+  {% set media_type = content.media.image_or_video  %}
   {% if media_type == 'image' %}
     <div class="hero-module module-media">
     {% if content.image.media %}

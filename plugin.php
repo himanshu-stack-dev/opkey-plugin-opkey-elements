@@ -11,6 +11,28 @@
 
 namespace OpkeyCustomElements;
 
+if ( ! defined( 'OPKEY_ELEMENTS_URL' ) ) {
+    define( 'OPKEY_ELEMENTS_URL', plugin_dir_url( __FILE__ ) );
+}
+
+/**
+ * A single source of truth for our shared content defaults.
+ */
+function getSharedDefaults(): array
+{
+    return [
+        'eyebrow' => [ 'text' => 'Lorem ipsum dolor' ],
+        'heading' => [ 'text' => 'Lorem ipsum dolor sit amet' ],
+        'subhead' => [ 'text' => 'Lorem ipsum dolor sit amet consectetur adipiscing elit' ],
+        'content' => [ 'text' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.' ],
+        'buttons' => [
+            'remove_'          => false,
+            'primary_button'   => [ 'text'=>'Contact sales', 'link'=>'#' ],
+            'secondary_button' => [ 'text'=>'Learn more',   'link'=>'#' ],
+        ]
+    ];
+}
+
 use function Breakdance\Util\getDirectoryPathRelativeToPluginFolder;
 
 add_action('breakdance_loaded', function () {

@@ -4,6 +4,7 @@ namespace BreakdanceCustomElements;
 
 use function Breakdance\Elements\c;
 use function Breakdance\Elements\PresetSections\getPresetSection;
+use function OpkeyCustomElements\getSharedDefaults;
 
 
 \Breakdance\ElementStudio\registerElementForEditing(
@@ -70,7 +71,9 @@ class Headerh2leftalinged extends \Breakdance\Elements\Element
 
     static function defaultProperties()
     {
-        return false;
+        return [
+            'content' => getSharedDefaults(),
+        ];
     }
 
     static function defaultChildren()
@@ -87,116 +90,116 @@ class Headerh2leftalinged extends \Breakdance\Elements\Element
     static function designControls()
     {
         return [c(
-        "theme_color",
-        "Theme Color",
-        [c(
-        "color",
-        "Color",
-        [],
-        ['type' => 'button_bar', 'layout' => 'vertical', 'items' => [['value' => 'white', 'text' => 'White'], ['text' => 'Light Gray', 'value' => 'light-gray'], ['text' => 'Purple', 'value' => 'purple']], 'buttonBarOptions' => ['size' => 'small', 'layout' => 'default']],
-        false,
-        false,
-        [],
-      )],
-        ['type' => 'section'],
-        false,
-        false,
-        [],
-      )];
+            "theme_color",
+            "Theme Color",
+            [c(
+                "color",
+                "Color",
+                [],
+                ['type' => 'button_bar', 'layout' => 'vertical', 'items' => [['value' => 'white', 'text' => 'White'], ['text' => 'Light Gray', 'value' => 'light-gray'], ['text' => 'Purple', 'value' => 'purple']], 'buttonBarOptions' => ['size' => 'small', 'layout' => 'default']],
+                false,
+                false,
+                [],
+            )],
+            ['type' => 'section'],
+            false,
+            false,
+            [],
+        )];
     }
 
     static function contentControls()
     {
         return [c(
-        "eyebrow",
-        "Eyebrow",
-        [c(
-        "text",
-        "Text",
-        [],
-        ['type' => 'text', 'layout' => 'vertical'],
-        false,
-        false,
-        [],
-      )],
-        ['type' => 'section', 'layout' => 'vertical'],
-        false,
-        false,
-        [],
-      ), c(
-        "heading",
-        "Heading",
-        [c(
-        "text",
-        "Text",
-        [],
-        ['type' => 'text', 'layout' => 'vertical', 'textOptions' => ['multiline' => true]],
-        false,
-        false,
-        [],
-      )],
-        ['type' => 'section', 'layout' => 'vertical'],
-        false,
-        false,
-        [],
-      ), c(
-        "subhead",
-        "Subhead",
-        [c(
-        "text",
-        "Text",
-        [],
-        ['type' => 'text', 'layout' => 'vertical', 'textOptions' => ['multiline' => true]],
-        false,
-        false,
-        [],
-      )],
-        ['type' => 'section', 'layout' => 'vertical'],
-        false,
-        false,
-        [],
-      ), c(
-        "content",
-        "Content",
-        [c(
-        "text",
-        "Text",
-        [],
-        ['type' => 'richtext', 'layout' => 'vertical'],
-        false,
-        false,
-        [],
-      )],
-        ['type' => 'section', 'layout' => 'vertical'],
-        false,
-        false,
-        [],
-      ), c(
-        "buttons",
-        "Buttons",
-        [c(
-        "remove_",
-        "Remove?",
-        [],
-        ['type' => 'toggle', 'layout' => 'inline'],
-        false,
-        false,
-        [],
-      ), getPresetSection(
-      "EssentialElements\\AtomV1ButtonContent",
-      "Primary Button",
-      "primary_button",
-       ['condition' => [[['path' => 'content.buttons.remove_', 'operand' => 'is not set', 'value' => '']]], 'type' => 'popout']
-     ), getPresetSection(
-      "EssentialElements\\AtomV1ButtonContent",
-      "Secondary Button",
-      "secondary_button",
-       ['condition' => [[['path' => 'content.buttons.remove_', 'operand' => 'is not set', 'value' => '']]], 'type' => 'popout']
-     )],
-        ['type' => 'section', 'layout' => 'vertical'],
-        false,
-        false,
-        [],
+            "eyebrow",
+            "Eyebrow",
+            [c(
+                "text",
+                "Text",
+                [],
+                ['type' => 'text', 'layout' => 'vertical'],
+                false,
+                false,
+                [],
+            )],
+            ['type' => 'section', 'layout' => 'vertical'],
+            false,
+            false,
+            [],
+        ), c(
+            "heading",
+            "Heading",
+            [c(
+                "text",
+                "Text",
+                [],
+                ['type' => 'text', 'layout' => 'vertical', 'textOptions' => ['multiline' => true]],
+                false,
+                false,
+                [],
+            )],
+            ['type' => 'section', 'layout' => 'vertical'],
+            false,
+            false,
+            [],
+        ), c(
+            "subhead",
+            "Subhead",
+            [c(
+                "text",
+                "Text",
+                [],
+                ['type' => 'text', 'layout' => 'vertical', 'textOptions' => ['multiline' => true]],
+                false,
+                false,
+                [],
+            )],
+            ['type' => 'section', 'layout' => 'vertical'],
+            false,
+            false,
+            [],
+        ), c(
+            "content",
+            "Content",
+            [c(
+                "text",
+                "Text",
+                [],
+                ['type' => 'richtext', 'layout' => 'vertical'],
+                false,
+                false,
+                [],
+            )],
+            ['type' => 'section', 'layout' => 'vertical'],
+            false,
+            false,
+            [],
+        ), c(
+            "buttons",
+            "Buttons",
+            [c(
+                "remove_",
+                "Remove?",
+                [],
+                ['type' => 'toggle', 'layout' => 'inline'],
+                false,
+                false,
+                [],
+            ), getPresetSection(
+              "EssentialElements\\AtomV1ButtonContent",
+              "Primary Button",
+              "primary_button",
+              ['condition' => [[['path' => 'content.buttons.remove_', 'operand' => 'is not set', 'value' => '']]], 'type' => 'popout']
+          ), getPresetSection(
+              "EssentialElements\\AtomV1ButtonContent",
+              "Secondary Button",
+              "secondary_button",
+              ['condition' => [[['path' => 'content.buttons.remove_', 'operand' => 'is not set', 'value' => '']]], 'type' => 'popout']
+          )],
+          ['type' => 'section', 'layout' => 'vertical'],
+          false,
+          false,
+          [],
       )];
     }
 
@@ -258,7 +261,7 @@ class Headerh2leftalinged extends \Breakdance\Elements\Element
     static function additionalClasses()
     {
         return [['name' => 'theme--white', 'template' => '{{ design.theme_color.color == \'white\' or not design.theme_color.color }}
-'], ['name' => 'theme--light-gray', 'template' => '{{ design.theme_color.color == \'light-gray\' }}'], ['name' => 'theme--purple', 'template' => '{{ design.theme_color.color == \'purple\' }}']];
+        '], ['name' => 'theme--light-gray', 'template' => '{{ design.theme_color.color == \'light-gray\' }}'], ['name' => 'theme--purple', 'template' => '{{ design.theme_color.color == \'purple\' }}']];
     }
 
     static function projectManagement()

@@ -4,6 +4,7 @@ namespace BreakdanceCustomElements;
 
 use function Breakdance\Elements\c;
 use function Breakdance\Elements\PresetSections\getPresetSection;
+use function OpkeyCustomElements\getSharedDefaults;
 
 
 \Breakdance\ElementStudio\registerElementForEditing(
@@ -70,7 +71,25 @@ class Herocopyleftmedia extends \Breakdance\Elements\Element
 
     static function defaultProperties()
     {
-        return false;
+        $shared = getSharedDefaults();
+        if ( ! is_array( $shared ) ) {
+            $shared = [];
+        }
+        $shared['media']['image_or_video'] = 'image';
+        $shared['image'] = [
+            'from'     => 'url',
+            'url'      => plugin_dir_url(__FILE__) . 'assets/Placeholder-600x600.png',
+            'media'    => 0,
+            'alt'      => [
+                'type'      => 'custom',
+                'customAlt' => 'Placeholder image',
+            ],
+            'lazyLoad' => false,
+        ];
+
+        return [
+            'content' => $shared,
+        ];
     }
 
     static function defaultChildren()
@@ -174,29 +193,27 @@ class Herocopyleftmedia extends \Breakdance\Elements\Element
       ), c(
         "buttons",
         "Buttons",
-        [c(
-        "remove_",
-        "Remove?",
-        [],
-        ['type' => 'toggle', 'layout' => 'inline'],
+        [
+          getPresetSection(
+            "EssentialElements\\AtomV1ButtonContent",
+            "Primary Button",
+            "primary_button",
+            [ 'type' => 'popout' ]
+          ),
+          getPresetSection(
+            "EssentialElements\\AtomV1ButtonContent",
+            "Secondary Button",
+            "secondary_button",
+            [ 'type' => 'popout' ]
+          ),
+        ],
+        [
+          'type'   => 'section',
+          'layout' => 'vertical',
+        ],
         false,
         false,
-        [],
-      ), getPresetSection(
-      "EssentialElements\\AtomV1ButtonContent",
-      "Primary Button",
-      "primary_button",
-       ['condition' => [[['path' => 'content.buttons.remove_', 'operand' => 'is not set', 'value' => '']]], 'type' => 'popout']
-     ), getPresetSection(
-      "EssentialElements\\AtomV1ButtonContent",
-      "Secondary Button",
-      "secondary_button",
-       ['condition' => [[['path' => 'content.buttons.remove_', 'operand' => 'is not set', 'value' => '']]], 'type' => 'popout']
-     )],
-        ['type' => 'section', 'layout' => 'vertical'],
-        false,
-        false,
-        [],
+        []
       ), c(
         "media",
         "Media",

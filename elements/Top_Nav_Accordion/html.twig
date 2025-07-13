@@ -1,25 +1,25 @@
 <div class="module-container">
   <div class="module-top-nav-accordion module-text">
     {# EYEBROW #}
-    {% set eyebrow = content.eyebrow.text | default('LOREM IPSUM DOLOR') %}
+    {% set eyebrow = content.eyebrow.text %}
     {% if eyebrow %}
       <div class="eyebrow">{{ eyebrow }}</div>
     {% endif %}
 
     {# HEADING #}
-    {% set heading = content.heading.text | default('Lorem ipsum dolor sit amet') %}
+    {% set heading = content.heading.text  %}
     {% if heading %}
       <h1>{{ heading }}</h1>
     {% endif %}
 
     {# SUBHEAD #}
-    {% set subhead = content.subhead.text | default('Lorem ipsum dolor sit amet consectetur adipiscing elit') %}
+    {% set subhead = content.subhead.text  %}
     {% if subhead %}
       <h4>{{ subhead }}</h4>
     {% endif %}
 
     {# BODY #}
-    {% set body = content.content.text | default('Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.') %}
+    {% set body = content.content.text  %}
     {% if body %}
       <p>{{ body }}</p>
     {% endif %}
@@ -78,7 +78,7 @@
               {# Tab as trigger style (styled like .bde-accordion-trigger) #}
               <button class="bde-accordion-trigger bde-mobile-tab-trigger" aria-expanded="false" tabindex="0">
                 <span class="bde-accordion-title">
-                  {{ tab.tab_title|default('Lorem ipsum dolor') }}
+                  {{ tab.tab_title }}
                 </span>
               </button>
               <div class="bde-accordion-panel" aria-hidden="false" style="max-height:none;">
@@ -99,10 +99,10 @@
                               <img src="{{ item.content_icon is iterable ? item.content_icon.url : item.content_icon }}" alt="Icon" style="width:36px;height:36px;" />
                             </span>
                           {% endif %}
-                          <h3>{{ item.content_title|default('Lorem ipsum dolor sit amet consectetur sed do eiusmod') }}</h3>
+                          <h3>{{ item.content_title }}</h3>
                         </div>
                         <div class="bde-accordion-content breakdance-rich-text-styles">
-                          {{ item.content|default('Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.') }}
+                          {{ item.content }}
                         </div>
                       </div>
                     </div>
@@ -137,7 +137,7 @@
             aria-controls="tabpanel-{{ loop.index }}"
             aria-selected="{{ loop.first ? 'true' : 'false' }}"
           >
-            {{ tab.tab_title|default('Lorem ipsum dolor') }}
+            {{ tab.tab_title }}
           </button>
         {% endfor %}
       </div>
@@ -168,11 +168,11 @@
                         <img src="{{ item.content_icon is iterable ? item.content_icon.url : item.content_icon }}" alt="Icon" style="width:36px;height:36px;" />
                       </span>
                     {% endif %}
-                    <span class="bde-accordion-title">{{ item.content_title|default('Lorem ipsum dolor sit amet consectetur sed do eiusmod') }}</span>
+                    <span class="bde-accordion-title">{{ item.content_title }}</span>
                   </button>
                   <div class="bde-accordion-panel">
                     <div class="bde-accordion-content breakdance-rich-text-styles">
-                      {{ item.content|default('Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.') }}
+                      {{ item.content }}
                     </div>
                   </div>
                 </div>
