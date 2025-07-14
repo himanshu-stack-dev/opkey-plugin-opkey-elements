@@ -4,7 +4,6 @@ namespace BreakdanceCustomElements;
 
 use function Breakdance\Elements\c;
 use function Breakdance\Elements\PresetSections\getPresetSection;
-use function OpkeyCustomElements\getSharedDefaults;
 
 
 \Breakdance\ElementStudio\registerElementForEditing(
@@ -71,27 +70,7 @@ class Herocopycentermedia extends \Breakdance\Elements\Element
 
     static function defaultProperties()
     {
-        $shared = getSharedDefaults();
-        if ( ! is_array( $shared ) ) {
-            $shared = [];
-        }
-
-        $shared['media']['image_or_video'] = 'image';
-
-        $shared['image'] = [
-            'from'     => 'url',
-            'url'      => plugin_dir_url(__FILE__) . 'assets/Placeholder_1200x500.png',
-            'media'    => 0,
-            'alt'      => [
-                'type'      => 'custom',
-                'customAlt' => 'Placeholder image',
-            ],
-            'lazyLoad' => false,
-        ];
-
-        return [
-            'content' => $shared,
-        ];
+        return ['content' => ['eyebrow' => ['text' => 'Lorem ipsum dolor'], 'heading' => ['text' => 'Lorem ipsum dolor sit amet'], 'subhead' => ['text' => 'Lorem ipsum dolor sit amet consectetur adipiscing elit'], 'content' => ['text' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.'], 'buttons' => ['primary_button' => ['text' => 'Contact sales', 'link' => '#'], 'secondary_button' => ['text' => 'Learn more', 'link' => '#']], 'media' => ['image_or_video' => 'image'], 'image' => ['from' => 'url', 'url' => 'https://opkey.local/wp-content/plugins/opkey-elements/elements/Hero_Copy_Center_Media/assets/Placeholder_1200x500.png', 'media' => 0, 'alt' => ['type' => 'custom', 'customAlt' => 'Placeholder image'], 'lazyLoad' => false]]];
     }
 
     static function defaultChildren()
@@ -195,27 +174,21 @@ class Herocopycentermedia extends \Breakdance\Elements\Element
       ), c(
         "buttons",
         "Buttons",
-        [
-          getPresetSection(
-            "EssentialElements\\AtomV1ButtonContent",
-            "Primary Button",
-            "primary_button",
-            [ 'type' => 'popout' ]
-          ),
-          getPresetSection(
-            "EssentialElements\\AtomV1ButtonContent",
-            "Secondary Button",
-            "secondary_button",
-            [ 'type' => 'popout' ]
-          ),
-        ],
-        [
-          'type'   => 'section',
-          'layout' => 'vertical',
-        ],
+        [getPresetSection(
+      "EssentialElements\\AtomV1ButtonContent",
+      "Primary Button",
+      "primary_button",
+       ['type' => 'popout']
+     ), getPresetSection(
+      "EssentialElements\\AtomV1ButtonContent",
+      "Secondary Button",
+      "secondary_button",
+       ['type' => 'popout']
+     )],
+        ['type' => 'section', 'layout' => 'vertical'],
         false,
         false,
-        []
+        [],
       ), c(
         "media",
         "Media",

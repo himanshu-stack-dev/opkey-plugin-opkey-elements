@@ -26,7 +26,6 @@ function getSharedDefaults(): array
         'subhead' => [ 'text' => 'Lorem ipsum dolor sit amet consectetur adipiscing elit' ],
         'content' => [ 'text' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.' ],
         'buttons' => [
-            'remove_'          => false,
             'primary_button'   => [ 'text'=>'Contact sales', 'link'=>'#' ],
             'secondary_button' => [ 'text'=>'Learn more',   'link'=>'#' ],
         ]
