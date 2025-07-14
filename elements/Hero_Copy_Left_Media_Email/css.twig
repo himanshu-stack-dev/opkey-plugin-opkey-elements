@@ -72,6 +72,7 @@
     %%SELECTOR%% { background: #190D2C; color: #fff; }
     %%SELECTOR%% h1, %%SELECTOR%% h4 { color: #fff; }
 	%%SELECTOR%% p, %%SELECTOR%% ul, %%SELECTOR%% ol { color: #CEDDDF; }
+	%%SELECTOR%% .eyebrow:before, %%SELECTOR%% .eyebrow:after { 	filter:invert(100); }
     /* PRIMARY BUTTON */
     %%SELECTOR%% .button-atom--primary::before { background: #81F0FD !important; }
     %%SELECTOR%% .button-atom--primary .button-atom__text { color: #81F0FD !important; }
@@ -99,6 +100,17 @@
       border-top: 2px solid #81F0FD !important;
       border-right: 2px solid #81F0FD !important;
     }
+	/* FORM */
+	%%SELECTOR%% .demo-gradient-border-wrapper { background: linear-gradient(90deg, #190D2C 0%, #4EC7D4 100%);}
+	%%SELECTOR%% .hbspt-form { background:#190D2C; }
+	%%SELECTOR%% .hs-form input,
+	%%SELECTOR%% .hs-form input::placeholder { color:#fff; }
+	%%SELECTOR%% .hs_submit::before { background:#81F0FD; }
+	%%SELECTOR%% .hs_submit .actions::before,
+	%%SELECTOR%% .hs_submit .actions::before{ background:#000; }
+	%%SELECTOR%% .hs_submit .actions::after { border-top: .125rem solid #000;
+  border-right: .125rem solid #000; }
+	%%SELECTOR%% .hs_submit:hover .primary { color:#000; }
     /* MOBILE: Primary button text color black */
     @media (max-width: 1023px) {
       %%SELECTOR%% .button-atom--primary .button-atom__text {
