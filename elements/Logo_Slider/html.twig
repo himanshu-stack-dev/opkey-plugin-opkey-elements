@@ -51,17 +51,15 @@
 {% endif %}
 
   {# SLIDER #}
-   {% set logos = [
-     '/wp-content/uploads/2025/07/Placeholder_180x70.png',
-     '/wp-content/uploads/2025/07/Placeholder_180x70.png',
-     '/wp-content/uploads/2025/07/Placeholder_180x70.png',
-     '/wp-content/uploads/2025/07/Placeholder_180x70.png',
-     '/wp-content/uploads/2025/07/Placeholder_180x70.png',
-     '/wp-content/uploads/2025/07/Placeholder_180x70.png'
-   ] %}
+   {% set logo_items = (content.logos.logo ?? content.logos.logos ?? content.logos ?? []) %}
 
-   {# Prefer user's logos, fallback to defaults #}
-   {% set logo_items = (content.logos.logo ?? content.logos.logos ?? content.logos)  %}
+   {% if logo_items is empty %}
+     {% set logo_items = [
+       '/wp-content/uploads/2025/07/Placeholder_180x70.png',
+       '/wp-content/uploads/2025/07/Placeholder_180x70.png',
+       '/wp-content/uploads/2025/07/Placeholder_180x70.png'
+     ] %}
+   {% endif %}
 
   <div class="un-logo-bar__marquee-content carousel-type__marquee">
    {% for repeat in [1,2,3,4,5,6] %}
