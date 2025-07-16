@@ -112,7 +112,7 @@
 
                     {% if item.content_image %}
                       <div class="bde-accordion-media">
-                        {{ macros.image(item.content_image, content.content.size, alt, lazyLoad) }}
+    <img src="{{ item.content_image is iterable ? item.content_image.url : item.content_image }}" alt="Accordion image" style="max-width:100%; height:auto;" />
                       </div>
                     {% endif %}
                   </div>
