@@ -68,6 +68,14 @@
   }
 {% endif %}
 
+/* PADDING */
+{% if design.remove_padding.remove_top %}
+      %%SELECTOR%% { padding-top:0!important }
+{% elseif design.remove_padding.remove_bottom  %}
+      %%SELECTOR%% { padding-bottom:0!important }
+{% endif %}
+
+
 {% if design.theme_color.color == 'purple' %}
     %%SELECTOR%% { background: #190D2C; color: #fff; }
     %%SELECTOR%% h2, %%SELECTOR%% h4{ color: #fff; }

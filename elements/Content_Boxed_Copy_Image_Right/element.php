@@ -128,6 +128,30 @@ class Contentboxedcopyimageright extends \Breakdance\Elements\Element
         false,
         false,
         [],
+      ), c(
+        "remove_padding",
+        "Remove Padding",
+        [c(
+        "remove_top",
+        "Remove Top",
+        [],
+        ['type' => 'toggle', 'layout' => 'inline'],
+        false,
+        false,
+        [],
+      ), c(
+        "remove_bottom",
+        "Remove Bottom",
+        [],
+        ['type' => 'toggle', 'layout' => 'inline'],
+        false,
+        false,
+        [],
+      )],
+        ['type' => 'section'],
+        false,
+        false,
+        [],
       )];
     }
 

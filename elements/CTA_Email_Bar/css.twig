@@ -1,3 +1,11 @@
+/* PADDING */
+{% if design.remove_padding.remove_top %}
+      %%SELECTOR%% { padding-top:0!important }
+{% elseif design.remove_padding.remove_bottom  %}
+      %%SELECTOR%% { padding-bottom:0!important }
+{% endif %}
+
+
 {% if design.theme_color.color == 'purple' %}
     %%SELECTOR%%, %%SELECTOR%% .gradient-wrapper, %%SELECTOR%% .cta-diagonal::after   { background: #190D2C; color: #fff; }
 	%%SELECTOR%% .module-container { background: linear-gradient(90deg, #190D2C 0%, #4EC7D4 100%); }
