@@ -404,6 +404,15 @@ class Topnavaccordion extends \Breakdance\Elements\Element
             }
           });
         });
+        // Also show the matching image for the first accordion item in the new tab
+        tabPanels.forEach((panel, j) => {
+          const images = Array.from(panel.querySelectorAll(\'.bde-accordion-image\'));
+          images.forEach((img, k) => {
+            const shouldShow = i === j && k === 0;
+            img.classList.toggle(\'active\', shouldShow);
+            img.style.display = shouldShow ? \'\' : \'none\';
+          });
+        });
       });
     });
 
