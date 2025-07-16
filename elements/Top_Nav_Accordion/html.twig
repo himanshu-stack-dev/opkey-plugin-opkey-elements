@@ -9,7 +9,7 @@
     {# HEADING #}
     {% set heading = content.heading.text  %}
     {% if heading %}
-      <h1>{{ heading }}</h1>
+      <h2>{{ heading }}</h2>
     {% endif %}
 
     {# SUBHEAD #}
@@ -34,96 +34,99 @@
           accordion: [
             {
               content_icon: '/wp-content/uploads/2025/07/Icon_Automate-1.svg',
+              content_image: '/wp-content/uploads/2025/06/Placeholder-620x500-1.png',
               content_title: 'First accordion item',
               content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
             },
             {
               content_icon: '/wp-content/uploads/2025/07/Icon_Automate-1.svg',
+              content_image: '/wp-content/uploads/2025/06/Placeholder-620x500-1.png',
               content_title: 'Second accordion item',
               content: 'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.'
             }
           ],
-          tab_image_: '/wp-content/uploads/2025/06/Placeholder-620x500-1.png'
         },
         {
           tab_title: 'Dolor sit amet',
           accordion: [
             {
               content_icon: '/wp-content/uploads/2025/07/Icon_Automate-1.svg',
+              content_image: '/wp-content/uploads/2025/06/Placeholder-620x500-1.png',
               content_title: 'Third accordion item',
               content: 'Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Duis aute irure dolor in reprehenderit.'
             },
             {
               content_icon: '/wp-content/uploads/2025/07/Icon_Automate-1.svg',
+              content_image: '/wp-content/uploads/2025/06/Placeholder-620x500-1.png',
               content_title: 'Fourth accordion item',
               content: 'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
             }
           ],
-          tab_image_: '/wp-content/uploads/2025/06/Placeholder-620x500-1.png'
         }
       ]
   %}
 
   <div class="module-navigator bde-accordion-nav-with-media">
     <div class="breakdance-swiper-wrapper show-mobile" data-swiper-id="%%UNIQUESLUG%%">
-      <div class="slider-navigation">
-        <button class="swiper-button-prev swiper-button-prev-%%UNIQUESLUG%% custom-nav-btn"></button>
-        <div class="swiper-pagination swiper-pagination-%%UNIQUESLUG%%"></div>
-        <button class="swiper-button-next swiper-button-next-%%UNIQUESLUG%% custom-nav-btn"></button>
-      </div>
-      <div class="swiper swiper-%%UNIQUESLUG%%">
-        <div class="swiper-wrapper">
+
+      {# DROPDOWN SELECTOR FOR PERSONAS (Tabs) #}
+      {# Default to the first tab being selected initially #}
+      {% set active_index = 0 %}
+      {% set active_tab = tabs[active_index] %}
+
+      <div class="bde-mobile-dropdown-wrapper">
+        <button class="bde-accordion-trigger bde-mobile-tab-trigger" aria-expanded="false" tabindex="0">
+          <span class="bde-accordion-title">{{ active_tab.tab_title }}</span>
+        </button>
+
+        <ul class="bde-mobile-dropdown-options" style="display: none;">
           {% for tab in tabs %}
-            <div class="swiper-slide">
-              {# Tab as trigger style (styled like .bde-accordion-trigger) #}
-              <button class="bde-accordion-trigger bde-mobile-tab-trigger" aria-expanded="false" tabindex="0">
-                <span class="bde-accordion-title">
-                  {{ tab.tab_title }}
-                </span>
-              </button>
-              <div class="bde-accordion-panel" aria-hidden="false" style="max-height:none;">
-                <div class="bde-accordion-panel-content">
-                  {% set accordion_items = tab.accordion is defined and tab.accordion|length > 0 ? tab.accordion : [{
-                    content_icon: '/wp-content/uploads/2025/07/Icon_Automate-1.svg',
-                    content_title: 'Lorem ipsum dolor sit amet consectetur sed do eiusmod',
-                    content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.'
-                  }] %}
-                  {% for item in accordion_items %}
-                    {% set has_icon = (item.content_icon is iterable and item.content_icon.url is defined)
-                      or (item.content_icon is defined and item.content_icon is not empty) %}
-                    <div class="bde-accordion-item{{ has_icon ? ' has-icon' : '' }} open">
-                      <div class="bde-accordion-row">
-                        <div class="bde-mobile-accordion-item">
-                          {% if has_icon %}
-                            <span class="bde-accordion-icon">
-                              <img src="{{ item.content_icon is iterable ? item.content_icon.url : item.content_icon }}" alt="Icon" style="width:36px;height:36px;" />
-                            </span>
-                          {% endif %}
-                          <h3>{{ item.content_title }}</h3>
-                        </div>
-                        <div class="bde-accordion-content breakdance-rich-text-styles">
-                          {{ item.content }}
-                        </div>
+            {% if loop.index0 != active_index %}
+              <li data-tab-index="{{ loop.index0 }}">{{ tab.tab_title }}</li>
+            {% endif %}
+          {% endfor %}
+        </ul>
+      </div>
+
+      {# CONTENT FOR EACH PERSONA (One Swiper per tab) #}
+      {% for tab in tabs %}
+        <div class="bde-mobile-tab-content tab-{{ loop.index0 }}" data-tab-title="{{ tab.tab_title }}" {% if not loop.first %}style="display:none;"{% endif %}>
+          <div class="swiper swiper-{{ loop.index0 }}">
+            <div class="swiper-wrapper">
+              {% for item in tab.accordion %}
+                <div class="swiper-slide">
+                  <div class="bde-accordion-item has-icon open">
+                    <div class="bde-accordion-row">
+                      <div class="bde-mobile-accordion-item">
+                        {% if item.content_icon %}
+                          <span class="bde-accordion-icon">
+                            <img src="{{ item.content_icon is iterable ? item.content_icon.url : item.content_icon }}" alt="Icon" style="width:36px;height:36px;" />
+                          </span>
+                        {% endif %}
+                        <h3>{{ item.content_title }}</h3>
+                      </div>
+                      <div class="bde-accordion-content breakdance-rich-text-styles">
+                        {{ item.content }}
                       </div>
                     </div>
-                  {% endfor %}
+
+                    {% if item.content_image %}
+                      <div class="bde-accordion-media">
+                        {{ macros.image(item.content_image, content.content.size, alt, lazyLoad) }}
+                      </div>
+                    {% endif %}
+                  </div>
                 </div>
-                <div class="bde-accordion-media">
-                  {% set is_real_image = tab.tab_image_ is defined
-                    and tab.tab_image_
-                    and (tab.tab_image_.url is defined and tab.tab_image_.url|length > 0)
-                  %}
-                  {% if is_real_image %}
-                    {{ macros.getMedia(tab.tab_image_, content.content.size, content.content.lazyLoad) }}
-                  {% else %}
-                    <img src="/wp-content/uploads/2025/06/Placeholder-620x500-1.png" alt="Placeholder image" style="max-width:100%;height:auto;" />
-                  {% endif %}
-                </div>
-              </div>
+              {% endfor %}
             </div>
-          {% endfor %}
+            <div class="slider-navigation">
+              <button class="swiper-button-prev swiper-button-prev-{{ loop.index0 }} custom-nav-btn"></button>
+              <div class="swiper-pagination swiper-pagination-{{ loop.index0 }}"></div>
+              <button class="swiper-button-next swiper-button-next-{{ loop.index0 }} custom-nav-btn"></button>
+            </div>
+          </div>
         </div>
-      </div>
+      {% endfor %}
     </div>
 
     <div class="bde-accordion-tabs show-desktop">
@@ -141,51 +144,58 @@
           </button>
         {% endfor %}
       </div>
+
       <div class="bde-tabpanels">
         {% for tab in tabs %}
-          <div
-            class="bde-tabpanel"
-            id="tabpanel-{{ loop.index }}"
-            role="tabpanel"
-            aria-labelledby="tab-{{ loop.index }}"
-            {% if not loop.first %} style="display:none;"{% endif %}
-          >
+        <div class="bde-tabpanel" id="tabpanel-{{ loop.index }}" role="tabpanel" aria-labelledby="tab-{{ loop.index }}" {% if not loop.first %}style="display:none;"{% endif %}>
+        
+          {% set accordion_items = (tab.accordion is defined and tab.accordion|length > 0) 
+            ? tab.accordion 
+            : [{
+                content_icon: '/wp-content/uploads/2025/07/Icon_Automate-1.svg',
+                content_image: '/wp-content/uploads/2025/06/Placeholder-620x500-1.png',
+                content_title: 'Lorem ipsum dolor sit amet consectetur sed do eiusmod',
+                content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
+              }] %}
+
+          <div class="bde-accordion-column"> {# LEFT column: accordion list #}
             <div class="bde-accordion-list">
-              {% set accordion_items = (tab.accordion is defined and tab.accordion|length > 0) 
-                ? tab.accordion 
-                : [{
-                    content_icon: '/wp-content/uploads/2025/07/Icon_Automate-1.svg',
-                    content_title: 'Lorem ipsum dolor sit amet consectetur sed do eiusmod',
-                    content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.'
-                  }] %}
               {% for item in accordion_items %}
                 {% set has_icon = (item.content_icon is iterable and item.content_icon.url is defined)
                   or (item.content_icon is defined and item.content_icon is not empty) %}
                 <div class="bde-accordion-item{{ has_icon ? ' has-icon' : '' }}">
-                  <button class="bde-accordion-trigger" aria-expanded="false">
-                    {% if has_icon %}
-                      <span class="bde-accordion-icon">
-                        <img src="{{ item.content_icon is iterable ? item.content_icon.url : item.content_icon }}" alt="Icon" style="width:36px;height:36px;" />
-                      </span>
-                    {% endif %}
-                    <span class="bde-accordion-title">{{ item.content_title }}</span>
-                  </button>
-                  <div class="bde-accordion-panel">
-                    <div class="bde-accordion-content breakdance-rich-text-styles">
-                      {{ item.content }}
+                  <div class="bde-accordion-content">
+                    <button class="bde-accordion-trigger" aria-expanded="false">
+                      {% if has_icon %}
+                        <span class="bde-accordion-icon">
+                          <img src="{{ item.content_icon is iterable ? item.content_icon.url : item.content_icon }}" alt="Icon" style="width:36px;height:36px;" />
+                        </span>
+                      {% endif %}
+                      <span class="bde-accordion-title">{{ item.content_title }}</span>
+                    </button>
+                    <div class="bde-accordion-panel">
+                      <div class="bde-accordion-text breakdance-rich-text-styles">
+                        {{ item.content }}
+                      </div>
                     </div>
                   </div>
                 </div>
               {% endfor %}
             </div>
-            <div class="bde-accordion-media">
-              {% if tab.tab_image_ %}
-                {{ macros.getMedia(tab.tab_image_, content.content.size, content.content.lazyLoad) }}
-              {% else %}
-                <img src="/wp-content/uploads/2025/06/Placeholder-620x500-1.png" alt="Placeholder image" style="max-width:100%;height:auto;" />
-              {% endif %}
-            </div>
           </div>
+
+          <div class="bde-accordion-media"> {# RIGHT column: images #}
+            {% for item in accordion_items %}
+              {% set has_image = (item.content_image is iterable and item.content_image.url is defined)
+                or (item.content_image is defined and item.content_image is not empty) %}
+              {% if has_image %}
+                <div class="bde-accordion-image" style="display:none;">
+                  <img src="{{ item.content_image is iterable ? item.content_image.url : item.content_image }}" alt="Accordion image" style="max-width:100%; height:auto;" />
+                </div>
+              {% endif %}
+            {% endfor %}
+          </div>
+        </div>
         {% endfor %}
       </div>
     </div>
