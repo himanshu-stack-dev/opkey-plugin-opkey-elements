@@ -1,63 +1,52 @@
 <div class="module-container">
-  <div class="module-columns module-text">
-    {# EYEBROW #}
-    {% set eyebrow = content.eyebrow.text %}
-    {% if eyebrow %}
-      <div class="eyebrow">{{ eyebrow }}</div>
-    {% endif %}
+  {% set ey   = content.eyebrow.text               |default('')|trim %}
+  {% set hd   = content.heading.text               |default('')|trim %}
+  {% set sh   = content.subhead.text               |default('')|trim %}
+  {% set bd   = content.content.text               |default('')|trim %}
+  {% set pbt  = content.buttons.primary_button.text   |default('')|trim %}
+  {% set sbt  = content.buttons.secondary_button.text |default('')|trim %}
 
-    {# HEADING #}
-    {% set heading = content.heading.text %}
-    {% if heading %}
-      <h2>{{ heading }}</h2>
-    {% endif %}
+  {% if ey or hd or sh or bd or pbt or sbt %}
+    <div class="module-columns module-text">
+      {% if ey %}<div class="eyebrow">{{ ey }}</div>{% endif %}
+      {% if hd %}<h2>{{ hd }}</h2>{% endif %}
+      {% if sh %}<h4>{{ sh }}</h4>{% endif %}
+      {% if bd %}<p>{{ bd }}</p>{% endif %}
 
-    {# SUBHEAD #}
-    {% set subhead = content.subhead.text %}
-    {% if subhead %}
-      <h4>{{ subhead }}</h4>
-    {% endif %}
+      {% if pbt or sbt %}
+        <div class="content-module module-buttons">
+          {% if pbt %}
+            {{ macros.atomV1ButtonHtml(
+                 content.buttons.primary_button,
+                 'opkey-primary',
+                 path.to.button_design_preset_section,
+                 'primary',
+                 pbt
+            ) }}
+          {% endif %}
+          {% if sbt %}
+            {{ macros.atomV1ButtonHtml(
+                 content.buttons.secondary_button,
+                 'opkey-link-text',
+                 path.to.button_design_preset_section,
+                 'secondary',
+                 sbt
+            ) }}
+          {% endif %}
+        </div>
+      {% endif %}
+    </div>
+  {% endif %}
 
-    {# BODY #}
-    {% set body = content.content.text %}
-    {% if body %}
-      <p>{{ body }}</p>
-    {% endif %}
-
-    {# BUTTONS #}
-    {% set pb = content.buttons.primary_button|default({}) %}
-    {% set sb = content.buttons.secondary_button|default({}) %}
-
-    {% if pb.text|default('')|trim or sb.text|default('')|trim %}
-      <div class="content-module module-buttons">
-        {% if pb.text|default('')|trim %}
-          {{ macros.atomV1ButtonHtml(
-               pb,
-               'opkey-primary',
-               path.to.button_design_preset_section,
-               'primary',
-               pb.text|trim
-             ) }}
-        {% endif %}
-        {% if sb.text|default('')|trim %}
-          {{ macros.atomV1ButtonHtml(
-               sb,
-               'opkey-link-text',
-               path.to.button_design_preset_section,
-               'secondary',
-               sb.text|trim
-             ) }}
-        {% endif %}
-      </div>
-    {% endif %}
-  </div>
-
-  {# COLUMNS #}
   {% set default_awards = [
     '/wp-content/uploads/2025/07/award-high-performer.png',
     '/wp-content/uploads/2025/07/award-capterra.png',
     '/wp-content/uploads/2025/07/award-gartner.png'
   ] %}
+  {% set awards = (content.awards.item is defined and content.awards.item|length > 0)
+      ? content.awards.item
+      : default_awards
+  %}
 
   {% set default_partners = [
     '/wp-content/uploads/2025/07/Placeholder_180x70.png',
@@ -65,6 +54,10 @@
     '/wp-content/uploads/2025/07/Placeholder_180x70.png',
     '/wp-content/uploads/2025/07/Placeholder_180x70.png'
   ] %}
+  {% set partners = (content.partners.logos is defined and content.partners.logos|length > 0)
+      ? content.partners.logos
+      : default_partners
+  %}
 
   <div class="columns">
     <div class="column">
@@ -75,10 +68,6 @@
         <div class="column-text">
           <h4>Our Awards</h4>
           <div class="awards">
-            {# Prefer user-uploaded, fallback to default #}
-            {% set awards = (content.awards.item is defined and content.awards.item|length > 0) 
-              ? content.awards.item 
-              : default_awards %}
             {% for item in awards %}
               {% if item.graphic is defined %}
                 {{ macros.image(item.graphic, content.content.size, alt, lazyLoad) }}
@@ -93,6 +82,7 @@
         </svg>
       </div>
     </div>
+
     <div class="column">
       <div class="column-container">
         <svg preserveAspectRatio="none" viewBox="0 0 5 452" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -101,10 +91,6 @@
         <div class="column-text">
           <h4>Our Partners</h4>
           <div class="partners">
-            {# Prefer user-uploaded, fallback to default #}
-            {% set partners = (content.partners.logos is defined and content.partners.logos|length > 0) 
-              ? content.partners.logos 
-              : default_partners %}
             {% for item in partners %}
               {% if item.image is defined %}
                 {{ macros.image(item.image, content.content.size, alt, lazyLoad) }}

@@ -4,7 +4,6 @@ namespace BreakdanceCustomElements;
 
 use function Breakdance\Elements\c;
 use function Breakdance\Elements\PresetSections\getPresetSection;
-use function OpkeyCustomElements\getSharedDefaults;
 
 
 \Breakdance\ElementStudio\registerElementForEditing(
@@ -71,9 +70,7 @@ class Awardbracket extends \Breakdance\Elements\Element
 
     static function defaultProperties()
     {
-        return [
-            'content' => getSharedDefaults(),
-        ];
+        return ['content' => ['eyebrow' => ['text' => 'Lorem ipsum dolor'], 'heading' => ['text' => 'Lorem ipsum dolor sit amet'], 'subhead' => ['text' => 'Lorem ipsum dolor sit amet consectetur adipiscing elit'], 'content' => ['text' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.'], 'buttons' => ['primary_button' => ['text' => 'Contact sales', 'link' => '#'], 'secondary_button' => ['text' => 'Learn more', 'link' => '#']]]];
     }
 
     static function defaultChildren()
@@ -97,6 +94,30 @@ class Awardbracket extends \Breakdance\Elements\Element
         "Color",
         [],
         ['type' => 'button_bar', 'layout' => 'vertical', 'items' => [['value' => 'white', 'text' => 'White'], ['text' => 'Light Gray', 'value' => 'light-gray'], ['text' => 'Purple', 'value' => 'purple']], 'buttonBarOptions' => ['size' => 'small', 'layout' => 'default']],
+        false,
+        false,
+        [],
+      )],
+        ['type' => 'section'],
+        false,
+        false,
+        [],
+      ), c(
+        "remove_padding",
+        "Remove Padding",
+        [c(
+        "remove_top",
+        "Remove Top",
+        [],
+        ['type' => 'toggle', 'layout' => 'inline'],
+        false,
+        false,
+        [],
+      ), c(
+        "remove_bottom",
+        "Remove Bottom",
+        [],
+        ['type' => 'toggle', 'layout' => 'inline'],
         false,
         false,
         [],
@@ -177,27 +198,21 @@ class Awardbracket extends \Breakdance\Elements\Element
       ), c(
         "buttons",
         "Buttons",
-        [
-          getPresetSection(
-            "EssentialElements\\AtomV1ButtonContent",
-            "Primary Button",
-            "primary_button",
-            [ 'type' => 'popout' ]
-          ),
-          getPresetSection(
-            "EssentialElements\\AtomV1ButtonContent",
-            "Secondary Button",
-            "secondary_button",
-            [ 'type' => 'popout' ]
-          ),
-        ],
-        [
-          'type'   => 'section',
-          'layout' => 'vertical',
-        ],
+        [getPresetSection(
+      "EssentialElements\\AtomV1ButtonContent",
+      "Primary Button",
+      "primary_button",
+       ['type' => 'popout']
+     ), getPresetSection(
+      "EssentialElements\\AtomV1ButtonContent",
+      "Secondary Button",
+      "secondary_button",
+       ['type' => 'popout']
+     )],
+        ['type' => 'section', 'layout' => 'vertical'],
         false,
         false,
-        []
+        [],
       ), c(
         "awards",
         "Awards",
