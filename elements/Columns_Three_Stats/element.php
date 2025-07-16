@@ -4,7 +4,6 @@ namespace BreakdanceCustomElements;
 
 use function Breakdance\Elements\c;
 use function Breakdance\Elements\PresetSections\getPresetSection;
-use function OpkeyCustomElements\getSharedDefaults;
 
 
 \Breakdance\ElementStudio\registerElementForEditing(
@@ -71,9 +70,7 @@ class Columnsthreestats extends \Breakdance\Elements\Element
 
     static function defaultProperties()
     {
-        return [
-            'content' => getSharedDefaults(),
-        ];
+        return ['content' => ['eyebrow' => ['text' => 'Lorem ipsum dolor'], 'heading' => ['text' => 'Lorem ipsum dolor sit amet'], 'subhead' => ['text' => 'Lorem ipsum dolor sit amet consectetur adipiscing elit'], 'content' => ['text' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.'], 'buttons' => ['primary_button' => ['text' => 'Contact sales', 'link' => '#'], 'secondary_button' => ['text' => 'Learn more', 'link' => '#']]]];
     }
 
     static function defaultChildren()
@@ -177,27 +174,21 @@ class Columnsthreestats extends \Breakdance\Elements\Element
       ), c(
         "buttons",
         "Buttons",
-        [
-          getPresetSection(
-            "EssentialElements\\AtomV1ButtonContent",
-            "Primary Button",
-            "primary_button",
-            [ 'type' => 'popout' ]
-          ),
-          getPresetSection(
-            "EssentialElements\\AtomV1ButtonContent",
-            "Secondary Button",
-            "secondary_button",
-            [ 'type' => 'popout' ]
-          ),
-        ],
-        [
-          'type'   => 'section',
-          'layout' => 'vertical',
-        ],
+        [getPresetSection(
+      "EssentialElements\\AtomV1ButtonContent",
+      "Primary Button",
+      "primary_button",
+       ['type' => 'popout']
+     ), getPresetSection(
+      "EssentialElements\\AtomV1ButtonContent",
+      "Secondary Button",
+      "secondary_button",
+       ['type' => 'popout']
+     )],
+        ['type' => 'section', 'layout' => 'vertical'],
         false,
         false,
-        []
+        [],
       ), c(
         "columns",
         "Columns",
@@ -216,7 +207,7 @@ class Columnsthreestats extends \Breakdance\Elements\Element
         "stat",
         "Stat",
         [],
-        ['type' => 'number', 'layout' => 'vertical'],
+        ['type' => 'text', 'layout' => 'vertical'],
         false,
         false,
         [],
@@ -253,27 +244,15 @@ class Columnsthreestats extends \Breakdance\Elements\Element
 
     static function dependencies()
     {
-        return ['0' =>  ['scripts' => ['%%BREAKDANCE_ELEMENTS_PLUGIN_URL%%dependencies-files/lite-youtube@0.2/lite-yt-embed.js'],'title' => 'lite-youtube','styles' => ['%%BREAKDANCE_ELEMENTS_PLUGIN_URL%%dependencies-files/lite-youtube@0.2/lite-yt-embed.css'],],'1' =>  ['title' => 'lite-vimeo','inlineScripts' => ['const backgroundImage = \'{{content.vimeo.background_image.url}}\';
-if (backgroundImage != \'\') {
-  const container = document.querySelector(\'%%SELECTOR%% .ee-video-container\');
-  const poster = container.querySelector(\'.ee-vimeo-poster\');
-  if (poster) {
-    poster.addEventListener(\'click\', function() {
-      const liteVimeo = document.createElement(\'lite-vimeo\');
-      liteVimeo.setAttribute(\'videoid\', \'{{ content.video.video.videoId }}\');
-      liteVimeo.setAttribute(\'autoload\', \'\');
-      liteVimeo.setAttribute(\'autoplay\', \'\');
-      {% if content.vimeo.start_time %}
-      liteVimeo.setAttribute(\'videoPlay\', \'{{content.vimeo.start_time.style}}\');
-      {% endif %}
-      liteVimeo.classList.add(\'ee-video\');
-      container.appendChild(liteVimeo);
-      container.removeChild(poster);
-      liteVimeo.click();
-    });
-  }
-}'],'scripts' => ['%%BREAKDANCE_ELEMENTS_PLUGIN_URL%%dependencies-files/lite-vimeo-embed@0.1/lite-vimeo.js'],],'2' =>  ['title' => 'lozad','scripts' => ['%%BREAKDANCE_ELEMENTS_PLUGIN_URL%%dependencies-files/lozard@1/lozad.min.js'],'inlineScripts' => ['const observer = lozad();
-observer.observe();'],],];
+        return ['0' =>  ['inlineScripts' => [' document.querySelectorAll(\'.module-container\').forEach(function(container){
+    var textBlock = container.querySelector(\'.module-columns.module-text\');
+    if (textBlock && !textBlock.textContent.trim()) {
+      // completely remove the empty block
+      textBlock.remove();
+      // collapse the container gap
+      container.style.gap = \'0\';
+    }
+  });'],],];
     }
 
     static function settings()
