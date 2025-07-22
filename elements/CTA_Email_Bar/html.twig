@@ -26,7 +26,9 @@
     {% set diagonalColor = design.theme_color.color == 'purple' ? '4EC7D4' : 'be72f8' %}
     <div class="cta-diagonal"></div>
     {# EMAIL #}
-    {% set email_embed = content.email.embed_code  %}
-    {{ email_embed|raw }}
+    {% set email_embed = content.shortcode.full_shortcode  %}
+    {% if email_embed %}
+      <div class="demo-gradient-border-wrapper">%%SSR%%</div>
+    {% endif %}
   </div>
 </div>

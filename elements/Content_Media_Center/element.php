@@ -72,7 +72,24 @@ class Contentmediacenter extends \Breakdance\Elements\Element
     static function defaultProperties()
     {
         return [
-            'content' => getSharedDefaults(),
+            'content' => array_replace_recursive(
+                getSharedDefaults(),
+                [
+                    'media' => [
+                        'image_or_video' => 'image',
+                    ],
+                    'image' => [
+                        'from' => 'url',
+                        'url' => '/wp-content/uploads/2025/06/Placeholder-1060x600-1.png',
+                        'media' => 0,
+                        'alt' => [
+                            'type' => 'custom',
+                            'customAlt' => 'Placeholder image',
+                        ],
+                        'lazyLoad' => false,
+                    ],
+                ]
+            ),
         ];
     }
 

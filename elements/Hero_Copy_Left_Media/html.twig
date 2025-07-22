@@ -24,20 +24,6 @@
       <p>{{ body }}</p>
     {% endif %}
 
-    {# LIST TITLE #}
-    {% set list_title = content.list_title  %}
-    {% if list_title %}
-      <h4>{{ list_title }}</h4>
-    {% endif %}
-
-    {# LIST #}
-    {% set list_items = content.list_items  %}
-    <ul>
-      {% for item in list_items %}
-        <li>{{ item }}</li>
-      {% endfor %}
-    </ul>
-
     {# BUTTONS #}
     {% set pb = content.buttons.primary_button|default({}) %}
     {% set sb = content.buttons.secondary_button|default({}) %}
@@ -66,19 +52,44 @@
     {% endif %}
   </div>
 
-  {# MEDIA #}
+  {{# MEDIA #}
   {% set media_type = content.media.image_or_video  %}
   {% if media_type == 'image' %}
     <div class="hero-module module-media">
     {% if content.image.media %}
         {{ macros.image(content.image.media, content.content.size, alt, lazyLoad) }}
       {% else %}
-        <img src="/wp-content/uploads/2025/06/Placeholder-1-1.png" alt="Placeholder image" class="breakdance-image-object" style="width:100%; height:auto;" />
+        <img src="/wp-content/uploads/2025/06/Placeholder.png" alt="Placeholder image" class="breakdance-image-object" style="width:100%; height:auto;" />
       {% endif %}
     </div>
   {% elseif media_type == 'video' %}
     <div class="ee-video-container">
-      {# ... video embed code ... #}
+      {% if content.video.video.provider == 'vimeo' %}
+        {% set isLazyLoad = content.vimeo.loading_method != 'embed' and not isBuilder %}
+        {% set srcAttribute = isLazyLoad ? 'data-src' : 'src' %}
+        <div class="ee-video ee-vimeo">
+          <iframe
+            class="ee-video {{ isLazyLoad ? 'lozad' : '' }}"
+            title="{{ content.video.video.title }}"
+            {{ srcAttribute }}="{{ content.video.video.embedUrl }}{{ content.vimeo.autoplay ? '&autoplay=1' }}{{ content.vimeo.hide_player_controls ? '&controls=0' : '&controls=1' }}{{ content.vimeo.loop ? '&loop=1' : '' }}{{ content.vimeo.mute ? '&muted=1' : '' }}{{ not content.vimeo.play_inline ? '&playsinline=0' : '' }}{{ content.vimeo.start_time ? '#t=' ~ content.vimeo.start_time.number : '' }}"
+            width="100%" height="100%" frameborder="0"
+            allow="autoplay; fullscreen; picture-in-picture" allowfullscreen>
+          </iframe>
+        </div>
+      {% endif %}
+      {% if content.video.video.provider == 'youtube' %}
+        {% set isLazyLoad = content.youtube.loading_method != 'embed' and not isBuilder %}
+        {% set srcAttribute = isLazyLoad ? 'data-src' : 'src' %}
+        <div class="ee-video ee-youtube">
+          <iframe
+            class="ee-video {{ isLazyLoad ? 'lozad' : '' }}"
+            title="{{ content.video.video.title }}"
+            {{ srcAttribute }}="{{ content.video.video.embedUrl }}{{ content.youtube.autoplay ? '&autoplay=1' }}{{ content.youtube.hide_player_controls ? '&controls=0' : '&controls=1' }}{{ content.youtube.loop ? '&loop=1' : '' }}{{ content.youtube.mute ? '&muted=1' : '' }}{{ not content.youtube.play_inline ? '&playsinline=0' : '' }}{{ content.youtube.start_time ? '&start=' ~ content.youtube.start_time.number : '' }}"
+            width="100%" height="100%" frameborder="0"
+            allow="autoplay; fullscreen; picture-in-picture" allowfullscreen>
+          </iframe>
+        </div>
+      {% endif %}
     </div>
   {% endif %}
 </div>

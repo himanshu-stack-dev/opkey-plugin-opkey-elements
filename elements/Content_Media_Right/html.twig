@@ -24,20 +24,6 @@
       <p>{{ body }}</p>
     {% endif %}
 
-    {# LIST TITLE #}
-    {% set list_title = content.list_title  %}
-    {% if list_title %}
-      <h4>{{ list_title }}</h4>
-    {% endif %}
-
-    {# LIST #}
-    {% set list_items = content.list_items  %}
-    <ul>
-      {% for item in list_items %}
-        <li>{{ item }}</li>
-      {% endfor %}
-    </ul>
-
     {# BUTTONS #}
     {% set pb = content.buttons.primary_button|default({}) %}
     {% set sb = content.buttons.secondary_button|default({}) %}
