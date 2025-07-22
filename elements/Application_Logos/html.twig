@@ -26,40 +26,37 @@
   </div>
 
   <div class="logo-grid">
-    <div class="module-text">
-      {# SUPPORTING COPY #}
-      {% set supporting = content.supporting_copy.text %}
-      {% if supporting %}
-        <p>{{ supporting }}</p>
-      {% endif %}
-      
-      {# BUTTONS #}
-      {% set pb = content.buttons.primary_button|default({}) %}
-      {% set sb = content.buttons.secondary_button|default({}) %}
+  <div class="module-text">
+    {# SUPPORTING COPY #}
+    <p>{{ content.support_copy.text }}</p>
 
-      {% if pb.text|default('')|trim or sb.text|default('')|trim %}
-        <div class="content-module module-buttons">
-          {% if pb.text|default('')|trim %}
-            {{ macros.atomV1ButtonHtml(
-                 pb,
-                 'opkey-primary',
-                 path.to.button_design_preset_section,
-                 'primary',
-                 pb.text|trim
-               ) }}
-          {% endif %}
-          {% if sb.text|default('')|trim %}
-            {{ macros.atomV1ButtonHtml(
-                 sb,
-                 'opkey-link-text',
-                 path.to.button_design_preset_section,
-                 'secondary',
-                 sb.text|trim
-               ) }}
-          {% endif %}
-        </div>
-      {% endif %}
-    </div>
+    {# BUTTONS #}
+    {% set pb = content.buttons.primary_button|default({}) %}
+    {% set sb = content.buttons.secondary_button|default({}) %}
+
+    {% if pb.text|default('')|trim or sb.text|default('')|trim %}
+      <div class="content-module module-buttons">
+        {% if pb.text|default('')|trim %}
+          {{ macros.atomV1ButtonHtml(
+               pb,
+               'opkey-primary',
+               path.to.button_design_preset_section,
+               'primary',
+               pb.text|trim
+             ) }}
+        {% endif %}
+        {% if sb.text|default('')|trim %}
+          {{ macros.atomV1ButtonHtml(
+               sb,
+               'opkey-link-text',
+               path.to.button_design_preset_section,
+               'secondary',
+               sb.text|trim
+             ) }}
+        {% endif %}
+      </div>
+    {% endif %}
+  </div>
 
     {# Placeholder/fallback logos #}
     {% set logos = [
@@ -72,8 +69,8 @@
     ] %}
 
     <div class="un-static-image-grid">
-      {% if content.settings.logos is defined and content.settings.logos|length > 0 %}
-        {% for item in content.settings.logos %}
+      {% if content.logos.logos is defined and content.logos.logos|length > 0 %}
+        {% for item in content.logos.logos %}
           {% if item.link %}
             {{ macros.linkStart(item.link, 'un-logo-bar__logo-wrapper') }}
               {{ macros.image(item.image, item.size, item.alt, false) }}
