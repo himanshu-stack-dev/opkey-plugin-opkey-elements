@@ -24,31 +24,31 @@
   {% endif %}
 
   {# BUTTONS #}
-{% set pb = content.buttons.primary_button|default({}) %}
-{% set sb = content.buttons.secondary_button|default({}) %}
+  {% set pb = content.buttons.primary_button|default({}) %}
+  {% set sb = content.buttons.secondary_button|default({}) %}
 
-{% if pb.text|default('')|trim or sb.text|default('')|trim %}
-  <div class="content-module module-buttons">
-    {% if pb.text|default('')|trim %}
-      {{ macros.atomV1ButtonHtml(
-           pb,
-           'opkey-primary',
-           path.to.button_design_preset_section,
-           'primary',
-           pb.text|trim
-         ) }}
-    {% endif %}
-    {% if sb.text|default('')|trim %}
-      {{ macros.atomV1ButtonHtml(
-           sb,
-           'opkey-link-text',
-           path.to.button_design_preset_section,
-           'secondary',
-           sb.text|trim
-         ) }}
-    {% endif %}
-  </div>
-{% endif %}
+  {% if pb.text|default('')|trim or sb.text|default('')|trim %}
+    <div class="content-module module-buttons">
+      {% if pb.text|default('')|trim %}
+        {{ macros.atomV1ButtonHtml(
+             pb,
+             'opkey-primary',
+             path.to.button_design_preset_section,
+             'primary',
+             pb.text|trim
+           ) }}
+      {% endif %}
+      {% if sb.text|default('')|trim %}
+        {{ macros.atomV1ButtonHtml(
+             sb,
+             'opkey-link-text',
+             path.to.button_design_preset_section,
+             'secondary',
+             sb.text|trim
+           ) }}
+      {% endif %}
+    </div>
+  {% endif %}
 
   {# SLIDER #}
    {% set logo_items = (content.logos.logo ?? content.logos.logos ?? content.logos ?? []) %}
