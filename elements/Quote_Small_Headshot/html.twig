@@ -1,3 +1,14 @@
+{% set defaults = {
+  quote: {
+    title: 'Lorem ipsum dolor sit amet consectetur adipiscing elit',
+    text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+    headshot: '/wp-content/uploads/2025/07/Placeholder_headshot.png',
+    name: 'Lorem Dolor',
+    role_company: 'Lorem ipsum, Company',
+    button: { text: 'Learn more', url: '#' }
+  }
+} %}
+
 <div class="module-container">
   <div class="module-text">
     {# EYEBROW #}
@@ -5,14 +16,15 @@
     {% if eyebrow %}
       <div class="eyebrow">{{ eyebrow }}</div>
     {% endif %}
+
     {# HEADING #}
-    {% set heading = content.heading.text  %}
+    {% set heading = content.heading.text %}
     {% if heading %}
       <h2>{{ heading }}</h2>
     {% endif %}
 
     {# SUBHEAD #}
-    {% set subhead = content.subhead.text  %}
+    {% set subhead = content.subhead.text %}
     {% if subhead %}
       <h4>{{ subhead }}</h4>
     {% endif %}
@@ -25,109 +37,86 @@
       <div class="content-module module-buttons">
         {% if pb.text|default('')|trim %}
           {{ macros.atomV1ButtonHtml(
-               pb,
-               'opkey-primary',
-               path.to.button_design_preset_section,
-               'primary',
-               pb.text|trim
-             ) }}
+            pb,
+            'opkey-primary',
+            path.to.button_design_preset_section,
+            'primary',
+            pb.text|trim
+          ) }}
         {% endif %}
         {% if sb.text|default('')|trim %}
           {{ macros.atomV1ButtonHtml(
-               sb,
-               'opkey-link-text',
-               path.to.button_design_preset_section,
-               'secondary',
-               sb.text|trim
-             ) }}
+            sb,
+            'opkey-link-text',
+            path.to.button_design_preset_section,
+            'secondary',
+            sb.text|trim
+          ) }}
         {% endif %}
       </div>
     {% endif %}
   </div>
+
   <div class="module-quote">
     <div class="quote-content">
       <div class="gradient-wrapper">
         <div class="breakdance-swiper-wrapper" data-swiper-id="%%ID%%">
           <div class="swiper swiper-%%UNIQUESLUG%%">
             <div class="swiper-wrapper">
-              {% if content.quotes.slides and content.quotes.slides|length > 0 %}
-                {% for item in content.quotes.slides %}
-                  <div class="swiper-slide">
-                    <div class="bde-basicslider__slide">
-                      <div class="bde-basicslider__content">
-                        <{{content.content.title_html_tag}} class="bde-basicslider__title">
-                          {{ item.title }}
-                        </{{content.content.title_html_tag}}>
-                        <div class="bde-basicslider__text">
-                          {{ item.text }}
-                        </div>
-                        <div class="quote-attribution">
-                          <div class="headshot">
-                            {% if item.headshot is not empty %}
-                              {{ macros.image(item.headshot, content.content.size, alt, lazyLoad) }}
-                            {% else %}
-                              <img src="/wp-content/uploads/2025/07/Placeholder_headshot.png" alt="Placeholder headshot" loading="lazy">
-                            {% endif %}
-                          </div>
-                          <div class="name-company">
-                            <div class="name">{{ item.name }}</div>
-                            <div class="company">{{ item.role_company }}</div>
-                          </div>
-                        </div>
-                        {% if item.button.text or true %}
-                          {{ macros.atomV1ButtonHtml(
-                            {
-                              text: item.button.text,
-                              url: item.button.url
-                            },
-                            'bde-basicslider__button opkey-link-text',
-                            design.button,
-                            'content.quotes.slides[' ~ loop.index0 ~ '].button.text'
-                          ) }}
-                        {% endif %}
-                      </div>
-                    </div>
-                  </div>
-                {% endfor %}
-              {% else %}
+              {% set slides = (content.quotes.slides is defined and content.quotes.slides|length > 0) 
+                  ? content.quotes.slides 
+                  : [defaults.quote] %}
+
+              {% for item in slides %}
+              {% set is_fallback = item.text == defaults.quote.text %}
+
+                {% set btn_text = item.link_to_case_study.text|default('')|trim %}
+                {% set btn_url = item.link_to_case_study.url|default('#')|trim %}
+
                 <div class="swiper-slide">
                   <div class="bde-basicslider__slide">
                     <div class="bde-basicslider__content">
-                      <h4 class="bde-basicslider__title">Lorem ipsum dolor sit amet consectetur adipiscing elit</h4>
-                      <div class="bde-basicslider__text">
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                      </div>
+                      <h4 class="bde-basicslider__title">{{ item.title }}</h4>
+                      <div class="bde-basicslider__text">{{ item.text }}</div>
                       <div class="quote-attribution">
                         <div class="headshot">
-                          <img src="/wp-content/uploads/2025/07/Placeholder_headshot.png" alt="Placeholder headshot" loading="lazy">
+                         {% if item.headshot is defined and item.headshot is not empty 
+                                and (item.headshot.url is defined or item.headshot.ID is defined or item.headshot.id is defined) %}
+                            {{ macros.image(item.headshot, content.content.size, alt, lazyLoad) }}
+                          {% else %}
+                            <img src="{{ defaults.quote.headshot }}" alt="Placeholder headshot" loading="lazy">
+                          {% endif %}
                         </div>
                         <div class="name-company">
-                          <div class="name">Lorem Dolor</div>
-                          <div class="company">Lorem ipsum, Company</div>
+                          <div class="name">{{ item.name }}</div>
+                          <div class="company">{{ item.role_company }}</div>
                         </div>
                       </div>
-                      {{ macros.atomV1ButtonHtml(
-                        {
-                          text: 'Learn more',
-                          url: '#'
-                        },
-                        'bde-basicslider__button opkey-link-text',
-                        design.button,
-                        'content.quotes.slides[0].button.text'
-                      ) }}
+                      {% if (btn_text and btn_url != '') or is_fallback %}
+                          {{ macros.atomV1ButtonHtml(
+                            is_fallback 
+                              ? defaults.quote.button 
+                              : { text: btn_text, url: btn_url },
+                            'bde-basicslider__button opkey-link-text',
+                            design.button,
+                            'content.quotes.slides[' ~ loop.index0 ~ '].link_to_case_study.text'
+                          ) }}
+                      {% endif %}
                     </div>
                   </div>
                 </div>
-              {% endif %}
+              {% endfor %}
             </div>
           </div>
         </div>
       </div>
     </div>
+    {% if slides|length > 1 %}
     <div class="slider-navigation">
       <button class="swiper-button-prev swiper-button-prev-%%UNIQUESLUG%% custom-nav-btn"></button>
       <div class="swiper-pagination swiper-pagination-%%UNIQUESLUG%%"></div>
       <button class="swiper-button-next swiper-button-next-%%UNIQUESLUG%% custom-nav-btn"></button>
     </div>
+    {% endif %}
   </div>
 </div>
