@@ -18,16 +18,18 @@
       {% endif %}
 
       {# BUTTON #}
-      {% set remove_button = content.button.remove_ is defined and content.button.remove_ == true %}
-      {% if not remove_button %}
-        {% set primary_button = content.button.primary_button.text  %}
-        {% if primary_button %}
+      {% set pb = content.buttons.primary_button|default({}) %}
+
+      {% if pb.text|default('')|trim %}
         <div class="content-module module-buttons">
-          {% if primary_button %}
-            {{ macros.atomV1ButtonHtml(content.button.primary_button, 'opkey-link-text', path.to.button_design_preset_section, 'secondary', primary_button) }}
-          {% endif %}
+          {{ macros.atomV1ButtonHtml(
+               pb,
+               'opkey-primary',
+               path.to.button_design_preset_section,
+               'primary',
+               pb.text|trim
+             ) }}
         </div>
-        {% endif %}
       {% endif %}
     </div>
     {# IMAGE with robust fallback #}
