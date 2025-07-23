@@ -172,11 +172,22 @@ class Leftnavtwocolumnright extends \Breakdance\Elements\Element
         false,
         [],
       ), c(
-        "columns",
-        "Columns",
+        "categories",
+        "Categories",
         [c(
-        "column",
-        "Column",
+        "category",
+        "Category",
+        [c(
+        "title",
+        "Title",
+        [],
+        ['type' => 'text', 'layout' => 'vertical'],
+        false,
+        false,
+        [],
+      ), c(
+        "resources",
+        "Resources",
         [c(
         "icon",
         "Icon",
@@ -197,7 +208,7 @@ class Leftnavtwocolumnright extends \Breakdance\Elements\Element
         "content",
         "Content",
         [],
-        ['type' => 'text', 'layout' => 'vertical'],
+        ['type' => 'richtext', 'layout' => 'vertical'],
         false,
         false,
         [],
@@ -207,6 +218,11 @@ class Leftnavtwocolumnright extends \Breakdance\Elements\Element
       "button",
        ['type' => 'popout']
      )],
+        ['type' => 'repeater', 'layout' => 'vertical'],
+        false,
+        false,
+        [],
+      )],
         ['type' => 'repeater', 'layout' => 'vertical'],
         false,
         false,
@@ -226,53 +242,105 @@ class Leftnavtwocolumnright extends \Breakdance\Elements\Element
 
     static function dependencies()
     {
-        return ['0' =>  ['scripts' => ['%%BREAKDANCE_ELEMENTS_PLUGIN_URL%%dependencies-files/swiper@8/swiper-bundle.min.js','%%BREAKDANCE_ELEMENTS_PLUGIN_URL%%dependencies-files/breakdance-swiper/breakdance-swiper.js'],'styles' => ['%%BREAKDANCE_ELEMENTS_PLUGIN_URL%%dependencies-files/swiper@8/swiper-bundle.min.css','%%BREAKDANCE_ELEMENTS_PLUGIN_URL%%dependencies-files/swiper@8/breakdance-swiper-preset-defaults.css'],'inlineScripts' => [';(function(){
+        return ['0' =>  ['scripts' => ['%%BREAKDANCE_ELEMENTS_PLUGIN_URL%%dependencies-files/swiper@8/swiper-bundle.min.js','%%BREAKDANCE_ELEMENTS_PLUGIN_URL%%dependencies-files/breakdance-swiper/breakdance-swiper.js'],'styles' => ['%%BREAKDANCE_ELEMENTS_PLUGIN_URL%%dependencies-files/swiper@8/swiper-bundle.min.css','%%BREAKDANCE_ELEMENTS_PLUGIN_URL%%dependencies-files/swiper@8/breakdance-swiper-preset-defaults.css'],'inlineScripts' => [';(function () {
   const config = {
     slidesPerView: 1,
     slidesPerGroup: 1,
     spaceBetween: 20,
-    grid: { rows: 1, fill: \'row\' },
-
+    grid: { rows: 1, fill: "row" },
     breakpoints: {
-      // Small screens: single column
-      600:  { 
-        slidesPerView: 2, 
-        slidesPerGroup: 2, 
-        grid: { rows: 2, fill: \'row\' } // 2x2 grid (2 per col, 2 rows)
+      600: {
+        slidesPerView: 2,
+        slidesPerGroup: 2,
+        grid: { rows: 2, fill: "row" }
       },
-      // Desktop: 2x2 grid (shows 4 cards at once)
-      1024: { 
-        slidesPerView: 2, 
-        slidesPerGroup: 4, 
-        grid: { rows: 2, fill: \'row\' } 
+      1024: {
+        slidesPerView: 2,
+        slidesPerGroup: 4,
+        grid: { rows: 2, fill: "row" }
       }
     },
-
     navigation: {
-      nextEl: \'.slider-navigation .swiper-button-next-%%UNIQUESLUG%%\',
-      prevEl: \'.slider-navigation .swiper-button-prev-%%UNIQUESLUG%%\'
+      nextEl: ".slider-navigation .swiper-button-next-%%UNIQUESLUG%%",
+      prevEl: ".slider-navigation .swiper-button-prev-%%UNIQUESLUG%%"
     },
     pagination: {
-      el: \'.slider-navigation .swiper-pagination-%%UNIQUESLUG%%\',
+      el: ".slider-navigation .swiper-pagination-%%UNIQUESLUG%%",
       clickable: true,
-      type: \'bullets\'
+      type: "bullets"
     }
   };
 
   function initColumnsSlider() {
-    document
-      .querySelectorAll(\'.swiper-%%UNIQUESLUG%%\')
-      .forEach(el => {
-        if (!el.swiper) {
-          new Swiper(el, config);
+    document.querySelectorAll(".swiper-%%UNIQUESLUG%%").forEach((el) => {
+      const container = el.closest(".module-container");
+      const paginationEl = container.querySelector(".slider-navigation .swiper-pagination-%%UNIQUESLUG%%");
+      config.pagination.el = paginationEl;
+
+      if (!el.swiper) {
+        const swiper = new Swiper(el, config);
+        wireCategoryFilter(swiper, el);
+      }
+    });
+  }
+
+  function wireCategoryFilter(swiper, sliderEl) {
+    const container = sliderEl.closest(".module-container");
+    const tabs = container.querySelectorAll(".bde-tab[data-category-index]");
+    const dropdown = container.querySelector("#category-select-%%UNIQUESLUG%%");
+    const wrapper = sliderEl.querySelector(".swiper-wrapper");
+    const allSlides = container.querySelectorAll(".all-slide-groups .swiper-slide");
+
+    function showCategory(catIndex) {
+      catIndex = String(catIndex).trim();
+      wrapper.innerHTML = "";
+
+      allSlides.forEach((slide) => {
+        if (String(slide.dataset.categoryIndex).trim() === catIndex) {
+          wrapper.appendChild(slide.cloneNode(true));
         }
       });
+
+      swiper.slides = swiper.wrapperEl.querySelectorAll(`.${swiper.params.slideClass}`);
+      swiper.update();
+
+      setTimeout(() => {
+        if (swiper.pagination?.el) {
+          swiper.pagination.render();
+          swiper.pagination.update();
+        }
+      }, 50);
+
+      swiper.slideTo(0, 0);
+
+      tabs.forEach((t) => {
+        const isActive = String(t.dataset.categoryIndex).trim() === catIndex;
+        t.setAttribute("aria-selected", isActive ? "true" : "false");
+        t.classList.toggle("is-active", isActive);
+      });
+    }
+
+    tabs.forEach((tab) => {
+      tab.addEventListener("click", () => {
+        showCategory(tab.dataset.categoryIndex);
+      });
+    });
+
+    if (dropdown) {
+      dropdown.addEventListener("change", (e) => {
+        showCategory(e.target.value);
+      });
+    }
+
+    if (tabs.length > 0) {
+      showCategory(tabs[0].dataset.categoryIndex);
+    }
   }
 
   initColumnsSlider();
 
   if (window.BREAKDANCE) {
-    window.BREAKDANCE.on(\'builder:loaded builder:rendered\', initColumnsSlider);
+    window.BREAKDANCE.on("builder:loaded builder:rendered", initColumnsSlider);
   }
 })();
 '],],];
@@ -339,7 +407,7 @@ class Leftnavtwocolumnright extends \Breakdance\Elements\Element
 
     static function dynamicPropertyPaths()
     {
-        return [['accepts' => 'string', 'path' => 'content.content.text'], ['accepts' => 'string', 'path' => 'content.content.link.url'], ['accepts' => 'string', 'path' => 'content.buttons.add_button.button.text'], ['accepts' => 'string', 'path' => 'content.buttons.add_button.button.link.url'], ['accepts' => 'string', 'path' => 'content.columns.box.button.text'], ['accepts' => 'string', 'path' => 'content.columns.box.button.link.url'], ['accepts' => 'string', 'path' => 'content.buttons.secondary_button.text'], ['accepts' => 'string', 'path' => 'content.buttons.secondary_button.link.url']];
+        return [['accepts' => 'string', 'path' => 'content.content.text'], ['accepts' => 'string', 'path' => 'content.content.link.url'], ['accepts' => 'string', 'path' => 'content.buttons.add_button.button.text'], ['accepts' => 'string', 'path' => 'content.buttons.add_button.button.link.url'], ['accepts' => 'string', 'path' => 'content.columns.box.button.text'], ['accepts' => 'string', 'path' => 'content.columns.box.button.link.url'], ['accepts' => 'string', 'path' => 'content.buttons.secondary_button.text'], ['accepts' => 'string', 'path' => 'content.buttons.secondary_button.link.url'], ['accepts' => 'string', 'path' => 'content.categories.category[4].resources.content.text'], ['accepts' => 'string', 'path' => 'content.categories.category[4].resources.content.link.url'], ['accepts' => 'string', 'path' => 'content.categories.category[3].resources.button.text'], ['accepts' => 'string', 'path' => 'content.categories.category[3].resources.button.link.url']];
     }
 
     static function additionalClasses()
