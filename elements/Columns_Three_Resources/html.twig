@@ -25,25 +25,31 @@
     {% endif %}
 
     {# BUTTONS #}
-    {% set remove_buttons = content.buttons.remove_ is defined and content.buttons.remove_ == true %}
+    {% set pb = content.buttons.primary_button|default({}) %}
+    {% set sb = content.buttons.secondary_button|default({}) %}
 
-    {% if not remove_buttons %}
-    {% set primary_button = content.buttons.primary_button.text  %}
-    {% set has_secondary = content.buttons.secondary_button is defined and content.buttons.secondary_button.text is defined %}
-    {% set secondary_button_obj = has_secondary ? content.buttons.secondary_button : { text: 'Learn more', url: '#' } %}
-    {% set secondary_button_label = secondary_button_obj.text  %}
-
-    {% if primary_button or secondary_button_label %}
+    {% if pb.text|default('')|trim or sb.text|default('')|trim %}
       <div class="content-module module-buttons">
-        {% if primary_button %}
-          {{ macros.atomV1ButtonHtml(content.buttons.primary_button, 'opkey-primary', path.to.button_design_preset_section, 'primary', primary_button) }}
+        {% if pb.text|default('')|trim %}
+          {{ macros.atomV1ButtonHtml(
+               pb,
+               'opkey-primary',
+               path.to.button_design_preset_section,
+               'primary',
+               pb.text|trim
+             ) }}
         {% endif %}
-        {% if secondary_button_label %}
-          {{ macros.atomV1ButtonHtml(secondary_button_obj, 'opkey-link-text', path.to.button_design_preset_section, 'secondary', secondary_button_label) }}
+        {% if sb.text|default('')|trim %}
+          {{ macros.atomV1ButtonHtml(
+               sb,
+               'opkey-link-text',
+               path.to.button_design_preset_section,
+               'secondary',
+               sb.text|trim
+             ) }}
         {% endif %}
       </div>
     {% endif %}
-  {% endif %}
   </div>
 
   {# COLUMNS #}  
@@ -103,17 +109,14 @@
             <p>{{ item.content  }}</p>
 
             {# BUTTON with fallback #}
-            {% set button_obj = (item.button is defined and item.button.text|length > 0) 
-              ? item.button 
-              : { text: 'Learn more', url: '#' } %}
-            {% if button_obj.text %}
+            {% if item.button is defined and item.button.text|default('')|trim != '' %}
               <div class="content-module module-buttons">
                 {{ macros.atomV1ButtonHtml(
-                    button_obj,
-                    'opkey-link-text',
-                    path.to.button_design_preset_section,
-                    'secondary',
-                    button_obj.text
+                  item.button,
+                  'opkey-link-text',
+                  path.to.button_design_preset_section,
+                  'secondary',
+                  item.button.text|trim
                 ) }}
               </div>
             {% endif %}

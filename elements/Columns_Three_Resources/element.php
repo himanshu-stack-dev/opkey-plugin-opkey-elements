@@ -4,7 +4,6 @@ namespace BreakdanceCustomElements;
 
 use function Breakdance\Elements\c;
 use function Breakdance\Elements\PresetSections\getPresetSection;
-use function OpkeyCustomElements\getSharedDefaults;
 
 
 \Breakdance\ElementStudio\registerElementForEditing(
@@ -71,9 +70,7 @@ class Columnsthreeresources extends \Breakdance\Elements\Element
 
     static function defaultProperties()
     {
-        return [
-            'content' => getSharedDefaults(),
-        ];
+        return ['content' => ['eyebrow' => ['text' => 'Lorem ipsum dolor'], 'heading' => ['text' => 'Lorem ipsum dolor sit amet'], 'subhead' => ['text' => 'Lorem ipsum dolor sit amet consectetur adipiscing elit'], 'content' => ['text' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.'], 'buttons' => ['primary_button' => ['text' => 'Contact sales', 'link' => '#'], 'secondary_button' => ['text' => 'Learn more', 'link' => '#']]]];
     }
 
     static function defaultChildren()
@@ -201,27 +198,21 @@ class Columnsthreeresources extends \Breakdance\Elements\Element
       ), c(
         "buttons",
         "Buttons",
-        [
-          getPresetSection(
-            "EssentialElements\\AtomV1ButtonContent",
-            "Primary Button",
-            "primary_button",
-            [ 'type' => 'popout' ]
-          ),
-          getPresetSection(
-            "EssentialElements\\AtomV1ButtonContent",
-            "Secondary Button",
-            "secondary_button",
-            [ 'type' => 'popout' ]
-          ),
-        ],
-        [
-          'type'   => 'section',
-          'layout' => 'vertical',
-        ],
+        [getPresetSection(
+      "EssentialElements\\AtomV1ButtonContent",
+      "Primary Button",
+      "primary_button",
+       ['type' => 'popout']
+     ), getPresetSection(
+      "EssentialElements\\AtomV1ButtonContent",
+      "Secondary Button",
+      "secondary_button",
+       ['type' => 'popout']
+     )],
+        ['type' => 'section', 'layout' => 'vertical'],
         false,
         false,
-        []
+        [],
       ), c(
         "columns",
         "Columns",
@@ -229,6 +220,22 @@ class Columnsthreeresources extends \Breakdance\Elements\Element
         "column",
         "Column",
         [c(
+        "image",
+        "Image",
+        [],
+        ['type' => 'wpmedia', 'layout' => 'vertical'],
+        false,
+        false,
+        [],
+      ), c(
+        "eyebrow",
+        "Eyebrow",
+        [],
+        ['type' => 'text', 'layout' => 'vertical'],
+        false,
+        false,
+        [],
+      ), c(
         "heading",
         "Heading",
         [],
@@ -237,18 +244,10 @@ class Columnsthreeresources extends \Breakdance\Elements\Element
         false,
         [],
       ), c(
-        "stat",
-        "Stat",
-        [],
-        ['type' => 'number', 'layout' => 'vertical'],
-        false,
-        false,
-        [],
-      ), c(
         "content",
         "Content",
         [],
-        ['type' => 'text', 'layout' => 'vertical'],
+        ['type' => 'richtext', 'layout' => 'vertical'],
         false,
         false,
         [],

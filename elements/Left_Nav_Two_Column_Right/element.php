@@ -294,6 +294,26 @@ class Leftnavtwocolumnright extends \Breakdance\Elements\Element
       type: "bullets"
     }
   };
+  
+  function equalizeCardHeights(wrapper) {
+    const cards = wrapper.querySelectorAll(\'.swiper-slide .card\');
+    let maxHeight = 0;
+
+    // Reset heights first
+    cards.forEach(card => {
+      card.style.height = \'auto\';
+    });
+
+    // Find max height
+    cards.forEach(card => {
+      maxHeight = Math.max(maxHeight, card.offsetHeight);
+    });
+
+    // Apply uniform height
+    cards.forEach(card => {
+      card.style.height = `${maxHeight}px`;
+    });
+  }
 
   function initColumnsSlider() {
     document.querySelectorAll(".swiper-%%UNIQUESLUG%%").forEach((el) => {
