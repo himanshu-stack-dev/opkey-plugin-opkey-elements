@@ -4,6 +4,7 @@ namespace BreakdanceCustomElements;
 
 use function Breakdance\Elements\c;
 use function Breakdance\Elements\PresetSections\getPresetSection;
+use function OpkeyCustomElements\getSharedDefaults;
 
 
 \Breakdance\ElementStudio\registerElementForEditing(
@@ -70,7 +71,26 @@ class Herocopyleftmediaemail extends \Breakdance\Elements\Element
 
     static function defaultProperties()
     {
-        return ['content' => ['eyebrow' => ['text' => 'Lorem ipsum dolor'], 'heading' => ['text' => 'Lorem ipsum dolor sit amet'], 'subhead' => ['text' => 'Lorem ipsum dolor sit amet consectetur adipiscing elit'], 'content' => ['text' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.'], 'buttons' => ['primary_button' => ['text' => 'Contact sales', 'link' => '#'], 'secondary_button' => ['text' => 'Learn more', 'link' => '#']]]];
+        return [
+            'content' => array_replace_recursive(
+                getSharedDefaults(),
+                [
+                    'media' => [
+                        'image_or_video' => 'image',
+                    ],
+                    'image' => [
+                        'from' => 'url',
+                        'url' => '/wp-content/uploads/2025/06/Placeholder-1-1.png',
+                        'media' => 0,
+                        'alt' => [
+                            'type' => 'custom',
+                            'customAlt' => 'Placeholder image',
+                        ],
+                        'lazyLoad' => false,
+                    ],
+                ]
+            ),
+        ];
     }
 
     static function defaultChildren()

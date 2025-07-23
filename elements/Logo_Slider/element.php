@@ -233,6 +233,14 @@ class Logoslider extends \Breakdance\Elements\Element
         false,
         [],
       ), c(
+        "scroll_",
+        "Scroll?",
+        [],
+        ['type' => 'toggle', 'layout' => 'inline'],
+        false,
+        false,
+        [],
+      ), c(
         "logo",
         "Logo",
         [c(
