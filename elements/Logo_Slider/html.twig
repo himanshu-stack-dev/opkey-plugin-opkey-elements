@@ -6,19 +6,19 @@
   {% endif %}
 
   {# HEADING #}
-  {% set heading = content.heading.text  %}
+  {% set heading = content.heading.text %}
   {% if heading %}
     <h2>{{ heading }}</h2>
   {% endif %}
 
   {# SUBHEAD #}
-  {% set subhead = content.subhead.text  %}
+  {% set subhead = content.subhead.text %}
   {% if subhead %}
     <h4>{{ subhead }}</h4>
   {% endif %}
 
   {# BODY #}
-  {% set body = content.content.text  %}
+  {% set body = content.content.text %}
   {% if body %}
     <p>{{ body }}</p>
   {% endif %}
@@ -30,58 +30,76 @@
   {% if pb.text|default('')|trim or sb.text|default('')|trim %}
     <div class="content-module module-buttons">
       {% if pb.text|default('')|trim %}
-        {{ macros.atomV1ButtonHtml(
-             pb,
-             'opkey-primary',
-             path.to.button_design_preset_section,
-             'primary',
-             pb.text|trim
-           ) }}
+        {{ macros.atomV1ButtonHtml(pb, 'opkey-primary', path.to.button_design_preset_section, 'primary', pb.text|trim) }}
       {% endif %}
       {% if sb.text|default('')|trim %}
-        {{ macros.atomV1ButtonHtml(
-             sb,
-             'opkey-link-text',
-             path.to.button_design_preset_section,
-             'secondary',
-             sb.text|trim
-           ) }}
+        {{ macros.atomV1ButtonHtml(sb, 'opkey-link-text', path.to.button_design_preset_section, 'secondary', sb.text|trim) }}
       {% endif %}
     </div>
   {% endif %}
 
   {# SLIDER #}
-   {% set logo_items = (content.logos.logo ?? content.logos.logos ?? content.logos ?? []) %}
+  {% set scroll_enabled = content.logos.scroll_ in [true, 'true', 1, '1'] %}
+  {% set site_url = site.url %}
+  {% set raw_logos = content.logos.logo ?? content.logos.logos ?? content.logos ?? [] %}
+  {% set logo_items = [] %}
 
-   {% if logo_items is empty %}
-     {% set logo_items = [
-       '/wp-content/uploads/2025/07/Placeholder_180x70.png',
-       '/wp-content/uploads/2025/07/Placeholder_180x70.png',
-       '/wp-content/uploads/2025/07/Placeholder_180x70.png'
-     ] %}
-   {% endif %}
+  {# Filter out empty/null logo items #}
+  {% for item in raw_logos %}
+    {% if item is iterable or item %}
+      {% set logo_items = logo_items | merge([item]) %}
+    {% endif %}
+  {% endfor %}
 
-  <div class="un-logo-bar__marquee-content carousel-type__marquee">
-   {% for repeat in [1,2,3,4,5,6] %}
-     {% for item in logo_items %}
-       {% if item.image is defined or item.link is defined %}
-         {# It's a real user item object #}
-         {% if item.link %}
-           {{ macros.linkStart(item.link, 'un-logo-bar__logo-wrapper') }}
-             {{ macros.image(item.image, item.size, item.alt, false) }}
-           {{ macros.linkEnd() }}
-         {% else %}
-           <div class="un-logo-bar__logo-wrapper">
-             {{ macros.image(item.image, item.size, item.alt, false) }}
-           </div>
-         {% endif %}
-       {% else %}
-         {# It's a plain string fallback #}
-         <div class="un-logo-bar__logo-wrapper">
-           <img src="{{ item }}" alt="Logo placeholder">
-         </div>
-       {% endif %}
-     {% endfor %}
-   {% endfor %}
+  {% if logo_items|length == 0 %}
+    {% set logo_items = [
+      '/wp-content/uploads/2025/07/Placeholder_180x70.png',
+      '/wp-content/uploads/2025/07/Placeholder_180x70.png',
+      '/wp-content/uploads/2025/07/Placeholder_180x70.png'
+    ] %}
+  {% endif %}
+
+  <div class="un-logo-bar__marquee-content {{ scroll_enabled ? 'carousel-type__marquee' : 'carousel-type__paused' }}">
+    {% if scroll_enabled %}
+      {# Duplicate logos for marquee scroll effect #}
+      {% for repeat in [1,2,3,4,5,6] %}
+        {% for item in logo_items %}
+          {% if item is iterable %}
+            {% if item.link %}
+              {{ macros.linkStart(item.link, 'un-logo-bar__logo-wrapper') }}
+                {{ macros.image(item.image, item.size, item.alt, false) }}
+              {{ macros.linkEnd() }}
+            {% else %}
+              <div class="un-logo-bar__logo-wrapper">
+                {{ macros.image(item.image, item.size, item.alt, false) }}
+              </div>
+            {% endif %}
+          {% else %}
+            <div class="un-logo-bar__logo-wrapper">
+              <img src="{{ site_url ~ item }}" alt="Logo placeholder">
+            </div>
+          {% endif %}
+        {% endfor %}
+      {% endfor %}
+    {% else %}
+      {# Render each logo only once #}
+      {% for item in logo_items %}
+        {% if item is iterable %}
+          {% if item.link %}
+            {{ macros.linkStart(item.link, 'un-logo-bar__logo-wrapper') }}
+              {{ macros.image(item.image, item.size, item.alt, false) }}
+            {{ macros.linkEnd() }}
+          {% else %}
+            <div class="un-logo-bar__logo-wrapper">
+              {{ macros.image(item.image, item.size, item.alt, false) }}
+            </div>
+          {% endif %}
+        {% else %}
+          <div class="un-logo-bar__logo-wrapper">
+            <img src="{{ site_url ~ item }}" alt="Logo placeholder">
+          </div>
+        {% endif %}
+      {% endfor %}
+    {% endif %}
   </div>
 </div>
