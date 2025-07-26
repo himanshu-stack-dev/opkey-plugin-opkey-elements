@@ -4,7 +4,6 @@ namespace BreakdanceCustomElements;
 
 use function Breakdance\Elements\c;
 use function Breakdance\Elements\PresetSections\getPresetSection;
-use function OpkeyCustomElements\getSharedDefaults;
 
 
 \Breakdance\ElementStudio\registerElementForEditing(
@@ -71,26 +70,7 @@ class Herocopyleftmediaemail extends \Breakdance\Elements\Element
 
     static function defaultProperties()
     {
-        return [
-            'content' => array_replace_recursive(
-                getSharedDefaults(),
-                [
-                    'media' => [
-                        'image_or_video' => 'image',
-                    ],
-                    'image' => [
-                        'from' => 'url',
-                        'url' => '/wp-content/uploads/2025/06/Placeholder-1-1.png',
-                        'media' => 0,
-                        'alt' => [
-                            'type' => 'custom',
-                            'customAlt' => 'Placeholder image',
-                        ],
-                        'lazyLoad' => false,
-                    ],
-                ]
-            ),
-        ];
+        return ['content' => ['eyebrow' => ['text' => 'Lorem ipsum dolor'], 'heading' => ['text' => 'Lorem ipsum dolor sit amet'], 'subhead' => ['text' => 'Lorem ipsum dolor sit amet consectetur adipiscing elit'], 'content' => ['text' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.'], 'buttons' => ['primary_button' => ['text' => 'Contact sales', 'link' => '#'], 'secondary_button' => ['text' => 'Learn more', 'link' => '#']], 'media' => ['image_or_video' => 'image'], 'image' => ['from' => 'url', 'url' => '/wp-content/uploads/2025/06/Placeholder-1-1.png', 'media' => 0, 'alt' => ['type' => 'custom', 'customAlt' => 'Placeholder image'], 'lazyLoad' => false]]];
     }
 
     static function defaultChildren()
@@ -235,10 +215,10 @@ class Herocopyleftmediaemail extends \Breakdance\Elements\Element
         "media",
         "Media",
         [c(
-        "image_or_video",
-        "Image or Video",
+        "image_video_or_animation",
+        "Image, Video, or Animation",
         [],
-        ['type' => 'button_bar', 'layout' => 'vertical', 'items' => [['value' => 'image', 'text' => 'Image'], ['text' => 'Video', 'value' => 'video']]],
+        ['type' => 'button_bar', 'layout' => 'vertical', 'items' => [['value' => 'image', 'text' => 'Image'], ['text' => 'Video', 'value' => 'video'], ['text' => 'Animation', 'value' => 'animation']]],
         false,
         false,
         [],
@@ -291,7 +271,7 @@ class Herocopyleftmediaemail extends \Breakdance\Elements\Element
         false,
         [],
       )],
-        ['type' => 'section', 'layout' => 'vertical', 'condition' => [[['path' => 'content.media.image_or_video', 'operand' => 'equals', 'value' => 'image']]]],
+        ['type' => 'section', 'layout' => 'vertical', 'condition' => [[['path' => 'content.media.image_video_or_animation', 'operand' => 'equals', 'value' => 'image']]]],
         false,
         false,
         [],
@@ -339,7 +319,7 @@ class Herocopyleftmediaemail extends \Breakdance\Elements\Element
         false,
         [],
       )],
-        ['type' => 'section', 'layout' => 'vertical', 'condition' => [[['path' => 'content.media.image_or_video', 'operand' => 'equals', 'value' => 'video']]]],
+        ['type' => 'section', 'layout' => 'vertical', 'condition' => [[['path' => 'content.media.image_video_or_animation', 'operand' => 'equals', 'value' => 'video']]]],
         false,
         false,
         [],
@@ -583,6 +563,86 @@ class Herocopyleftmediaemail extends \Breakdance\Elements\Element
         false,
         false,
         [],
+      ), c(
+        "lottie",
+        "Lottie",
+        [c(
+        "asset_url",
+        "Asset Url",
+        [],
+        ['type' => 'text', 'layout' => 'vertical'],
+        false,
+        false,
+        [],
+      ), c(
+        "animation_speed",
+        "Animation Speed",
+        [],
+        ['type' => 'number', 'layout' => 'inline', 'items' => [['text' => '0.5x', 'label' => 'Label', 'value' => '0.5'], ['text' => '1x', 'value' => '1'], ['text' => '2x', 'value' => '2']], 'rangeOptions' => ['min' => 0, 'max' => 3, 'step' => 0.1]],
+        false,
+        false,
+        [],
+      ), c(
+        "trigger",
+        "Trigger",
+        [],
+        ['type' => 'dropdown', 'layout' => 'inline', 'items' => [['text' => 'Viewport', 'value' => 'viewport'], ['value' => 'click', 'text' => 'Click'], ['text' => 'Hover', 'value' => 'hover'], ['text' => 'None', 'value' => 'none']]],
+        false,
+        false,
+        [],
+      ), c(
+        "hover_area",
+        "Hover Area",
+        [],
+        ['type' => 'dropdown', 'layout' => 'inline', 'items' => [['value' => 'animation', 'text' => 'Animation'], ['text' => 'Section', 'value' => 'section'], ['text' => 'Parent element', 'value' => 'parent']], 'condition' => ['path' => 'content.content.trigger', 'operand' => 'equals', 'value' => 'hover']],
+        false,
+        false,
+        [],
+      ), c(
+        "on_hover_out",
+        "On Hover Out",
+        [],
+        ['type' => 'dropdown', 'layout' => 'inline', 'items' => [['text' => 'Do nothing', 'value' => 'default'], ['value' => 'pause', 'text' => 'Pause'], ['text' => 'Reverse', 'value' => 'reverse']], 'condition' => ['path' => 'content.content.trigger', 'operand' => 'equals', 'value' => 'hover']],
+        false,
+        false,
+        [],
+      ), c(
+        "reverse_on_finish",
+        "Reverse on finish",
+        [],
+        ['type' => 'toggle', 'layout' => 'inline', 'condition' => ['path' => 'content.content.trigger', 'operand' => 'is one of', 'value' => ['click', 'viewport', 'none']]],
+        false,
+        false,
+        [],
+      ), c(
+        "loop_animation",
+        "Loop Animation",
+        [],
+        ['type' => 'toggle', 'layout' => 'inline', 'items' => [['text' => 'Yes', 'label' => 'Label', 'value' => 'Yes'], ['text' => 'No', 'value' => 'No']], 'condition' => ['path' => 'content.content.trigger', 'operand' => 'is one of', 'value' => ['click', 'hover', 'none', 'viewport']]],
+        false,
+        false,
+        [],
+      ), c(
+        "times_to_loop",
+        "Times to loop",
+        [],
+        ['type' => 'number', 'layout' => 'inline', 'condition' => ['path' => 'content.content.loop_animation', 'operand' => 'is set', 'value' => ''], 'rangeOptions' => ['min' => 0, 'max' => 10, 'step' => 1]],
+        false,
+        false,
+        [],
+      ), c(
+        "frames",
+        "Frames",
+        [],
+        ['type' => 'slider', 'layout' => 'vertical', 'rangeOptions' => ['min' => 0, 'max' => 100, 'step' => 1]],
+        false,
+        false,
+        [],
+      )],
+        ['type' => 'section', 'layout' => 'vertical', 'condition' => [[['path' => 'content.media.image_video_or_animation', 'operand' => 'equals', 'value' => 'animation']]]],
+        false,
+        false,
+        [],
       )];
     }
 
@@ -613,7 +673,7 @@ if (backgroundImage != \'\') {
     });
   }
 }'],'scripts' => ['%%BREAKDANCE_ELEMENTS_PLUGIN_URL%%dependencies-files/lite-vimeo-embed@0.1/lite-vimeo.js'],],'2' =>  ['title' => 'lozad','scripts' => ['%%BREAKDANCE_ELEMENTS_PLUGIN_URL%%dependencies-files/lozard@1/lozad.min.js'],'inlineScripts' => ['const observer = lozad();
-observer.observe();'],],];
+observer.observe();'],],'3' =>  ['scripts' => ['%%BREAKDANCE_ELEMENTS_PLUGIN_URL%%dependencies-files/lottie-web@5/lottie_light-v-5-7-8.min.js','%%BREAKDANCE_ELEMENTS_PLUGIN_URL%%dependencies-files/lottie-web@5/breakdanceLottie.js'],'title' => 'Lottie','inlineScripts' => ['window.BreakdanceLottie("%%SELECTOR%% .bde-lottie-animation", {{ content.lottie|json_encode }});'],],];
     }
 
     static function settings()
@@ -628,7 +688,58 @@ observer.observe();'],],];
 
     static public function actions()
     {
-        return false;
+        return [
+
+'onPropertyChange' => [['script' => 'window.BreakdanceLottie("%%SELECTOR%%", {{ content.lottie|json_encode }});
+',
+],],
+
+'onMountedElement' => [['script' => '(function universalLottieInit() {
+  const baseSelector = "%%SELECTOR%%";
+  const wrapperSelector = `${baseSelector} .bde-lottie-animation`;
+  let initialized = false;
+
+  function init() {
+    if (initialized) return;
+
+    const wrapper = document.querySelector(wrapperSelector);
+    if (!wrapper || !wrapper.offsetParent) return;
+
+    // Check for misplaced SVG
+    const rogue = wrapper.parentElement?.querySelector("svg, canvas");
+    const nested = wrapper.querySelector("svg, canvas");
+
+    if (rogue && !nested) {
+      wrapper.appendChild(rogue);
+      console.log("🛠️ Moved rogue animation into wrapper");
+    }
+
+    // If nothing rendered yet, force load
+    if (!wrapper.querySelector("svg, canvas")) {
+      wrapper.innerHTML = "";
+      window.BreakdanceLottie(wrapperSelector, {{ content.lottie|json_encode }});
+
+      console.log("✅ Initialized Lottie in editor");
+    }
+
+    initialized = true;
+  }
+
+  // First run
+  init();
+
+  // Watch for late DOM hydration
+  const root = document.querySelector(baseSelector);
+  if (!root) return;
+
+  const observer = new MutationObserver(() => init());
+  observer.observe(root, { childList: true, subtree: true });
+
+  // Disconnect after 3s
+  setTimeout(() => observer.disconnect(), 3000);
+})();
+',
+],],];
     }
 
     static function nestingRule()

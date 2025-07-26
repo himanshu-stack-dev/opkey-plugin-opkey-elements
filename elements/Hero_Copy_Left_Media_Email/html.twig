@@ -33,7 +33,7 @@
   </div>
 
   {# MEDIA #}
-  {% set media_type = content.media.image_or_video  %}
+  {% set media_type = content.media.image_video_or_animation  %}
   {% if media_type == 'image' %}
     <div class="hero-module module-media">
     {% if content.image.media %}
@@ -152,5 +152,16 @@
             <div class="ee-video-overlay"></div>
         {% endif %}
     </div>
-  {% endif %}
+    {% elseif media_type == 'animation' %}
+      <div class="hero-module module-media">
+        {% set src = content.lottie.asset_url ?? 'https://assets10.lottiefiles.com/packages/lf20_mdyeeggu.json' %}
+        <div
+          class="bde-lottie-animation bde-lottie-target lottie-wrapper"
+          data-src="{{ src }}"
+          data-loop="true"
+          data-autoplay="true"
+          data-renderer="{{ content.lottie.renderer ?? 'svg' }}"
+        ></div>
+      </div>
+    {% endif %}
 </div>
