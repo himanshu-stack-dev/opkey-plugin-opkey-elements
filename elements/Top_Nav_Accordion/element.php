@@ -350,34 +350,31 @@ class Topnavaccordion extends \Breakdance\Elements\Element
     const tabTitles = Array.from(tabContents).map(tab => tab.dataset.tabTitle);
     let   activeIndex = 0;
 
-    // toggle dropdown open/closed
     trigger.addEventListener("click", function () {
       const expanded = this.getAttribute("aria-expanded") === "true";
       this.setAttribute("aria-expanded", !expanded);
       dropdown.style.display = expanded ? "none" : "block";
     });
 
-    // rebuild the list of options whenever the active tab changes
     function rebuildDropdown(active) {
       dropdown.innerHTML = "";
       tabTitles.forEach((title, i) => {
         if (i === active) return;
         const li = document.createElement("li");
-        li.setAttribute("data-tab-index", i);
+        li.dataset.tabIndex = i;
         li.textContent = title;
         dropdown.appendChild(li);
 
         li.addEventListener("click", function () {
           activeIndex = i;
-          // update trigger label + close
           trigger.querySelector(".bde-accordion-title").innerText = this.innerText;
           trigger.setAttribute("aria-expanded", "false");
           dropdown.style.display = "none";
-          // show the correct content panel
+
           tabContents.forEach((tab, j) => {
             tab.style.display = j === activeIndex ? "block" : "none";
           });
-          // init/swipe the correct slider
+
           const swiperEl = module.querySelector(`.swiper-${activeIndex}`);
           if (swiperEl && !swiperEl.classList.contains("swiper-initialized")) {
             new Swiper(`.swiper-${activeIndex}`, {
@@ -393,7 +390,7 @@ class Topnavaccordion extends \Breakdance\Elements\Element
               }
             });
           }
-          // rebuild for next time
+
           rebuildDropdown(activeIndex);
         });
       });
@@ -419,90 +416,81 @@ class Topnavaccordion extends \Breakdance\Elements\Element
     rebuildDropdown(activeIndex);
   }
 
-
   // ────────────────────────────────────────────────────────────────────────────
-  // UTILITY: Completely nukes inline style, then forces display + replay
+  // UTILITY: clear inline hides, then replay a Lottie animation
   function revealAndReplayLottie(wrapper, idx) {
-    console.log(`▶️ revealAndReplayLottie(${idx})`);
     wrapper.style.cssText = \'\';
     wrapper.style.setProperty(\'display\',    \'block\',   \'important\');
     wrapper.style.setProperty(\'visibility\', \'visible\', \'important\');
     wrapper.classList.remove(\'bd-hidden\',\'hidden\',\'breakdance-hide\');
-    const cs = getComputedStyle(wrapper);
-    console.log(` computed → display: ${cs.display}, visibility: ${cs.visibility}`);
     if (wrapper._lottieInstance) {
-      console.log(\' ↻ replay Lottie\');
       wrapper._lottieInstance.goToAndPlay(0, true);
-    } else {
-      console.warn(\' ⚠️ no Lottie instance yet\');
     }
   }
 
   // ────────────────────────────────────────────────────────────────────────────
-  // DESKTOP TABS: show only one tab‑panel, then auto‑open its first accordion
+  // DESKTOP TABS: show one tab panel and auto-open its first accordion
   function initDesktopTabs(tabButtons, tabPanels) {
     tabButtons.forEach((btn, ti) => {
       btn.addEventListener(\'click\', () => {
         tabButtons.forEach((b, j) => {
-          const isActive = ti === j;
-          b.setAttribute(\'aria-selected\', isActive);
-          tabPanels[j].style.display = isActive ? \'\' : \'none\';
+          const active = ti === j;
+          b.setAttribute(\'aria-selected\', active);
+          tabPanels[j].style.display = active ? \'\' : \'none\';
         });
-        // trigger the first accordion in the newly‑visible panel
-        const panel = tabPanels[ti];
-        const firstTrigger = panel.querySelector(\'.bde-accordion-trigger\');
-        firstTrigger?.click();
+        tabPanels[ti].querySelector(\'.bde-accordion-trigger\')?.click();
       });
     });
   }
 
   // ────────────────────────────────────────────────────────────────────────────
-  // DESKTOP ACCORDIONS: within the visible tab, toggle Lottie + panels
+  // DESKTOP ACCORDIONS: clear then set .open, .active, and Lottie
   function initDesktopAccordions(tabPanels) {
-    const allTriggers = Array.from(
-      module.querySelectorAll(\'.bde-accordion-trigger\')
-    );
-
-    allTriggers.forEach(btn => 
+    // bind all triggers once
+    module.querySelectorAll(\'.bde-accordion-trigger\').forEach(btn => {
       btn.addEventListener(\'click\', () => {
-        const panel    = tabPanels.find(p => p.style.display !== \'none\');
-        const triggers = Array.from(panel.querySelectorAll(\'.bde-accordion-trigger\'));
-        const panels   = Array.from(panel.querySelectorAll(\'.bde-accordion-panel\'));
-        const lotties  = Array.from(panel.querySelectorAll(\'.bde-lottie-animation\'));
+        // 1) find the visible tab-panel
+        const panel = tabPanels.find(p => p.style.display !== \'none\');
 
-        // clear any leftover hides
-        lotties.forEach(w => {
-          w.style.removeProperty(\'display\');
-          w.style.removeProperty(\'visibility\');
+        // 2) collect the lists in that panel
+        const triggers    = Array.from(panel.querySelectorAll(\'.bde-accordion-trigger\'));
+        const panelsArr   = Array.from(panel.querySelectorAll(\'.bde-accordion-panel\'));
+        const images      = Array.from(panel.querySelectorAll(\'.bde-accordion-image\'));
+        const lotties     = Array.from(panel.querySelectorAll(\'.bde-lottie-animation\'));
+
+        // 3) figure out which index was clicked
+        const idx = triggers.indexOf(btn);
+
+        // 4) Reset everything: ARIA, heights, .open, .active, hide Lotties
+        triggers.forEach((t, i) => {
+          const isOpen = i === idx;
+          t.setAttribute(\'aria-expanded\', isOpen);
+          panelsArr[i].setAttribute(\'aria-hidden\', !isOpen);
+          panelsArr[i].style.maxHeight = isOpen
+            ? panelsArr[i].scrollHeight + \'px\'
+            : \'0\';
+          t.closest(\'.bde-accordion-item\')?.classList.toggle(\'open\', isOpen);
         });
 
-        triggers.forEach((t, i) => {
-          const willOpen = (t === btn) && t.getAttribute(\'aria-expanded\') !== \'true\';
+        // 5) Images: remove all .active, then add to the clicked one
+        images.forEach(img => img.classList.remove(\'active\'));
+        if (images[idx]) images[idx].classList.add(\'active\');
 
-          // ARIA + height
-          t.setAttribute(\'aria-expanded\', willOpen);
-          panels[i].setAttribute(\'aria-hidden\', !willOpen);
-          panels[i].style.maxHeight = willOpen
-            ? panels[i].scrollHeight + \'px\'
-            : \'0\';
-
-          // toggle the "open" class on the accordion item
-          const item = t.closest(\'.bde-accordion-item\');
-          if (item) item.classList.toggle(\'open\', willOpen);
-
-          // Lottie show/replay
-          if (willOpen) {
-            revealAndReplayLottie(lotties[i], i);
+        // 6) Lotties: hide all, then replay the clicked one
+        lotties.forEach((l, i) => {
+          if (i === idx) {
+            revealAndReplayLottie(l, i);
           } else {
-            lotties[i].style.display = \'none\';
+            l.style.display = \'none\';
           }
         });
-      })
-    );
+      });
+    });
   }
 
+
   // ────────────────────────────────────────────────────────────────────────────
-  // MASTER DESKTOP INIT
+  // MASTER DESKTOP INIT: defaults + wire handlers
   function initDesktop() {
     const tabButtons = Array.from(module.querySelectorAll(\'.bde-tab\'));
     const tabPanels  = Array.from(module.querySelectorAll(\'.bde-tabpanel\'));
@@ -526,14 +514,18 @@ class Topnavaccordion extends \Breakdance\Elements\Element
           ? panels[ai].scrollHeight + \'px\'
           : \'0\';
 
-        // toggle the “open” class on page‐load
+        // .open class on the item
         const item = t.closest(\'.bde-accordion-item\');
         if (item) item.classList.toggle(\'open\', firstOpen);
 
-        // your existing image/Lottie logic…
-        images.forEach((img,j) => {
-          img.style.display = (firstOpen && j === ai) ? \'\' : \'none\';
+        // clear inline hides & toggle .active on the one image
+        images.forEach((img, j) => {
+          img.style.removeProperty(\'display\');
+          img.style.removeProperty(\'visibility\');
+          img.classList.toggle(\'active\', firstOpen && j === ai);
         });
+
+        // Lottie
         if (lotties[ai]) {
           if (firstOpen) revealAndReplayLottie(lotties[ai], ai);
           else           lotties[ai].style.display = \'none\';
@@ -543,25 +535,33 @@ class Topnavaccordion extends \Breakdance\Elements\Element
 
     initDesktopTabs(tabButtons, tabPanels);
     initDesktopAccordions(tabPanels);
+
+    //
+    // **FALLBACK**: if for any reason the first image still
+    // isn’t active, force it here:
+    //
+    const firstImg = tabPanels[0]?.querySelector(\'.bde-accordion-image\');
+    if (firstImg && !firstImg.classList.contains(\'active\')) {
+      firstImg.style.removeProperty(\'display\');
+      firstImg.style.removeProperty(\'visibility\');
+      firstImg.classList.add(\'active\');
+    }
   }
 
 
   // ────────────────────────────────────────────────────────────────────────────
   // OVERALL INIT (mobile vs desktop)
   function initAll() {
-    if (isMobile()) {
-      initMobileTabs();
-    } else {
-      initDesktop();
-    }
+    if (isMobile()) initMobileTabs();
+    else            initDesktop();
   }
 
   initAll();
-  let prevMobile = isMobile();
+  let wasMobile = isMobile();
   window.addEventListener(\'resize\', () => {
     const now = isMobile();
-    if (now !== prevMobile) {
-      prevMobile = now;
+    if (now !== wasMobile) {
+      wasMobile = now;
       initAll();
     }
   });
