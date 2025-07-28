@@ -271,7 +271,20 @@ class Logoslider extends \Breakdance\Elements\Element
 
     static function dependencies()
     {
-        return false;
+        return ['0' =>  ['inlineScripts' => ['const marquee = document.querySelector(".un-logo-bar__marquee-content.carousel-type__marquee");
+if (!marquee) return;
+
+const logos = marquee.querySelectorAll(".un-logo-bar__logo-wrapper");
+const numLogos = logos.length;
+
+// Adjust multiplier to fit scroll speed preferences
+const secondsPerLogo = 5;
+const min = 30;
+const max = 400;
+
+let duration = Math.max(min, Math.min(max, numLogos * secondsPerLogo));
+marquee.style.setProperty(\'--marquee-duration\', `${duration}s`);
+'],'title' => 'Slider speed',],];
     }
 
     static function settings()
