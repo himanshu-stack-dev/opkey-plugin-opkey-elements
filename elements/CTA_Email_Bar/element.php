@@ -164,6 +164,22 @@ class CTAemailbar extends \Breakdance\Elements\Element
         false,
         [],
       ), c(
+        "content",
+        "Content",
+        [c(
+        "text",
+        "Text",
+        [],
+        ['type' => 'richtext', 'layout' => 'vertical', 'textOptions' => ['multiline' => true]],
+        false,
+        false,
+        [],
+      )],
+        ['type' => 'section', 'layout' => 'vertical'],
+        false,
+        false,
+        [],
+      ), c(
         "shortcode",
         "Shortcode",
         [c(

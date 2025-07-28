@@ -21,6 +21,11 @@
       {% if heading %}
         <h2>{{ heading }}</h2>
       {% endif %}
+      {# BODY #}
+      {% set body = content.content.text  %}
+      {% if body %}
+        <p>{{ body }}</p>
+      {% endif %}
     </div>
     {# Set the SVG gradient color based on theme #}
     {% set diagonalColor = design.theme_color.color == 'purple' ? '4EC7D4' : 'be72f8' %}
