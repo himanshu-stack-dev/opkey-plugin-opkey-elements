@@ -574,70 +574,6 @@ class Herocopyleftmediaemail extends \Breakdance\Elements\Element
         false,
         false,
         [],
-      ), c(
-        "animation_speed",
-        "Animation Speed",
-        [],
-        ['type' => 'number', 'layout' => 'inline', 'items' => [['text' => '0.5x', 'label' => 'Label', 'value' => '0.5'], ['text' => '1x', 'value' => '1'], ['text' => '2x', 'value' => '2']], 'rangeOptions' => ['min' => 0, 'max' => 3, 'step' => 0.1]],
-        false,
-        false,
-        [],
-      ), c(
-        "trigger",
-        "Trigger",
-        [],
-        ['type' => 'dropdown', 'layout' => 'inline', 'items' => [['text' => 'Viewport', 'value' => 'viewport'], ['value' => 'click', 'text' => 'Click'], ['text' => 'Hover', 'value' => 'hover'], ['text' => 'None', 'value' => 'none']]],
-        false,
-        false,
-        [],
-      ), c(
-        "hover_area",
-        "Hover Area",
-        [],
-        ['type' => 'dropdown', 'layout' => 'inline', 'items' => [['value' => 'animation', 'text' => 'Animation'], ['text' => 'Section', 'value' => 'section'], ['text' => 'Parent element', 'value' => 'parent']], 'condition' => ['path' => 'content.content.trigger', 'operand' => 'equals', 'value' => 'hover']],
-        false,
-        false,
-        [],
-      ), c(
-        "on_hover_out",
-        "On Hover Out",
-        [],
-        ['type' => 'dropdown', 'layout' => 'inline', 'items' => [['text' => 'Do nothing', 'value' => 'default'], ['value' => 'pause', 'text' => 'Pause'], ['text' => 'Reverse', 'value' => 'reverse']], 'condition' => ['path' => 'content.content.trigger', 'operand' => 'equals', 'value' => 'hover']],
-        false,
-        false,
-        [],
-      ), c(
-        "reverse_on_finish",
-        "Reverse on finish",
-        [],
-        ['type' => 'toggle', 'layout' => 'inline', 'condition' => ['path' => 'content.content.trigger', 'operand' => 'is one of', 'value' => ['click', 'viewport', 'none']]],
-        false,
-        false,
-        [],
-      ), c(
-        "loop_animation",
-        "Loop Animation",
-        [],
-        ['type' => 'toggle', 'layout' => 'inline', 'items' => [['text' => 'Yes', 'label' => 'Label', 'value' => 'Yes'], ['text' => 'No', 'value' => 'No']], 'condition' => ['path' => 'content.content.trigger', 'operand' => 'is one of', 'value' => ['click', 'hover', 'none', 'viewport']]],
-        false,
-        false,
-        [],
-      ), c(
-        "times_to_loop",
-        "Times to loop",
-        [],
-        ['type' => 'number', 'layout' => 'inline', 'condition' => ['path' => 'content.content.loop_animation', 'operand' => 'is set', 'value' => ''], 'rangeOptions' => ['min' => 0, 'max' => 10, 'step' => 1]],
-        false,
-        false,
-        [],
-      ), c(
-        "frames",
-        "Frames",
-        [],
-        ['type' => 'slider', 'layout' => 'vertical', 'rangeOptions' => ['min' => 0, 'max' => 100, 'step' => 1]],
-        false,
-        false,
-        [],
       )],
         ['type' => 'section', 'layout' => 'vertical', 'condition' => [[['path' => 'content.media.image_video_or_animation', 'operand' => 'equals', 'value' => 'animation']]]],
         false,
@@ -673,7 +609,48 @@ if (backgroundImage != \'\') {
     });
   }
 }'],'scripts' => ['%%BREAKDANCE_ELEMENTS_PLUGIN_URL%%dependencies-files/lite-vimeo-embed@0.1/lite-vimeo.js'],],'2' =>  ['title' => 'lozad','scripts' => ['%%BREAKDANCE_ELEMENTS_PLUGIN_URL%%dependencies-files/lozard@1/lozad.min.js'],'inlineScripts' => ['const observer = lozad();
-observer.observe();'],],'3' =>  ['scripts' => ['%%BREAKDANCE_ELEMENTS_PLUGIN_URL%%dependencies-files/lottie-web@5/lottie_light-v-5-7-8.min.js','%%BREAKDANCE_ELEMENTS_PLUGIN_URL%%dependencies-files/lottie-web@5/breakdanceLottie.js'],'title' => 'Lottie','inlineScripts' => ['window.BreakdanceLottie("%%SELECTOR%% .bde-lottie-animation", {{ content.lottie|json_encode }});'],],];
+observer.observe();'],],'3' =>  ['scripts' => ['%%BREAKDANCE_ELEMENTS_PLUGIN_URL%%dependencies-files/lottie-web@5/lottie_light-v-5-7-8.min.js','%%BREAKDANCE_ELEMENTS_PLUGIN_URL%%dependencies-files/lottie-web@5/breakdanceLottie.js'],'title' => 'Lottie','inlineScripts' => ['(function watchAndInitLottie() {
+  const baseSelector = "%%SELECTOR%%";
+  const wrapperSelector = `${baseSelector} .bde-lottie-animation`;
+  let initialized = false;
+
+  function initLottie() {
+    if (initialized) return;
+
+    const wrapper = document.querySelector(wrapperSelector);
+    if (!wrapper || !wrapper.offsetParent) return;
+
+    const path = wrapper.dataset.src;
+
+    const anim = window.lottie?.loadAnimation({
+      container: wrapper,
+      renderer: "svg",
+      loop: true,
+      autoplay: true,
+      path
+    });
+
+    if (anim) {
+      anim.addEventListener("DOMLoaded", () => {
+        anim.loop = true;
+        anim.play();
+      });
+
+      // Fallback loop force
+      anim.addEventListener("complete", () => {
+        anim.goToAndPlay(0, true);
+      });
+    }
+
+    initialized = true;
+  }
+
+  const observer = new MutationObserver(() => initLottie());
+  observer.observe(document.body, { childList: true, subtree: true });
+
+  initLottie();
+})();
+'],],];
     }
 
     static function settings()
@@ -690,11 +667,17 @@ observer.observe();'],],'3' =>  ['scripts' => ['%%BREAKDANCE_ELEMENTS_PLUGIN_URL
     {
         return [
 
-'onPropertyChange' => [['script' => 'window.BreakdanceLottie("%%SELECTOR%%", {{ content.lottie|json_encode }});
+'onPropertyChange' => [['script' => 'window.BreakdanceLottie("%%SELECTOR%%", {
+  path: "{{ src }}",
+  renderer: "{{ content.lottie.renderer ?? \'svg\' }}",
+  loop: true,
+  autoplay: true
+});
 ',
 ],],
 
 'onMountedElement' => [['script' => '(function universalLottieInit() {
+
   const baseSelector = "%%SELECTOR%%";
   const wrapperSelector = `${baseSelector} .bde-lottie-animation`;
   let initialized = false;
@@ -714,28 +697,44 @@ observer.observe();'],],'3' =>  ['scripts' => ['%%BREAKDANCE_ELEMENTS_PLUGIN_URL
       console.log("🛠️ Moved rogue animation into wrapper");
     }
 
-    // If nothing rendered yet, force load
+    // If nothing rendered yet, force manual Lottie load
     if (!wrapper.querySelector("svg, canvas")) {
       wrapper.innerHTML = "";
-      window.BreakdanceLottie(wrapperSelector, {{ content.lottie|json_encode }});
 
-      console.log("✅ Initialized Lottie in editor");
+      const anim = window.lottie?.loadAnimation({
+        container: wrapper,
+        renderer: "{{ content.lottie.renderer ?? \'svg\' }}",
+        loop: true,
+        autoplay: true,
+        path: "{{ content.lottie.asset_url }}"
+      });
+
+      if (anim) {
+        anim.addEventListener("DOMLoaded", () => {
+          anim.loop = true;
+          anim.play();
+        });
+
+        anim.addEventListener("complete", () => {
+          anim.goToAndPlay(0, true); // Manual fallback loop
+        });
+      }
     }
 
     initialized = true;
   }
 
-  // First run
+  // Run once immediately
   init();
 
-  // Watch for late DOM hydration
+  // Watch for editor hydration and DOM changes
   const root = document.querySelector(baseSelector);
   if (!root) return;
 
   const observer = new MutationObserver(() => init());
   observer.observe(root, { childList: true, subtree: true });
 
-  // Disconnect after 3s
+  // Auto disconnect after 3s
   setTimeout(() => observer.disconnect(), 3000);
 })();
 ',

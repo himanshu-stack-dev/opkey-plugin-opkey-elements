@@ -110,11 +110,29 @@
                       </div>
                     </div>
 
-                    {% if item.content_image %}
+                    {% set src = item.media is iterable ? item.media.url : item.media %}
+
+                    {% if src|lower ends with '.json' %}
                       <div class="bde-accordion-media">
-    <img src="{{ item.content_image is iterable ? item.content_image.url : item.content_image }}" alt="Accordion image" style="max-width:100%; height:auto;" />
+                        <div
+                          class="bde-lottie-animation bde-lottie-target lottie-wrapper"
+                          data-src="{{ src }}"
+                          data-loop="{{ item.loop_animation ? 'true' : 'false' }}"
+                          data-trigger="{{ content.lottie_settings.trigger ?? 'accordion' }}"
+                          data-autoplay="{{ content.lottie_settings.autoplay ? 'true' : 'false' }}"
+                          data-speed="{{ item.animation_speed ?? 1 }}"
+                          data-renderer="{{ content.lottie_settings.renderer ?? 'svg' }}">
+                        </div>
+                      </div>
+                    {% elseif src %}
+                      <div class="bde-accordion-media">
+                        <img
+                          src="{{ src }}"
+                          alt="Accordion image"
+                          style="max-width:100%; height:auto;" />
                       </div>
                     {% endif %}
+
                   </div>
                 </div>
               {% endfor %}
@@ -184,18 +202,31 @@
             </div>
           </div>
 
-          <div class="bde-accordion-media"> {# RIGHT column: images #}
+          <div class="bde-accordion-media">
             {% for item in accordion_items %}
-              {% set has_image = (item.content_image is iterable and item.content_image.url is defined)
-                or (item.content_image is defined and item.content_image is not empty) %}
-              {% if has_image %}
-                <div class="bde-accordion-image" style="display:none;">
-                  <img src="{{ item.content_image is iterable ? item.content_image.url : item.content_image }}" alt="Accordion image" style="max-width:100%; height:auto;" />
-                </div>
-              {% endif %}
+             {% set src = item.media is iterable ? item.media.url : item.media %}
+
+             {% if src|lower ends with '.json' %}
+               <div
+                 class="bde-lottie-animation bde-lottie-target lottie-wrapper"
+                 data-src="{{ src }}"
+                 data-loop="{{ item.loop_animation ? 'true' : 'false' }}"
+                 data-trigger="{{ content.lottie_settings.trigger ?? 'accordion' }}"
+                 data-autoplay="{{ content.lottie_settings.autoplay ? 'true' : 'false' }}"
+                 data-speed="{{ item.animation_speed ?? 1 }}"
+                 data-renderer="{{ content.lottie_settings.renderer ?? 'svg' }}">
+               </div>
+             {% else %}
+               <div class="bde-accordion-image">
+                 <img
+                   src="{{ src }}"
+                   alt="Accordion image"
+                   style="max-width:100%; height:auto;" />
+               </div>
+             {% endif %}
             {% endfor %}
           </div>
-        </div>
+          </div>
         {% endfor %}
       </div>
     </div>

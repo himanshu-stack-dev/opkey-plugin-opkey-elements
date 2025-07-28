@@ -154,6 +154,11 @@
     </div>
     {% elseif media_type == 'animation' %}
       <div class="hero-module module-media">
+        {# TEMPORARY DEBUGGING OUTPUT #}
+        <div style="display:none;">
+          asset_url: {{ content.lottie.asset_url ?? 'none' }}
+        </div>
+
         {% set src = content.lottie.asset_url ?? 'https://assets10.lottiefiles.com/packages/lf20_mdyeeggu.json' %}
         <div
           class="bde-lottie-animation bde-lottie-target lottie-wrapper"
