@@ -94,7 +94,8 @@
   ] %}
 
   {# Use columns if they exist, otherwise fallback to two defaults #}
-  {% set columns = content.columns.column | length > 0 ? content.columns.column : default_columns %}
+  {% set using_default = content.columns.column | length == 0 %}
+  {% set columns = using_default ? default_columns : content.columns.column %}
 
   <div class="columns">
     {% for item in columns %}
@@ -114,17 +115,16 @@
         <p>{{ item.content  }}</p>
 
         {# BUTTON with fallback #}
-        {% set button_obj = (item.button is defined and item.button.text|length > 0) 
-          ? item.button 
-          : { text: 'Learn more', url: '#' } %}
-        {% if button_obj.text %}
+        {% if (item.button is defined and item.button.text|length > 0) or using_default %}
           <div class="content-module module-buttons">
             {{ macros.atomV1ButtonHtml(
-                button_obj,
+                item.button is defined ? item.button : { text: 'Learn more', url: '#' },
                 'opkey-link-text',
                 path.to.button_design_preset_section,
                 'secondary',
-                button_obj.text
+                item.button.text is defined and item.button.text|length > 0 
+                  ? item.button.text 
+                  : 'Learn more'
             ) }}
           </div>
         {% endif %}
