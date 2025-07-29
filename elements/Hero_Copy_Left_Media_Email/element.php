@@ -70,7 +70,7 @@ class Herocopyleftmediaemail extends \Breakdance\Elements\Element
 
     static function defaultProperties()
     {
-        return ['content' => ['eyebrow' => ['text' => 'Lorem ipsum dolor'], 'heading' => ['text' => 'Lorem ipsum dolor sit amet'], 'subhead' => ['text' => 'Lorem ipsum dolor sit amet consectetur adipiscing elit'], 'content' => ['text' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.'], 'buttons' => ['primary_button' => ['text' => 'Contact sales', 'link' => '#'], 'secondary_button' => ['text' => 'Learn more', 'link' => '#']], 'media' => ['image_or_video' => 'image'], 'image' => ['from' => 'url', 'url' => '/wp-content/uploads/2025/06/Placeholder-1-1.png', 'media' => 0, 'alt' => ['type' => 'custom', 'customAlt' => 'Placeholder image'], 'lazyLoad' => false]]];
+        return ['content' => ['eyebrow' => ['text' => 'Lorem ipsum dolor'], 'heading' => ['text' => 'Lorem ipsum dolor sit amet'], 'subhead' => ['text' => 'Lorem ipsum dolor sit amet consectetur adipiscing elit'], 'content' => ['text' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.'], 'buttons' => ['primary_button' => ['text' => 'Contact sales', 'link' => '#'], 'secondary_button' => ['text' => 'Learn more', 'link' => '#']], 'media' => ['image_video_or_animation' => 'image'], 'image' => ['from' => 'url', 'url' => '/wp-content/uploads/2025/06/Placeholder-1-1.png', 'media' => 0, 'alt' => ['type' => 'custom', 'customAlt' => 'Placeholder image'], 'lazyLoad' => false]]];
     }
 
     static function defaultChildren()
@@ -570,7 +570,7 @@ class Herocopyleftmediaemail extends \Breakdance\Elements\Element
         "asset_url",
         "Asset Url",
         [],
-        ['type' => 'text', 'layout' => 'vertical'],
+        ['type' => 'wpmedia', 'layout' => 'vertical'],
         false,
         false,
         [],
@@ -667,77 +667,53 @@ observer.observe();'],],'3' =>  ['scripts' => ['%%BREAKDANCE_ELEMENTS_PLUGIN_URL
     {
         return [
 
+'onMountedElement' => [['script' => '(function universalLottieEditorPreview() {
+  const baseSelector = "%%SELECTOR%%";
+  const root = document.querySelector(baseSelector);
+  if (!root) return;
+
+  const interval = setInterval(() => {
+    const wrapper = root.querySelector(\'.bde-lottie-animation\');
+    const lottieSrc = wrapper?.getAttribute(\'data-src\');
+
+    if (wrapper && lottieSrc) {
+      if (wrapper.querySelector(\'svg, canvas\')) return;
+
+      wrapper.innerHTML = \'\';
+
+      const anim = window.lottie?.loadAnimation({
+        container: wrapper,
+        renderer: wrapper.getAttribute(\'data-renderer\') || \'svg\',
+        loop: true,
+        autoplay: true,
+        path: lottieSrc
+      });
+
+      if (anim) {
+        anim.addEventListener(\'DOMLoaded\', () => {
+          anim.play();
+        });
+
+        anim.addEventListener(\'complete\', () => {
+          anim.goToAndPlay(0, true);
+        });
+      }
+
+      clearInterval(interval);
+    }
+  }, 300);
+
+  setTimeout(() => clearInterval(interval), 10000);
+})();
+',
+],],
+
 'onPropertyChange' => [['script' => 'window.BreakdanceLottie("%%SELECTOR%%", {
   path: "{{ src }}",
   renderer: "{{ content.lottie.renderer ?? \'svg\' }}",
   loop: true,
   autoplay: true
-});
-',
-],],
-
-'onMountedElement' => [['script' => '(function universalLottieInit() {
-
-  const baseSelector = "%%SELECTOR%%";
-  const wrapperSelector = `${baseSelector} .bde-lottie-animation`;
-  let initialized = false;
-
-  function init() {
-    if (initialized) return;
-
-    const wrapper = document.querySelector(wrapperSelector);
-    if (!wrapper || !wrapper.offsetParent) return;
-
-    // Check for misplaced SVG
-    const rogue = wrapper.parentElement?.querySelector("svg, canvas");
-    const nested = wrapper.querySelector("svg, canvas");
-
-    if (rogue && !nested) {
-      wrapper.appendChild(rogue);
-      console.log("🛠️ Moved rogue animation into wrapper");
-    }
-
-    // If nothing rendered yet, force manual Lottie load
-    if (!wrapper.querySelector("svg, canvas")) {
-      wrapper.innerHTML = "";
-
-      const anim = window.lottie?.loadAnimation({
-        container: wrapper,
-        renderer: "{{ content.lottie.renderer ?? \'svg\' }}",
-        loop: true,
-        autoplay: true,
-        path: "{{ content.lottie.asset_url }}"
-      });
-
-      if (anim) {
-        anim.addEventListener("DOMLoaded", () => {
-          anim.loop = true;
-          anim.play();
-        });
-
-        anim.addEventListener("complete", () => {
-          anim.goToAndPlay(0, true); // Manual fallback loop
-        });
-      }
-    }
-
-    initialized = true;
-  }
-
-  // Run once immediately
-  init();
-
-  // Watch for editor hydration and DOM changes
-  const root = document.querySelector(baseSelector);
-  if (!root) return;
-
-  const observer = new MutationObserver(() => init());
-  observer.observe(root, { childList: true, subtree: true });
-
-  // Auto disconnect after 3s
-  setTimeout(() => observer.disconnect(), 3000);
-})();
-',
+});',
 ],],];
     }
 

@@ -27,7 +27,7 @@
     {# EMAIL #}
     {% set email_embed = content.shortcode.full_shortcode  %}
     {% if email_embed %}
-	    <div class="demo-gradient-border-wrapper">%%SSR%%</div>
+        <div class="demo-gradient-border-wrapper">%%SSR%%</div>
     {% endif %}
 
   </div>
@@ -153,13 +153,8 @@
         {% endif %}
     </div>
     {% elseif media_type == 'animation' %}
+    {% set src = content.lottie.asset_url.url  %}
       <div class="hero-module module-media">
-        {# TEMPORARY DEBUGGING OUTPUT #}
-        <div style="display:none;">
-          asset_url: {{ content.lottie.asset_url ?? 'none' }}
-        </div>
-
-        {% set src = content.lottie.asset_url ?? 'https://assets10.lottiefiles.com/packages/lf20_mdyeeggu.json' %}
         <div
           class="bde-lottie-animation bde-lottie-target lottie-wrapper"
           data-src="{{ src }}"
