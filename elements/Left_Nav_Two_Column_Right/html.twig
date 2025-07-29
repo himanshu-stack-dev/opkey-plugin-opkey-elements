@@ -56,17 +56,28 @@
     {% endif %}
   </div>
 
-  {% set eyebrow = content.eyebrow.text ?? defaults.eyebrow %}
-  {% set heading = content.heading.text ?? defaults.heading %}
-  {% set subhead = content.subhead.text ?? defaults.subhead %}
-  {% set body = content.content.text ?? '' %}
-  {% set categories = content.categories.category is defined and content.categories.category|length > 0 ? content.categories.category : defaults.categories %}
+{# Render user content if any resource is "real", else render defaults #}
+{% set show_defaults = true %}
+{% if content.categories.category is defined and content.categories.category|length > 0 %}
+  {% for cat in content.categories.category %}
+    {% if cat.resources is defined and cat.resources|length > 0 %}
+      {% for res in cat.resources %}
+        {% if res.icon.url is defined or res.heading|length > 0 or res.content|length > 0 %}
+          {% set show_defaults = false %}
+        {% endif %}
+      {% endfor %}
+    {% endif %}
+  {% endfor %}
+{% endif %}
+
+{# Assign categories variable based on the flag #}
+{% set categories = show_defaults ? defaults.categories : content.categories.category %}
 
   <div class="module-content-row">
     <div class="tab-nav bde-tab-list desktop-only">
       {% for category in categories %}
         <button
-          class="bde-tab"
+          class="bde-tab {{ content.categories.simple_list_ ? ' simple-list' : '' }}"
           id="tab-{{ loop.index }}"
           type="button"
           role="tab"
@@ -78,11 +89,13 @@
         </button>
       {% endfor %}
 
-      <div class="slider-navigation desktop-only">
-        <button class="swiper-button-prev swiper-button-prev-%%UNIQUESLUG%% custom-nav-btn"></button>
-        <div class="swiper-pagination swiper-pagination-%%UNIQUESLUG%%"></div>
-        <button class="swiper-button-next swiper-button-next-%%UNIQUESLUG%% custom-nav-btn"></button>
-      </div>
+      {% if not content.categories.simple_list_ %}
+        <div class="slider-navigation desktop-only">
+          <button class="swiper-button-prev swiper-button-prev-%%UNIQUESLUG%% custom-nav-btn"></button>
+          <div class="swiper-pagination swiper-pagination-%%UNIQUESLUG%%"></div>
+          <button class="swiper-button-next swiper-button-next-%%UNIQUESLUG%% custom-nav-btn"></button>
+        </div>
+      {% endif %}
     </div>
 
     <div class="tab-dropdown mobile-only">
@@ -100,11 +113,11 @@
         </div>
       </div>
 
-      <div class="slider-navigation mobile-only">
-        <button class="swiper-button-prev swiper-button-prev-%%UNIQUESLUG%% custom-nav-btn"></button>
-        <div class="swiper-pagination swiper-pagination-%%UNIQUESLUG%%"></div>
-        <button class="swiper-button-next swiper-button-next-%%UNIQUESLUG%% custom-nav-btn"></button>
-      </div>
+        <div class="slider-navigation mobile-only">
+          <button class="swiper-button-prev swiper-button-prev-%%UNIQUESLUG%% custom-nav-btn"></button>
+          <div class="swiper-pagination swiper-pagination-%%UNIQUESLUG%%"></div>
+          <button class="swiper-button-next swiper-button-next-%%UNIQUESLUG%% custom-nav-btn"></button>
+        </div>
     </div>
 
     {# Hidden slide storage goes outside Swiper! #}
@@ -150,6 +163,6 @@
           </div>
         {% endfor %}
       {% endfor %}
-     </div>
+    </div>
   </div>
 </div>

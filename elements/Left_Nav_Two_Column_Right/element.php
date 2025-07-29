@@ -199,6 +199,14 @@ class Leftnavtwocolumnright extends \Breakdance\Elements\Element
         "categories",
         "Categories",
         [c(
+        "simple_list_",
+        "Simple list?",
+        [],
+        ['type' => 'toggle', 'layout' => 'vertical'],
+        false,
+        false,
+        [],
+      ), c(
         "category",
         "Category",
         [c(
@@ -456,7 +464,7 @@ class Leftnavtwocolumnright extends \Breakdance\Elements\Element
 
     static function additionalClasses()
     {
-        return [['name' => 'theme--white', 'template' => '{{ design.theme_color.color == \'white\' or not design.theme_color.color }}'], ['name' => 'theme--light-gray', 'template' => '{{ design.theme_color.color == \'light-gray\' }}'], ['name' => 'theme--purple', 'template' => '{{ design.theme_color.color == \'purple\' }}']];
+        return [['name' => 'theme--white', 'template' => '{{ design.theme_color.color == \'white\' or not design.theme_color.color }}'], ['name' => 'theme--light-gray', 'template' => '{{ design.theme_color.color == \'light-gray\' }}'], ['name' => 'theme--purple', 'template' => '{{ design.theme_color.color == \'purple\' }}'], ['name' => 'simple-list', 'template' => '{{ content.categories.simple_list_ ? \'yes\' : \'\' }}']];
     }
 
     static function projectManagement()
