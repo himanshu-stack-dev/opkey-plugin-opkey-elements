@@ -302,7 +302,7 @@ class Leftnavtwocolumnright extends \Breakdance\Elements\Element
       type: "bullets"
     }
   };
-  
+
   function equalizeCardHeights(wrapper) {
     const cards = wrapper.querySelectorAll(\'.swiper-slide .card\');
     let maxHeight = 0;
@@ -347,9 +347,12 @@ class Leftnavtwocolumnright extends \Breakdance\Elements\Element
       catIndex = String(catIndex).trim();
       wrapper.innerHTML = "";
 
+      let slideCount = 0;
+
       allSlides.forEach((slide) => {
         if (String(slide.dataset.categoryIndex).trim() === catIndex) {
           wrapper.appendChild(slide.cloneNode(true));
+          slideCount++;
         }
       });
 
@@ -370,6 +373,18 @@ class Leftnavtwocolumnright extends \Breakdance\Elements\Element
         t.setAttribute("aria-selected", isActive ? "true" : "false");
         t.classList.toggle("is-active", isActive);
       });
+
+      // ====== Show/hide nav based on resource count ======
+      const sliderNav = container.querySelector(\'.slider-navigation-%%UNIQUESLUG%%\');
+      if (sliderNav) {
+        if (slideCount > 4) {
+          sliderNav.style.display = \'\';
+          sliderNav.querySelectorAll(\'button\').forEach(btn => btn.disabled = false);
+        } else {
+          sliderNav.style.display = \'none\';
+          sliderNav.querySelectorAll(\'button\').forEach(btn => btn.disabled = true);
+        }
+      }
     }
 
     tabs.forEach((tab) => {

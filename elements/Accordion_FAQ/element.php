@@ -4,7 +4,6 @@ namespace BreakdanceCustomElements;
 
 use function Breakdance\Elements\c;
 use function Breakdance\Elements\PresetSections\getPresetSection;
-use function OpkeyCustomElements\getSharedDefaults;
 
 
 \Breakdance\ElementStudio\registerElementForEditing(
@@ -71,20 +70,7 @@ class Accordionfaq extends \Breakdance\Elements\Element
 
     static function defaultProperties()
     {
-        $shared = \OpkeyCustomElements\getSharedDefaults();
-
-        $shared['settings'] = [
-            'items' => [
-                [
-                    'question' => 'Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod?',
-                    'answer'   => '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi.</p>',
-                ],
-            ],
-        ];
-
-        return [
-            'content' => $shared,
-        ];
+        return ['content' => ['eyebrow' => ['text' => 'Lorem ipsum dolor'], 'heading' => ['text' => 'Lorem ipsum dolor sit amet'], 'subhead' => ['text' => 'Lorem ipsum dolor sit amet consectetur adipiscing elit'], 'content' => ['text' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.'], 'buttons' => ['primary_button' => ['text' => 'Contact sales', 'link' => '#'], 'secondary_button' => ['text' => 'Learn more', 'link' => '#']], 'settings' => ['items' => [['question' => 'Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod?', 'answer' => '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi.</p>']]]]];
     }
 
     static function defaultChildren()
@@ -212,27 +198,21 @@ class Accordionfaq extends \Breakdance\Elements\Element
       ), c(
         "buttons",
         "Buttons",
-        [
-          getPresetSection(
-            "EssentialElements\\AtomV1ButtonContent",
-            "Primary Button",
-            "primary_button",
-            [ 'type' => 'popout' ]
-          ),
-          getPresetSection(
-            "EssentialElements\\AtomV1ButtonContent",
-            "Secondary Button",
-            "secondary_button",
-            [ 'type' => 'popout' ]
-          ),
-        ],
-        [
-          'type'   => 'section',
-          'layout' => 'vertical',
-        ],
+        [getPresetSection(
+      "EssentialElements\\AtomV1ButtonContent",
+      "Primary Button",
+      "primary_button",
+       ['type' => 'popout']
+     ), getPresetSection(
+      "EssentialElements\\AtomV1ButtonContent",
+      "Secondary Button",
+      "secondary_button",
+       ['type' => 'popout']
+     )],
+        ['type' => 'section', 'layout' => 'vertical'],
         false,
         false,
-        []
+        [],
       ), c(
         "settings",
         "Settings",
@@ -255,12 +235,7 @@ class Accordionfaq extends \Breakdance\Elements\Element
         false,
         false,
         [],
-      ), getPresetSection(
-      "EssentialElements\\AtomV1ButtonContent",
-      "Button",
-      "button",
-       ['type' => 'popout']
-     )],
+      )],
         ['type' => 'repeater', 'layout' => 'vertical', 'repeaterOptions' => ['titleTemplate' => '{question}', 'defaultTitle' => 'Question', 'buttonName' => 'Add Question']],
         false,
         false,

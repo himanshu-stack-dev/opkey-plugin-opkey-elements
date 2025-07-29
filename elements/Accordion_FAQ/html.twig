@@ -84,17 +84,6 @@
               <div class="breakdance-rich-text-styles">
                 {{ item.answer }}
               </div>
-              
-              {# Optional button per item #}
-              {% if item.button is defined and item.button.text|trim %}
-                {{ macros.atomV1ButtonHtml(
-                    item.button,
-                    'bde-faq__btn',
-                    design.item.button,
-                    'content.settings.items[' ~ loop.index0 ~ '].button.text'
-                  ) 
-                }}
-              {% endif %}
             </div>
           </div>
         </div>
