@@ -17,17 +17,17 @@
         {{ body }}
       {% endif %}
 
-      {# BUTTON #}
-      {% set pb = content.buttons.primary_button|default({}) %}
+      {# BUTTONS #}
+      {% set pb = content.button.primary_button|default({}) %}
 
       {% if pb.text|default('')|trim %}
         <div class="content-module module-buttons">
           {{ macros.atomV1ButtonHtml(
                pb,
-               'opkey-primary',
+               'opkey-link-text',
                path.to.button_design_preset_section,
-               'primary',
-               pb.text|trim
+               'secondary',
+               sb.text|trim
              ) }}
         </div>
       {% endif %}
@@ -39,7 +39,7 @@
       {% if image_set %}
         {{ macros.image(content.image.image, content.content.size, alt, lazyLoad) }}
       {% else %}
-        <img src="https://opkey.local/wp-content/uploads/2025/07/Placeholder_510x300.png"
+        <img src="/wp-content/uploads/2025/07/Placeholder_510x300.png"
              alt="Placeholder image"
              width="510"
              height="300"

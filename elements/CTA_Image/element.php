@@ -263,7 +263,7 @@ class CTAimage extends \Breakdance\Elements\Element
 
     static function dynamicPropertyPaths()
     {
-        return [['accepts' => 'string', 'path' => 'content.content.text'], ['accepts' => 'string', 'path' => 'content.content.link.url'], ['accepts' => 'string', 'path' => 'content.buttons.add_button.button.text'], ['accepts' => 'string', 'path' => 'content.buttons.add_button.button.link.url'], ['accepts' => 'string', 'path' => 'content.buttons.secondary_button.text'], ['accepts' => 'string', 'path' => 'content.buttons.secondary_button.link.url'], ['accepts' => 'string', 'path' => 'content.email.embed_code.text'], ['accepts' => 'string', 'path' => 'content.email.embed_code.link.url']];
+        return [['accepts' => 'string', 'path' => 'content.content.text'], ['accepts' => 'string', 'path' => 'content.content.link.url'], ['accepts' => 'string', 'path' => 'content.buttons.add_button.button.text'], ['accepts' => 'string', 'path' => 'content.buttons.add_button.button.link.url'], ['accepts' => 'string', 'path' => 'content.buttons.secondary_button.text'], ['accepts' => 'string', 'path' => 'content.buttons.secondary_button.link.url'], ['accepts' => 'string', 'path' => 'content.email.embed_code.text'], ['accepts' => 'string', 'path' => 'content.email.embed_code.link.url'], ['accepts' => 'string', 'path' => 'content.button.primary_button.text'], ['accepts' => 'string', 'path' => 'content.button.primary_button.link.url']];
     }
 
     static function additionalClasses()
