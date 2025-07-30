@@ -1,38 +1,3 @@
-{% set defaults = {
-  eyebrow: 'INTEGRATIONS',
-  heading: 'Opkey’s pre-built integrations',
-  subhead: 'With dozens of pre-built connectors and integrations, Opkey works seamlessly within your environment.',
-  categories: [
-    {
-      title: 'Category 1',
-      resources: [
-        {
-          icon: { url: '/wp-content/uploads/2025/06/icon-robot.svg' },
-          heading: 'RESOURCE TYPE',
-          content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-          button: { text: 'Learn more', url: '#' }
-        },
-        {
-          icon: { url: '/wp-content/uploads/2025/06/icon-robot.svg' },
-          heading: 'RESOURCE TYPE',
-          content: 'Another awesome resource in category 1.',
-          button: { text: 'Learn more', url: '#' }
-        }
-      ]
-    },
-    {
-      title: 'Category 2',
-      resources: [
-        {
-          icon: { url: '/wp-content/uploads/2025/06/icon-robot.svg' },
-          heading: 'RESOURCE TYPE',
-          content: 'Category 2 resource content goes here.',
-          button: { text: 'Learn more', url: '#' }
-        }
-      ]
-    }
-  ]
-} %}
 <div class="module-container">
   <div class="module-top-nav-accordion module-text">
     {% set eyebrow = content.eyebrow.text %}
@@ -56,22 +21,7 @@
     {% endif %}
   </div>
 
-{# Render user content if any resource is "real", else render defaults #}
-{% set show_defaults = true %}
-{% if content.categories.category is defined and content.categories.category|length > 0 %}
-  {% for cat in content.categories.category %}
-    {% if cat.resources is defined and cat.resources|length > 0 %}
-      {% for res in cat.resources %}
-        {% if res.icon.url is defined or res.heading|length > 0 or res.content|length > 0 %}
-          {% set show_defaults = false %}
-        {% endif %}
-      {% endfor %}
-    {% endif %}
-  {% endfor %}
-{% endif %}
-
-{# Assign categories variable based on the flag #}
-{% set categories = show_defaults ? defaults.categories : content.categories.category %}
+  {% set categories = content.categories.category %}
 
   <div class="module-content-row">
     <div class="tab-nav bde-tab-list desktop-only">

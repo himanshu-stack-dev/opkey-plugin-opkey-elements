@@ -706,14 +706,6 @@ observer.observe();'],],'3' =>  ['scripts' => ['%%BREAKDANCE_ELEMENTS_PLUGIN_URL
   setTimeout(() => clearInterval(interval), 10000);
 })();
 ',
-],],
-
-'onPropertyChange' => [['script' => 'window.BreakdanceLottie("%%SELECTOR%%", {
-  path: "{{ src }}",
-  renderer: "{{ content.lottie.renderer ?? \'svg\' }}",
-  loop: true,
-  autoplay: true
-});',
 ],],];
     }
 
