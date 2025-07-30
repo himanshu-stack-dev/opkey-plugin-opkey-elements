@@ -306,21 +306,9 @@ class Leftnavtwocolumnright extends \Breakdance\Elements\Element
   function equalizeCardHeights(wrapper) {
     const cards = wrapper.querySelectorAll(\'.swiper-slide .card\');
     let maxHeight = 0;
-
-    // Reset heights first
-    cards.forEach(card => {
-      card.style.height = \'auto\';
-    });
-
-    // Find max height
-    cards.forEach(card => {
-      maxHeight = Math.max(maxHeight, card.offsetHeight);
-    });
-
-    // Apply uniform height
-    cards.forEach(card => {
-      card.style.height = `${maxHeight}px`;
-    });
+    cards.forEach(card => card.style.height = \'auto\');
+    cards.forEach(card => { maxHeight = Math.max(maxHeight, card.offsetHeight); });
+    cards.forEach(card => { card.style.height = `${maxHeight}px`; });
   }
 
   function initColumnsSlider() {
@@ -332,6 +320,26 @@ class Leftnavtwocolumnright extends \Breakdance\Elements\Element
       if (!el.swiper) {
         const swiper = new Swiper(el, config);
         wireCategoryFilter(swiper, el);
+      }
+    });
+  }
+
+  // Hide desktop tab-nav and mobile dropdown if only one tab/category exists
+  function hideSingleTabsAndDropdowns() {
+    document.querySelectorAll(\'.tab-nav.desktop-only\').forEach(function(tabNav) {
+      const tabs = tabNav.querySelectorAll(\'.bde-tab\');
+      if (tabs.length < 2) {
+        tabNav.style.display = \'none\';
+      } else {
+        tabNav.style.display = \'\';
+      }
+    });
+    document.querySelectorAll(\'.tab-dropdown.mobile-only\').forEach(function(dropdown) {
+      const options = dropdown.querySelectorAll(\'option\');
+      if (options.length < 2) {
+        dropdown.style.display = \'none\';
+      } else {
+        dropdown.style.display = \'\';
       }
     });
   }
@@ -348,7 +356,6 @@ class Leftnavtwocolumnright extends \Breakdance\Elements\Element
       wrapper.innerHTML = "";
 
       let slideCount = 0;
-
       allSlides.forEach((slide) => {
         if (String(slide.dataset.categoryIndex).trim() === catIndex) {
           wrapper.appendChild(slide.cloneNode(true));
@@ -404,10 +411,15 @@ class Leftnavtwocolumnright extends \Breakdance\Elements\Element
     }
   }
 
-  initColumnsSlider();
+  // Call after slider is initialized, and on builder events
+  function runAll() {
+    initColumnsSlider();
+    hideSingleTabsAndDropdowns();
+  }
+  runAll();
 
   if (window.BREAKDANCE) {
-    window.BREAKDANCE.on("builder:loaded builder:rendered", initColumnsSlider);
+    window.BREAKDANCE.on("builder:loaded builder:rendered", runAll);
   }
 })();
 '],],];
