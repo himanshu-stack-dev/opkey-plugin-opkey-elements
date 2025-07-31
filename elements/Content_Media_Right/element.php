@@ -4,7 +4,6 @@ namespace BreakdanceCustomElements;
 
 use function Breakdance\Elements\c;
 use function Breakdance\Elements\PresetSections\getPresetSection;
-use function OpkeyCustomElements\getSharedDefaults;
 
 
 \Breakdance\ElementStudio\registerElementForEditing(
@@ -71,26 +70,7 @@ class Contentmediaright extends \Breakdance\Elements\Element
 
     static function defaultProperties()
     {
-        return [
-            'content' => array_replace_recursive(
-                getSharedDefaults(),
-                [
-                    'media' => [
-                        'image_or_video' => 'image',
-                    ],
-                    'image' => [
-                        'from' => 'url',
-                        'url' => '/wp-content/uploads/2025/06/Placeholder.png',
-                        'media' => 0,
-                        'alt' => [
-                            'type' => 'custom',
-                            'customAlt' => 'Placeholder image',
-                        ],
-                        'lazyLoad' => false,
-                    ],
-                ]
-            ),
-        ];
+        return ['content' => ['eyebrow' => ['text' => 'Lorem ipsum dolor'], 'heading' => ['text' => 'Lorem ipsum dolor sit amet'], 'subhead' => ['text' => 'Lorem ipsum dolor sit amet consectetur adipiscing elit'], 'content' => ['text' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.'], 'buttons' => ['primary_button' => ['text' => 'Contact sales', 'link' => '#'], 'secondary_button' => ['text' => 'Learn more', 'link' => '#']], 'media' => ['image_or_video' => 'image'], 'image' => ['from' => 'url', 'url' => '/wp-content/uploads/2025/06/Placeholder.png', 'media' => 0, 'alt' => ['type' => 'custom', 'customAlt' => 'Placeholder image'], 'lazyLoad' => false]]];
     }
 
     static function defaultChildren()
@@ -237,10 +217,10 @@ class Contentmediaright extends \Breakdance\Elements\Element
         "media",
         "Media",
         [c(
-        "image_or_video",
-        "Image or Video",
+        "image_video_or_animation",
+        "Image, Video, or Animation",
         [],
-        ['type' => 'button_bar', 'layout' => 'vertical', 'items' => [['value' => 'image', 'text' => 'Image'], ['text' => 'Video', 'value' => 'video']]],
+        ['type' => 'button_bar', 'layout' => 'vertical', 'items' => [['value' => 'image', 'text' => 'Image'], ['text' => 'Video', 'value' => 'video'], ['text' => 'Animation', 'value' => 'animation']]],
         false,
         false,
         [],
@@ -293,7 +273,7 @@ class Contentmediaright extends \Breakdance\Elements\Element
         false,
         [],
       )],
-        ['type' => 'section', 'layout' => 'vertical', 'condition' => [[['path' => 'content.media.image_or_video', 'operand' => 'equals', 'value' => 'image']]]],
+        ['type' => 'section', 'layout' => 'vertical', 'condition' => [[['path' => 'content.media.image_video_or_animation', 'operand' => 'equals', 'value' => 'image']]]],
         false,
         false,
         [],
@@ -341,7 +321,7 @@ class Contentmediaright extends \Breakdance\Elements\Element
         false,
         [],
       )],
-        ['type' => 'section', 'layout' => 'vertical', 'condition' => [[['path' => 'content.media.image_or_video', 'operand' => 'equals', 'value' => 'video']]]],
+        ['type' => 'section', 'layout' => 'vertical', 'condition' => [[['path' => 'content.media.image_video_or_animation', 'operand' => 'equals', 'value' => 'video']]]],
         false,
         false,
         [],
@@ -529,6 +509,38 @@ class Contentmediaright extends \Breakdance\Elements\Element
         false,
         false,
         [],
+      ), c(
+        "lottie",
+        "Lottie",
+        [c(
+        "asset_url",
+        "Asset Url",
+        [],
+        ['type' => 'wpmedia', 'layout' => 'vertical'],
+        false,
+        false,
+        [],
+      ), c(
+        "animation_speed",
+        "Animation Speed",
+        [],
+        ['type' => 'number', 'layout' => 'inline', 'items' => [['text' => '0.5x', 'label' => 'Label', 'value' => '0.5'], ['text' => '1x', 'value' => '1'], ['text' => '2x', 'value' => '2']], 'rangeOptions' => ['min' => 0, 'max' => 3, 'step' => 0.1]],
+        false,
+        false,
+        [],
+      ), c(
+        "loop_animation",
+        "Loop Animation",
+        [],
+        ['type' => 'toggle', 'layout' => 'inline', 'items' => [['text' => 'Yes', 'label' => 'Label', 'value' => 'Yes'], ['text' => 'No', 'value' => 'No']]],
+        false,
+        false,
+        [],
+      )],
+        ['type' => 'section', 'layout' => 'vertical', 'condition' => [[['path' => 'content.media.image_video_or_animation', 'operand' => 'equals', 'value' => 'animation']]]],
+        false,
+        false,
+        [],
       )];
     }
 
@@ -559,7 +571,77 @@ if (backgroundImage != \'\') {
     });
   }
 }'],'scripts' => ['%%BREAKDANCE_ELEMENTS_PLUGIN_URL%%dependencies-files/lite-vimeo-embed@0.1/lite-vimeo.js'],],'2' =>  ['title' => 'lozad','scripts' => ['%%BREAKDANCE_ELEMENTS_PLUGIN_URL%%dependencies-files/lozard@1/lozad.min.js'],'inlineScripts' => ['const observer = lozad();
-observer.observe();'],],];
+observer.observe();'],],'3' =>  ['title' => 'Lottie','scripts' => ['%%BREAKDANCE_ELEMENTS_PLUGIN_URL%%dependencies-files/lottie-web@5/lottie_light-v-5-7-8.min.js','%%BREAKDANCE_ELEMENTS_PLUGIN_URL%%dependencies-files/lottie-web@5/breakdanceLottie.js'],'inlineScripts' => ['(function watchAndInitLottie() {
+  const baseSelector = "%%SELECTOR%%";
+  // Use a higher-level container selector:
+  const sectionSelector = `${baseSelector} .module-media`;
+  const lottieSelector = ".bde-lottie-animation";
+
+  function initLottie(wrapper) {
+    if (wrapper._lottieInstance) return;
+    const path = wrapper.dataset.src;
+    const loop = wrapper.dataset.loop === "true";
+    const autoplay = false;
+    const renderer = wrapper.dataset.renderer || "svg";
+    const speed = parseFloat(wrapper.dataset.speed) || 1;
+
+    const anim = window.lottie?.loadAnimation({
+      container: wrapper,
+      renderer,
+      loop,
+      autoplay,
+      path
+    });
+
+    if (!anim) return;
+    wrapper._lottieInstance = anim;
+    if (speed && speed !== 1) anim.setSpeed(speed);
+
+    anim.addEventListener("DOMLoaded", () => {
+      wrapper.style.display = "";
+    });
+  }
+
+  const observer = new IntersectionObserver((entries, obs) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        // Find the Lottie inside the section:
+        const lottie = entry.target.querySelector(lottieSelector);
+        if (lottie) {
+          initLottie(lottie);
+          const anim = lottie._lottieInstance;
+          if (anim) {
+            if (anim.isLoaded) {
+              anim.goToAndPlay(0, true);
+            } else {
+              anim.addEventListener("DOMLoaded", () => {
+                anim.goToAndPlay(0, true);
+              });
+            }
+          }
+        }
+        obs.unobserve(entry.target);
+      }
+    });
+  }, {
+    threshold: [0.3]
+  });
+
+  function watchSections() {
+    const sections = document.querySelectorAll(sectionSelector);
+    sections.forEach(section => {
+      if (!section._lottieObserved) {
+        observer.observe(section);
+        section._lottieObserved = true;
+      }
+    });
+  }
+
+  watchSections();
+  const mutationObs = new MutationObserver(watchSections);
+  mutationObs.observe(document.body, { childList: true, subtree: true });
+})();
+'],],];
     }
 
     static function settings()
@@ -574,7 +656,48 @@ observer.observe();'],],];
 
     static public function actions()
     {
-        return false;
+        return [
+
+'onMountedElement' => [['script' => '(function universalLottieEditorPreview() {
+  const baseSelector = "%%SELECTOR%%";
+  const root = document.querySelector(baseSelector);
+  if (!root) return;
+
+  const interval = setInterval(() => {
+    const wrapper = root.querySelector(\'.bde-lottie-animation\');
+    const lottieSrc = wrapper?.getAttribute(\'data-src\');
+
+    if (wrapper && lottieSrc) {
+      if (wrapper.querySelector(\'svg, canvas\')) return;
+
+      wrapper.innerHTML = \'\';
+
+      const anim = window.lottie?.loadAnimation({
+        container: wrapper,
+        renderer: wrapper.getAttribute(\'data-renderer\') || \'svg\',
+        loop: true,
+        autoplay: true,
+        path: lottieSrc
+      });
+
+      if (anim) {
+        anim.addEventListener(\'DOMLoaded\', () => {
+          anim.play();
+        });
+
+        anim.addEventListener(\'complete\', () => {
+          anim.goToAndPlay(0, true);
+        });
+      }
+
+      clearInterval(interval);
+    }
+  }, 300);
+
+  setTimeout(() => clearInterval(interval), 10000);
+})();
+',
+],],];
     }
 
     static function nestingRule()
