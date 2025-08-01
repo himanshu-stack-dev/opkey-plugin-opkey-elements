@@ -717,7 +717,6 @@ class Topnavaccordion extends \Breakdance\Elements\Element
 
     if (rogue && !nested) {
       wrapper.appendChild(rogue);
-      console.log("🛠️ Moved rogue animation into wrapper");
     }
 
     // If nothing rendered yet, force manual Lottie load
@@ -767,82 +766,87 @@ class Topnavaccordion extends \Breakdance\Elements\Element
   settings: {"slidesPerView":1,"spaceBetween":32,"grid":{"rows":1,"fill":"row"},"breakpoints":{"600":{"slidesPerView":3,"slidesPerGroup":3,"grid":{"rows":1}},"1024":{"slidesPerView":4,"slidesPerGroup":4,"grid":{"rows":2,"fill":"row"}}},"navigation":{"nextEl":".slider-navigation .swiper-button-next-%%UNIQUESLUG%%","prevEl":".slider-navigation .swiper-button-prev-%%UNIQUESLUG%%"}},
   paginationSettings: {"el":".slider-navigation .swiper-pagination-%%UNIQUESLUG%%","clickable":true,"type":"bullets"}
 });',
-],['script' => '(function watchAndInitLottie() {
+],['script' => '(function watchAndInitLottieEditorFriendly() {
   const baseSelector = "%%SELECTOR%%";
   const wrapperSelector = `${baseSelector} .bde-lottie-animation`;
 
+  function getLottieConfig(wrapper) {
+    return {
+      src: wrapper.dataset.src,
+      renderer: wrapper.dataset.renderer || "svg",
+      loop: ["true", "1"].includes(wrapper.dataset.loop),
+      autoplay: ["true", "1"].includes(wrapper.dataset.autoplay),
+      speed: parseFloat(wrapper.dataset.speed || "1"),
+      trigger: wrapper.dataset.trigger || "accordion"
+    };
+  }
+
+  function configsEqual(a, b) {
+    return (
+      a.src === b.src &&
+      a.renderer === b.renderer &&
+      a.loop === b.loop &&
+      a.autoplay === b.autoplay &&
+      a.speed === b.speed &&
+      a.trigger === b.trigger
+    );
+  }
+
   function initLottie(wrapper) {
-    if (!wrapper || wrapper.dataset.initialized === "true") return;
+    const newConfig = getLottieConfig(wrapper);
 
-    const path = wrapper.dataset.src;
-    const renderer = wrapper.dataset.renderer || "svg";
-    const loop = ["true", "1"].includes(wrapper.dataset.loop);
-    const autoplay = ["true", "1"].includes(wrapper.dataset.autoplay);
-    const speed = parseFloat(wrapper.dataset.speed || "1");
-    const trigger = wrapper.dataset.trigger || "accordion";
+    // If we already have an instance/config, see if it needs to be replaced
+    const prevConfig = wrapper._lottieConfig;
+    const prevInstance = wrapper._lottieInstance;
 
-    console.log("⏳ Initializing Lottie:", { path, loop, autoplay, speed, trigger });
-
-    const anim = window.lottie?.loadAnimation({
-      container: wrapper,
-      renderer,
-      loop,
-      autoplay: false, // We control play manually
-      path
-    });
-
-    if (!anim) {
+    // If nothing changed and SVG/canvas present, skip re-init
+    if (
+      prevConfig &&
+      configsEqual(prevConfig, newConfig) &&
+      wrapper.querySelector("svg,canvas")
+    ) {
       return;
     }
 
-    anim.setSpeed(speed);
-    wrapper.dataset.initialized = "true";
-    wrapper._lottieInstance = anim;
-
-    const panel = wrapper.closest(".bde-tabpanel");
-
-    // Log initial visibility of the panel
-    if (panel) {
-      const isVisible = panel.offsetParent !== null;
+    // Cleanup previous animation if present
+    if (prevInstance && prevInstance.destroy) {
+      prevInstance.destroy();
     }
+    wrapper._lottieInstance = null;
+    wrapper._lottieConfig = null;
 
-    // When Lottie is ready, attempt to play if visible
+    // Remove SVG/canvas
+    wrapper.innerHTML = "";
+
+    if (!newConfig.src) return; // Don’t init if no data-src yet
+
+    // Create new Lottie
+    const anim = window.lottie?.loadAnimation({
+      container: wrapper,
+      renderer: newConfig.renderer,
+      loop: newConfig.loop,
+      autoplay: false,
+      path: newConfig.src
+    });
+
+    if (!anim) return;
+
+    anim.setSpeed(newConfig.speed);
+    wrapper._lottieInstance = anim;
+    wrapper._lottieConfig = newConfig;
+
+    // Editor preview: always autoplay and loop
     anim.addEventListener("DOMLoaded", () => {
-
       setTimeout(() => {
-        const shouldPlay =
-          trigger === "accordion" &&
-          autoplay &&
-          panel &&
-          panel.offsetParent !== null;
-
-        if (shouldPlay) {
-          anim.goToAndPlay(0, true);
-        } else {
-        }
+        anim.goToAndPlay(0, true);
       }, 100);
     });
 
     anim.addEventListener("complete", () => {
-      console.log("🔁 Animation complete:", path);
-      if (loop) {
+      if (newConfig.loop) {
         anim.goToAndPlay(0, true);
       }
     });
-
-    // Watch accordion visibility for dynamic play
-    if (trigger === "accordion" && autoplay && panel) {
-      const observer = new MutationObserver(() => {
-        const isNowVisible = panel.offsetParent !== null;
-        if (isNowVisible) {
-          anim.goToAndPlay(0, true);
-        }
-      });
-      observer.observe(panel, {
-        attributes: true,
-        attributeFilter: ["class", "style"]
-      });
-    }
   }
 
   function initAll() {
@@ -850,11 +854,14 @@ class Topnavaccordion extends \Breakdance\Elements\Element
     wrappers.forEach(initLottie);
   }
 
-  console.log("🧪 Running watchAndInitLottie inline script");
-  
+  // MutationObserver for DOM changes
   const observer = new MutationObserver(() => initAll());
   observer.observe(document.body, { childList: true, subtree: true });
 
+  // Also poll for attribute changes, e.g., if you update the Lottie JSON in the editor
+  setInterval(initAll, 500);
+
+  // Initial run
   initAll();
 })();
 ',
