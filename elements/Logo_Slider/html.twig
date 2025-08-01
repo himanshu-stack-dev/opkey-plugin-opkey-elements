@@ -62,16 +62,16 @@
   <div class="un-logo-bar__marquee-content {{ scroll_enabled ? 'carousel-type__marquee' : 'carousel-type__paused' }}">
     {% if scroll_enabled %}
       {# Duplicate logos for marquee scroll effect #}
-      {% for repeat in [1,2,3,4,5,6] %}
+      {% for repeat in [1,2,3] %}
         {% for item in logo_items %}
           {% if item is iterable %}
             {% if item.link %}
               {{ macros.linkStart(item.link, 'un-logo-bar__logo-wrapper') }}
-                {{ macros.image(item.image, item.size, item.alt, false) }}
+                {{ macros.image(item.image, item.size, item.alt, true) }}
               {{ macros.linkEnd() }}
             {% else %}
               <div class="un-logo-bar__logo-wrapper">
-                {{ macros.image(item.image, item.size, item.alt, false) }}
+                {{ macros.image(item.image, item.size, item.alt, true) }}
               </div>
             {% endif %}
           {% else %}
@@ -87,11 +87,11 @@
         {% if item is iterable %}
           {% if item.link %}
             {{ macros.linkStart(item.link, 'un-logo-bar__logo-wrapper') }}
-              {{ macros.image(item.image, item.size, item.alt, false) }}
+              {{ macros.image(item.image, item.size, item.alt, true) }}
             {{ macros.linkEnd() }}
           {% else %}
             <div class="un-logo-bar__logo-wrapper">
-              {{ macros.image(item.image, item.size, item.alt, false) }}
+              {{ macros.image(item.image, item.size, item.alt, true) }}
             </div>
           {% endif %}
         {% else %}
