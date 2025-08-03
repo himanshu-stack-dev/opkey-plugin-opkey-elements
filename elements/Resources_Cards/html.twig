@@ -1,0 +1,63 @@
+<div class="module-container">
+  <div class="module-top-nav-accordion module-text">
+    {% set eyebrow = content.eyebrow.text %}
+    {% if eyebrow %}
+      <div class="eyebrow">{{ eyebrow }}</div>
+    {% endif %}
+
+    {% set heading = content.heading.text %}
+    {% if heading %}
+      <h2>{{ heading }}</h2>
+    {% endif %}
+
+    {% set subhead = content.subhead.text %}
+    {% if subhead %}
+      <h4>{{ subhead }}</h4>
+    {% endif %}
+
+    {% set body = content.content.text %}
+    {% if body %}
+      <p>{{ body }}</p>
+    {% endif %}
+  </div>
+
+  <div class="resources-list">
+    {% for item in content.resources.resource %}
+      <div class="resource-card card">
+        <svg preserveAspectRatio="none" viewBox="0 0 5 452" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M5 1V1C2.79086 1 1 2.79087 1 5V447C1 449.209 2.79086 451 5 451V451" stroke="currentColor"/>
+        </svg>
+
+        <div class="icon">
+          {% if item.icon.url is defined %}
+            <img src="{{ item.icon.url }}" alt="" class="breakdance-image-object" style="width:60px; height:auto; margin-bottom: 1rem;" />
+          {% endif %}
+        </div>
+
+        <div class="mobile-eyebrow">
+          <span class="resource-type" style="color: #12a4b4; letter-spacing: 0.03em; font-weight: 600; font-size: 1rem; text-transform: uppercase;">
+            {{ item.heading ?? 'Resource Type' }}
+          </span>
+        </div>
+
+        <div class="richtext-content">
+          {{ item.content }}
+        </div>
+
+        {% set btn = item.button ?? {} %}
+        {% if btn.html is defined or (btn.text is defined and btn.text|length > 0) %}
+          <div class="content-module module-buttons">
+            {{ btn.html is defined 
+              ? btn.html 
+              : macros.atomV1ButtonHtml(btn, 'opkey-link-text', path.to.button_design_preset_section, 'secondary', btn.text) 
+            }}
+          </div>
+        {% endif %}
+
+        <svg class="right" preserveAspectRatio="none" viewBox="0 0 5 452" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M5 1V1C2.79086 1 1 2.79087 1 5V447C1 449.209 2.79086 451 5 451V451" stroke="currentColor"/>
+        </svg>
+      </div>
+    {% endfor %}
+  </div>
+</div>
