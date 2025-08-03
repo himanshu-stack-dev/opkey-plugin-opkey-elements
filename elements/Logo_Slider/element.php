@@ -225,22 +225,6 @@ class Logoslider extends \Breakdance\Elements\Element
         "logos",
         "Logos",
         [c(
-        "message",
-        "Message",
-        [],
-        ['type' => 'alert_box', 'layout' => 'vertical', 'alertBoxOptions' => ['style' => 'info', 'content' => '<p>Minimum 4 logos for a smooth scroll.</p>']],
-        false,
-        false,
-        [],
-      ), c(
-        "scroll_",
-        "Scroll?",
-        [],
-        ['type' => 'toggle', 'layout' => 'inline'],
-        false,
-        false,
-        [],
-      ), c(
         "logo",
         "Logo",
         [c(
@@ -271,20 +255,21 @@ class Logoslider extends \Breakdance\Elements\Element
 
     static function dependencies()
     {
-        return ['0' =>  ['inlineScripts' => ['const marquee = document.querySelector(".un-logo-bar__marquee-content.carousel-type__marquee");
-if (!marquee) return;
-
-const logos = marquee.querySelectorAll(".un-logo-bar__logo-wrapper");
-const numLogos = logos.length;
-
-// Adjust multiplier to fit scroll speed preferences
-const secondsPerLogo = 5;
-const min = 30;
-const max = 400;
-
-let duration = Math.max(min, Math.min(max, numLogos * secondsPerLogo));
-marquee.style.setProperty(\'--marquee-duration\', `${duration}s`);
-'],'title' => 'Slider speed',],];
+        return ['0' =>  ['inlineScripts' => ['function updateLogoBarMarquee() {
+  document.querySelectorAll(\'.un-logo-bar__marquee-content.carousel-type__marquee\').forEach(function(el) {
+    const logos = el.querySelectorAll(".un-logo-bar__logo-wrapper");
+    const numLogos = logos.length / 3;
+    const secondsPerLogo = 3;
+    const min = 30;
+    const max = 400;
+    let duration = Math.max(min, Math.min(max, numLogos * secondsPerLogo));
+    el.style.setProperty(\'--marquee-duration\', `${duration}s`);
+  });
+}
+window.addEventListener(\'DOMContentLoaded\', updateLogoBarMarquee);
+window.addEventListener(\'resize\', updateLogoBarMarquee);
+setTimeout(updateLogoBarMarquee, 100);
+'],'title' => 'Slider Adjustments',],];
     }
 
     static function settings()

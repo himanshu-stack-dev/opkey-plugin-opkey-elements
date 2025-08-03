@@ -39,7 +39,6 @@
   {% endif %}
 
   {# SLIDER #}
-  {% set scroll_enabled = content.logos.scroll_ in [true, 'true', 1, '1'] %}
   {% set site_url = site.url %}
   {% set raw_logos = content.logos.logo ?? content.logos.logos ?? content.logos ?? [] %}
   {% set logo_items = [] %}
@@ -59,30 +58,9 @@
     ] %}
   {% endif %}
 
-  <div class="un-logo-bar__marquee-content {{ scroll_enabled ? 'carousel-type__marquee' : 'carousel-type__paused' }}">
-    {% if scroll_enabled %}
-      {# Duplicate logos for marquee scroll effect #}
-      {% for repeat in [1,2,3] %}
-        {% for item in logo_items %}
-          {% if item is iterable %}
-            {% if item.link %}
-              {{ macros.linkStart(item.link, 'un-logo-bar__logo-wrapper') }}
-                {{ macros.image(item.image, item.size, item.alt, true) }}
-              {{ macros.linkEnd() }}
-            {% else %}
-              <div class="un-logo-bar__logo-wrapper">
-                {{ macros.image(item.image, item.size, item.alt, true) }}
-              </div>
-            {% endif %}
-          {% else %}
-            <div class="un-logo-bar__logo-wrapper">
-              <img src="{{ site_url ~ item }}" alt="Logo placeholder">
-            </div>
-          {% endif %}
-        {% endfor %}
-      {% endfor %}
-    {% else %}
-      {# Render each logo only once #}
+  <div class="un-logo-bar__marquee-content carousel-type__marquee" data-logo-count="{{ logo_items|length }}">
+    {# Repeat the logo list 3x for seamless scrolling #}
+    {% for repeat in [1,2,3] %}
       {% for item in logo_items %}
         {% if item is iterable %}
           {% if item.link %}
@@ -100,6 +78,6 @@
           </div>
         {% endif %}
       {% endfor %}
-    {% endif %}
+    {% endfor %}
   </div>
 </div>
