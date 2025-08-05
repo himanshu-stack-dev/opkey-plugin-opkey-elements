@@ -276,7 +276,65 @@ class Columnsthreeresources extends \Breakdance\Elements\Element
 
     static function dependencies()
     {
-        return false;
+        return ['0' =>  ['scripts' => ['%%BREAKDANCE_ELEMENTS_PLUGIN_URL%%dependencies-files/swiper@8/swiper-bundle.min.js','%%BREAKDANCE_ELEMENTS_PLUGIN_URL%%dependencies-files/breakdance-swiper/breakdance-swiper.js'],'inlineScripts' => [';(function(){
+  const config = {
+    spaceBetween: 20,
+    navigation: {
+      nextEl: \'.swiper-button-next-%%UNIQUESLUG%%\',
+      prevEl: \'.swiper-button-prev-%%UNIQUESLUG%%\'
+    },
+    pagination: {
+      el: \'.swiper-pagination-%%UNIQUESLUG%%\',
+      clickable: true,
+      type: \'bullets\'
+    },
+    breakpoints: {
+      1024: { slidesPerView: 3, slidesPerGroup: 3 },
+      768:  { slidesPerView: 2, slidesPerGroup: 2 },
+      0:    { slidesPerView: 1, slidesPerGroup: 1 }
+    },
+    on: {
+      init: () => setEqualSlideHeights(\'.swiper.swiper-%%UNIQUESLUG%%\'),
+      slideChange: () => setEqualSlideHeights(\'.swiper.swiper-%%UNIQUESLUG%%\')
+    }
+  };
+
+  function setEqualSlideHeights(containerSelector) {
+    const container = document.querySelector(containerSelector);
+    if (!container) return;
+
+    const slides = container.querySelectorAll(\'.swiper-slide\');
+    let maxHeight = 0;
+
+    slides.forEach(slide => {
+      slide.style.height = \'auto\';
+      const height = slide.offsetHeight;
+      if (height > maxHeight) maxHeight = height;
+    });
+
+    slides.forEach(slide => {
+      slide.style.height = `${maxHeight}px`;
+    });
+  }
+
+  function initColumnsSlider() {
+    document
+      .querySelectorAll(\'.swiper.swiper-%%UNIQUESLUG%%\')
+      .forEach(el => {
+        if (!el.swiper) {
+          new Swiper(el, config);
+        }
+      });
+  }
+
+  initColumnsSlider();
+  window.addEventListener(\'resize\', () => setEqualSlideHeights(\'.swiper.swiper-%%UNIQUESLUG%%\'));
+
+  if (window.BREAKDANCE) {
+    window.BREAKDANCE.on(\'builder:loaded builder:rendered\', initColumnsSlider);
+  }
+})();
+'],'styles' => ['%%BREAKDANCE_ELEMENTS_PLUGIN_URL%%dependencies-files/swiper@8/swiper-bundle.min.css','%%BREAKDANCE_ELEMENTS_PLUGIN_URL%%dependencies-files/swiper@8/breakdance-swiper-preset-defaults.css'],],];
     }
 
     static function settings()
@@ -291,7 +349,28 @@ class Columnsthreeresources extends \Breakdance\Elements\Element
 
     static public function actions()
     {
-        return false;
+        return [
+
+'onPropertyChange' => [['script' => 'window.BreakdanceSwiper().update({
+  id: \'%%ID%%\',
+  selector:\'%%SELECTOR%%\',
+  settings:{{ design.slider.settings|json_encode }},
+  paginationSettings:{{ design.slider.pagination|json_encode }},
+});',
+],],
+
+'onBeforeDeletingElement' => [['script' => 'window.BreakdanceSwiper().destroy(
+  \'%%ID%%\'
+);',
+],],
+
+'onMountedElement' => [['script' => 'window.BreakdanceSwiper().update({
+  id: \'%%ID%%\',
+  selector:\'%%SELECTOR%%\',
+  settings:{{ design.slider.settings|json_encode }},
+  paginationSettings:{{ design.slider.pagination|json_encode }},
+});',
+],],];
     }
 
     static function nestingRule()

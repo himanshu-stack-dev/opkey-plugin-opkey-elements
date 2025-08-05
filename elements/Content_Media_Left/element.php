@@ -70,7 +70,7 @@ class Contentmedialeft extends \Breakdance\Elements\Element
 
     static function defaultProperties()
     {
-        return ['content' => ['eyebrow' => ['text' => 'Lorem ipsum dolor'], 'heading' => ['text' => 'Lorem ipsum dolor sit amet'], 'subhead' => ['text' => 'Lorem ipsum dolor sit amet consectetur adipiscing elit'], 'content' => ['text' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.'], 'buttons' => ['primary_button' => ['text' => 'Contact sales', 'link' => '#'], 'secondary_button' => ['text' => 'Learn more', 'link' => '#']], 'media' => ['image_or_video' => 'image'], 'image' => ['from' => 'url', 'url' => '/wp-content/uploads/2025/06/Placeholder.png', 'media' => 0, 'alt' => ['type' => 'custom', 'customAlt' => 'Placeholder image'], 'lazyLoad' => false]]];
+        return ['content' => ['eyebrow' => ['text' => 'Lorem ipsum dolor'], 'heading' => ['text' => 'Lorem ipsum dolor sit amet'], 'subhead' => ['text' => 'Lorem ipsum dolor sit amet consectetur adipiscing elit'], 'content' => ['text' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.'], 'buttons' => ['primary_button' => ['text' => 'Contact sales', 'link' => '#'], 'secondary_button' => ['text' => 'Learn more', 'link' => '#']], 'media' => ['image_video_or_animation' => 'image'], 'image' => ['from' => 'url', 'url' => '/wp-content/uploads/2025/06/Placeholder.png', 'media' => 0, 'alt' => ['type' => 'custom', 'customAlt' => 'Placeholder image'], 'lazyLoad' => false]]];
     }
 
     static function defaultChildren()
@@ -672,22 +672,30 @@ observer.observe();'],],'3' =>  ['title' => 'Lottie','scripts' => ['%%BREAKDANCE
 
       wrapper.innerHTML = \'\';
 
+      const loop = wrapper.getAttribute(\'data-loop\') === \'true\';
+      const autoplay = wrapper.getAttribute(\'data-autoplay\') === \'true\';
+      const speed = parseFloat(wrapper.getAttribute(\'data-speed\')) || 1;
+
       const anim = window.lottie?.loadAnimation({
         container: wrapper,
         renderer: wrapper.getAttribute(\'data-renderer\') || \'svg\',
-        loop: true,
-        autoplay: true,
+        loop: loop,
+        autoplay: autoplay,
         path: lottieSrc
       });
 
       if (anim) {
+        // Set speed after DOM has loaded
         anim.addEventListener(\'DOMLoaded\', () => {
-          anim.play();
+          anim.setSpeed(speed);
+          if (autoplay) anim.play();
         });
 
-        anim.addEventListener(\'complete\', () => {
-          anim.goToAndPlay(0, true);
-        });
+        if (loop) {
+          anim.addEventListener(\'complete\', () => {
+            anim.goToAndPlay(0, true);
+          });
+        }
       }
 
       clearInterval(interval);

@@ -1,5 +1,5 @@
 <div class="module-container">
-  <div class="module-top-nav-accordion module-text">
+  <div class="module-text">
     {% set eyebrow = content.eyebrow.text %}
     {% if eyebrow %}
       <div class="eyebrow">{{ eyebrow }}</div>
@@ -21,7 +21,8 @@
     {% endif %}
   </div>
 
-  <div class="resources-list">
+  {% set num = content.resources.resource|length %}
+  <div class="resources-list {% if num == 4 or num == 6 %}twocol{% else %}threecol{% endif %}">
     {% for item in content.resources.resource %}
       <div class="resource-card card">
         <svg preserveAspectRatio="none" viewBox="0 0 5 452" fill="none" xmlns="http://www.w3.org/2000/svg">

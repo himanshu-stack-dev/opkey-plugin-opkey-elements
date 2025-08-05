@@ -3,3 +3,11 @@
 {% elseif design.theme_color.color == 'light-gray' %}
 	%%SELECTOR%% svg circle { fill:#EDF7F9; }
 {% endif %}
+
+{% if design.background_color.color == 'white' %}
+	%%SELECTOR%% { background:#fff; }
+{% elseif design.background_color.color == 'light-gray' %}
+	%%SELECTOR%% { background:#EDF7F9; }
+{% elseif design.background_color.color == 'purple' %}
+	%%SELECTOR%% { background:#190D2C; }
+{% endif %}

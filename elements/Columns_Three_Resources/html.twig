@@ -1,5 +1,6 @@
-<div class="module-container">
-  <div class="module-columns module-text">
+{% set columns = content.columns.column | length > 0 ? content.columns.column : default_columns %}
+<div class="module-container {% if columns|length > 2 %}stacked{% else %}sidebyside{% endif %}">
+  <div class="module-text">
     {# EYEBROW #}
     {% set eyebrow = content.eyebrow.text %}
     {% if eyebrow %}
@@ -27,7 +28,6 @@
     {# BUTTONS #}
     {% set pb = content.buttons.primary_button|default({}) %}
     {% set sb = content.buttons.secondary_button|default({}) %}
-
     {% if pb.text|default('')|trim or sb.text|default('')|trim %}
       <div class="content-module module-buttons">
         {% if pb.text|default('')|trim %}
@@ -79,53 +79,58 @@
   ] %}
 
   {# Use columns if they exist, otherwise fallback to two defaults #}
-  {% set columns = content.columns.column | length > 0 ? content.columns.column : default_columns %}
 
   <div class="columns">
-    {% for item in columns %}
-      <div class="column">
-        <div class="column-container">
-          <svg preserveAspectRatio="none" viewBox="0 0 5 452" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M5 1V1C2.79086 1 1 2.79087 1 5V447C1 449.209 2.79086 451 5 451V451" stroke="currentColor"/>
-          </svg>
-          <div class="column-image">
-            {% set image_link = item.button.url  %}
-            <a href="{{ image_link }}" class="column-image-link" aria-label="{{ item.button.text  }}">
-              {% if item.image %}
-                {{ macros.image(item.image, content.content.size, alt, lazyLoad) }}
-              {% else %}
-                <img src="/wp-content/uploads/2025/07/Placeholder_352x220.png" alt="Placeholder image" class="breakdance-image-object" style="width:100%; height:auto;" />
-              {% endif %}
-            </a>
-          </div>
-          <div class="column-text">
-            {# Eybrow fallback #}
-            <span class="mobile-eyebrow">{{ item.eyebrow  }}</span>
-
-            {# Heading fallback #}
-            <h3>{{ item.heading  }}</h3>
-
-            {# Body fallback #}
-            <p>{{ item.content  }}</p>
-
-            {# BUTTON with fallback #}
-            {% if item.button is defined and item.button.text|default('')|trim != '' %}
-              <div class="content-module module-buttons">
-                {{ macros.atomV1ButtonHtml(
-                  item.button,
-                  'opkey-link-text',
-                  path.to.button_design_preset_section,
-                  'secondary',
-                  item.button.text|trim
-                ) }}
+    <div class="breakdance-swiper-wrapper" data-swiper-id="%%ID%%">
+      <div class="swiper swiper-%%UNIQUESLUG%%">
+        <div class="swiper-wrapper">
+          {% for item in columns %}
+            <div class="swiper-slide column">
+              <div class="column-container">
+                <svg preserveAspectRatio="none" viewBox="0 0 5 452" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M5 1V1C2.79086 1 1 2.79087 1 5V447C1 449.209 2.79086 451 5 451V451" stroke="currentColor"/>
+                </svg>
+                <div class="column-image">
+                  {% set image_link = item.button.url  %}
+                  <a href="{{ image_link }}" class="column-image-link" aria-label="{{ item.button.text  }}">
+                    {% if item.image %}
+                      {{ macros.image(item.image, content.content.size, alt, lazyLoad) }}
+                    {% else %}
+                      <img src="/wp-content/uploads/2025/07/Placeholder_352x220.png" alt="Placeholder image" class="breakdance-image-object" style="width:100%; height:auto;" />
+                    {% endif %}
+                  </a>
+                </div>
+                <div class="column-text">
+                  <span class="mobile-eyebrow">{{ item.eyebrow  }}</span>
+                  <h3>{{ item.heading  }}</h3>
+                  <p>{{ item.content  }}</p>
+                  {% if item.button is defined and item.button.text|default('')|trim != '' %}
+                    <div class="content-module module-buttons">
+                      {{ macros.atomV1ButtonHtml(
+                        item.button,
+                        'opkey-link-text',
+                        path.to.button_design_preset_section,
+                        'secondary',
+                        item.button.text|trim
+                      ) }}
+                    </div>
+                  {% endif %}
+                </div>
+                <svg class="right" preserveAspectRatio="none" viewBox="0 0 5 452" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M5 1V1C2.79086 1 1 2.79087 1 5V447C1 449.209 2.79086 451 5 451V451" stroke="currentColor"/>
+                </svg>
               </div>
-            {% endif %}
-          </div>
-          <svg class="right" preserveAspectRatio="none" viewBox="0 0 5 452" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M5 1V1C2.79086 1 1 2.79087 1 5V447C1 449.209 2.79086 451 5 451V451" stroke="currentColor"/>
-          </svg>
+            </div>
+          {% endfor %}
         </div>
       </div>
-    {% endfor %}
+    </div>
+    {% if columns|length > 1 %}
+      <div class="slider-navigation">
+        <button class="swiper-button-prev swiper-button-prev-%%UNIQUESLUG%% custom-nav-btn"></button>
+        <div class="swiper-pagination swiper-pagination-%%UNIQUESLUG%%"></div>
+        <button class="swiper-button-next swiper-button-next-%%UNIQUESLUG%% custom-nav-btn"></button>
+      </div>
+    {% endif %}
   </div>
 </div>

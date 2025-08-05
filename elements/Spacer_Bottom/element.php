@@ -4,7 +4,6 @@ namespace OpkeyCustomElements;
 
 use function Breakdance\Elements\c;
 use function Breakdance\Elements\PresetSections\getPresetSection;
-use function OpkeyCustomElements\getSharedDefaults;
 
 
 \Breakdance\ElementStudio\registerElementForEditing(
@@ -90,6 +89,22 @@ class SpacerBottom extends \Breakdance\Elements\Element
         return [c(
         "theme_color",
         "Theme Color",
+        [c(
+        "color",
+        "Color",
+        [],
+        ['type' => 'button_bar', 'layout' => 'vertical', 'items' => [['value' => 'white', 'text' => 'White'], ['text' => 'Light Gray', 'value' => 'light-gray'], ['text' => 'Purple', 'value' => 'purple']], 'buttonBarOptions' => ['size' => 'small', 'layout' => 'default']],
+        false,
+        false,
+        [],
+      )],
+        ['type' => 'section'],
+        false,
+        false,
+        [],
+      ), c(
+        "background_color",
+        "Background Color",
         [c(
         "color",
         "Color",
