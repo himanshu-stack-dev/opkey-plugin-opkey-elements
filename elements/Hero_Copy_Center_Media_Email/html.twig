@@ -24,8 +24,10 @@
   {% endif %}
 
   {# EMAIL #}
-  {% set email_embed = content.email.embed_code  %}
-  {{ email_embed|raw }}
+  {% set email_embed = content.shortcode.full_shortcode  %}
+  {% if email_embed %}
+      <div class="demo-gradient-border-wrapper">%%SSR%%</div>
+  {% endif %}
 
   {# MEDIA #}
   {% set media_type = content.media.image_or_video  %}

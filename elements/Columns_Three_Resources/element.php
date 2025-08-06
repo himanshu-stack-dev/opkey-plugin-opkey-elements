@@ -300,6 +300,9 @@ class Columnsthreeresources extends \Breakdance\Elements\Element
   };
 
   function setEqualSlideHeights(containerSelector) {
+    // Skip height adjustment in Breakdance editor
+    if (document.body.classList.contains(\'breakdance-builder\')) return;
+
     const container = document.querySelector(containerSelector);
     if (!container) return;
 

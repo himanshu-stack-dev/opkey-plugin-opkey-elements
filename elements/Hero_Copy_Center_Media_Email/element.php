@@ -70,7 +70,7 @@ class Herocentercopymediaemail extends \Breakdance\Elements\Element
 
     static function defaultProperties()
     {
-        return ['eyebrow' => ['text' => 'Lorem ipsum dolor'], 'heading' => ['text' => 'Lorem ipsum dolor sit amet'], 'subhead' => ['text' => 'Lorem ipsum dolor sit amet consectetur adipiscing elit'], 'content' => ['text' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.'], 'buttons' => ['primary_button' => ['text' => 'Contact sales', 'link' => '#'], 'secondary_button' => ['text' => 'Learn more', 'link' => '#']]];
+        return ['content' => ['eyebrow' => ['text' => 'Lorem ipsum dolor'], 'heading' => ['text' => 'Lorem ipsum dolor sit amet'], 'subhead' => ['text' => 'Lorem ipsum dolor sit amet consectetur adipiscing elit'], 'content' => ['text' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.'], 'buttons' => ['primary_button' => ['text' => 'Contact sales', 'link' => '#'], 'secondary_button' => ['text' => 'Learn more', 'link' => '#']], 'media' => ['image_or_video' => 'image'], 'image' => ['from' => 'url', 'url' => '/wp-content/uploads/2025/06/Placeholder-1-1.png', 'media' => 0, 'alt' => ['type' => 'custom', 'customAlt' => 'Placeholder image'], 'lazyLoad' => false]]];
     }
 
     static function defaultChildren()
@@ -196,13 +196,13 @@ class Herocentercopymediaemail extends \Breakdance\Elements\Element
         false,
         [],
       ), c(
-        "email",
-        "Email",
+        "shortcode",
+        "Shortcode",
         [c(
-        "embed_code",
-        "Embed Code",
+        "full_shortcode",
+        "Full Shortcode",
         [],
-        ['type' => 'code', 'layout' => 'vertical'],
+        ['type' => 'text', 'layout' => 'vertical', 'placeholder' => '[myshortcode number="10"]', 'textOptions' => ['multiline' => true]],
         false,
         false,
         [],

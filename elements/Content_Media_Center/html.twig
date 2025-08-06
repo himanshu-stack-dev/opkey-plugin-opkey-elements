@@ -1,4 +1,16 @@
-<div class="module-container">
+{% set hasEyebrow = content.eyebrow.text|default('')|trim is not empty %}
+{% set hasHeading = content.heading.text|default('')|trim is not empty %}
+{% set hasSubhead = content.subhead.text|default('')|trim is not empty %}
+{% set hasBody = content.content.text|default('')|trim is not empty %}
+{% set hasPrimaryButton = content.buttons.primary_button.text|default('')|trim is not empty %}
+{% set hasSecondaryButton = content.buttons.secondary_button.text|default('')|trim is not empty %}
+{% set hasButtons = hasPrimaryButton or hasSecondaryButton %}
+{% set mediaType = content.media.image_or_video %}
+{% set hasMedia = mediaType in ['image', 'video'] %}
+
+{% set onlyMedia = hasMedia and not (hasEyebrow or hasSubhead or hasBody or hasButtons) %}
+
+<div class="module-container {{ onlyMedia ? 'only-media' : '' }}">
   {# EYEBROW #}
   {% set eyebrow = content.eyebrow.text %}
   {% if eyebrow %}
