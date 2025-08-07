@@ -1,0 +1,54 @@
+<div class="module-container">
+  <div class="content-module module-text">
+    {# EYEBROW #}
+    {% set eyebrow = content.eyebrow.text %}
+    {% if eyebrow %}
+      <div class="eyebrow">{{ eyebrow }}</div>
+    {% endif %}
+
+    {# HEADING #}
+    {% set heading = content.heading.text  %}
+    {% if heading %}
+      <h2>{{ heading }}</h2>
+    {% endif %}
+
+    {# SUBHEAD #}
+    {% set subhead = content.subhead.text  %}
+    {% if subhead %}
+      <h4>{{ subhead }}</h4>
+    {% endif %}
+
+    {# BODY #}
+    {% set body = content.content.text  %}
+    {% if body %}
+      {{ body }}
+    {% endif %}
+
+    {# BUTTONS #}
+    {% set pb = content.buttons.primary_button|default({}) %}
+    {% set sb = content.buttons.secondary_button|default({}) %}
+
+    {% if pb.text|default('')|trim or sb.text|default('')|trim %}
+      <div class="content-module module-buttons">
+        {% if pb.text|default('')|trim %}
+          {{ macros.atomV1ButtonHtml(
+               pb,
+               'opkey-primary',
+               path.to.button_design_preset_section,
+               'primary',
+               pb.text|trim
+             ) }}
+        {% endif %}
+        {% if sb.text|default('')|trim %}
+          {{ macros.atomV1ButtonHtml(
+               sb,
+               'opkey-link-text',
+               path.to.button_design_preset_section,
+               'secondary',
+               sb.text|trim
+             ) }}
+        {% endif %}
+      </div>
+    {% endif %}
+  </div>
+</div>
