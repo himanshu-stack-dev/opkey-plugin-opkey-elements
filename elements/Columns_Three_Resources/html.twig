@@ -103,7 +103,7 @@
                 <div class="column-text">
                   <span class="mobile-eyebrow">{{ item.eyebrow  }}</span>
                   <h3>{{ item.heading  }}</h3>
-                  <p>{{ item.content  }}</p>
+                  {{ item.content  }}
                   {% if item.button is defined and item.button.text|default('')|trim != '' %}
                     <div class="content-module module-buttons">
                       {{ macros.atomV1ButtonHtml(
