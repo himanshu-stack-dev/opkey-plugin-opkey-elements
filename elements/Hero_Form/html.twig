@@ -67,60 +67,10 @@
   </div>
 
   {# FORM #}
-  {% set default_form_embed_code %}
-  <div class="hubspot-form-container hero-form">
-    <form class="hs-form">
-      <h3 class="hs-form-title">Fill out the form below</h3>
-      <div class="hs-form-row hs-form-row--split">
-        <input type="text" class="hs-input" placeholder="John Joe" />
-        <input type="text" class="hs-input" placeholder="Last Name*" />
-      </div>
-      <div class="hs-form-row">
-        <input type="email" class="hs-input" placeholder="Work Email*" />
-      </div>
-      <div class="hs-form-row">
-        <input type="tel" class="hs-input" placeholder="Phone Number*" />
-      </div>
-      <div class="hs-form-row">
-        <select class="hs-input">
-          <option value="">Select Application*</option>
-          <option>App 1</option>
-          <option>App 2</option>
-        </select>
-      </div>
-      <div class="hs-form-row">
-        <select class="hs-input">
-          <option value="">Select Industry*</option>
-          <option>Industry 1</option>
-          <option>Industry 2</option>
-        </select>
-      </div>
-      <div class="hs-form-row">
-        <select class="hs-input">
-          <option value="">Select Revenue*</option>
-          <option>$1-10M</option>
-          <option>$10-100M</option>
-        </select>
-      </div>
-      <div class="hs-form-row hs-form-row--captcha">
-        <label class="hs-checkbox">
-          <input type="checkbox" /> I'm not a robot
-        </label>
-        <div class="recaptcha-placeholder">
-          <!-- Dummy reCAPTCHA -->
-          <img src="https://www.gstatic.com/recaptcha/api2/logo_48.png" alt="reCAPTCHA" width="100" />
-          <span class="recaptcha-terms">Privacy - Terms</span>
-        </div>
-      </div>
-      <button class="hs-submit" type="submit">
-        <span class="button-text">Book a demo</span>
-      </button>
-      <p class="hs-terms">
-        By signing up, I accept the <a href="#">Terms of Use</a> and <a href="#">Privacy Policy</a>.
-      </p>
-    </form>
-  </div>
-  {% endset %}
+  {% set email_embed = content.shortcode.full_shortcode  %}
+  {% if email_embed %}
+      <div class="demo-gradient-border-wrapper">%%SSR%%</div>
+  {% endif %}
 
   {# Renders custom embed if present, otherwise falls back to the default dummy form #}
   {{ content.form.embed_code  }}

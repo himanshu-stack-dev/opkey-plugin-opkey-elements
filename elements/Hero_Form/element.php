@@ -214,13 +214,13 @@ class Heroform extends \Breakdance\Elements\Element
         false,
         [],
       ), c(
-        "form",
-        "Form",
+        "shortcode",
+        "Shortcode",
         [c(
-        "embed_code",
-        "Embed Code",
+        "full_shortcode",
+        "Full Shortcode",
         [],
-        ['type' => 'code', 'layout' => 'vertical', 'items' => [['value' => 'image', 'text' => 'Image'], ['text' => 'Video', 'value' => 'video']]],
+        ['type' => 'text', 'layout' => 'vertical', 'placeholder' => '[myshortcode number="10"]', 'textOptions' => ['multiline' => true]],
         false,
         false,
         [],
@@ -304,7 +304,7 @@ observer.observe();'],],];
 
     static function dynamicPropertyPaths()
     {
-        return [['accepts' => 'string', 'path' => 'content.content.text'], ['accepts' => 'string', 'path' => 'content.content.link.url'], ['accepts' => 'string', 'path' => 'content.buttons.add_button.button.text'], ['accepts' => 'string', 'path' => 'content.buttons.add_button.button.link.url'], ['accepts' => 'string', 'path' => 'content.buttons.secondary_button.text'], ['accepts' => 'string', 'path' => 'content.buttons.secondary_button.link.url']];
+        return [['accepts' => 'string', 'path' => 'content.content.text'], ['accepts' => 'string', 'path' => 'content.content.link.url'], ['accepts' => 'string', 'path' => 'content.buttons.add_button.button.text'], ['accepts' => 'string', 'path' => 'content.buttons.add_button.button.link.url'], ['accepts' => 'string', 'path' => 'content.buttons.secondary_button.text'], ['accepts' => 'string', 'path' => 'content.buttons.secondary_button.link.url'], ['accepts' => 'string', 'path' => 'content.eyebrow.text'], ['accepts' => 'string', 'path' => 'content.heading.text'], ['accepts' => 'string', 'path' => 'content.subhead.text']];
     }
 
     static function additionalClasses()
