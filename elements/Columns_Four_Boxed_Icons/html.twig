@@ -7,19 +7,19 @@
     {% endif %}
 
     {# HEADING #}
-    {% set heading = content.heading.text  %}
+    {% set heading = content.heading.text %}
     {% if heading %}
       <h2>{{ heading }}</h2>
     {% endif %}
 
     {# SUBHEAD #}
-    {% set subhead = content.subhead.text  %}
+    {% set subhead = content.subhead.text %}
     {% if subhead %}
       <h4>{{ subhead }}</h4>
     {% endif %}
 
     {# BODY #}
-    {% set body = content.content.text  %}
+    {% set body = content.content.text %}
     {% if body %}
       <p>{{ body }}</p>
     {% endif %}
@@ -53,8 +53,9 @@
   </div>
 </div>
 
-{# COLUMNS #}  
-{# Fallback/default columns #}
+{# ===== COLUMNS ===== #}
+
+{# Design-time defaults (editor only) #}
 {% set default_columns = [
   {
     icon: null,
@@ -82,28 +83,54 @@
   }
 ] %}
 
-{# Use columns if they exist, otherwise fallback to two defaults #}
-{% set columns = content.columns.column | length > 0 ? content.columns.column : default_columns %}
+{# Determine source: real columns -> use them; otherwise show defaults ONLY in editor #}
+{% set has_real_columns = (content.columns is defined and content.columns.column is defined and content.columns.column|length > 0) %}
+{% if has_real_columns %}
+  {% set columns = content.columns.column %}
+{% elseif isEditor %}
+  {% set columns = default_columns %}
+{% else %}
+  {% set columns = [] %}
+{% endif %}
+
+{# Common media defaults #}
+{% set media_size = content.content.size|default('full') %}
+{% set media_lazy = content.content.lazyLoad|default(true) %}
+
+{# Count once for nav logic #}
+{% set total_cards = columns|length %}
 
 <div class="breakdance-swiper-wrapper" data-swiper-id="%%UNIQUESLUG%%">
-  <div class="swiper swiper-%%UNIQUESLUG%%">
+  <div class="swiper swiper-%%UNIQUESLUG%%" data-card-count="{{ total_cards }}">
     <div class="swiper-wrapper">
       {% for item in columns %}
+        {# Button logic:
+           - real button when provided
+           - placeholder only in editor when rendering defaults
+           - none on frontend if not provided
+        #}
+        {% set has_real_btn = (item.button is defined and item.button.text|default('')|trim) %}
+        {% if has_real_btn %}
+          {% set button_obj = item.button %}
+        {% elseif isEditor and not has_real_columns %}
+          {% set button_obj = { text: 'Learn more', url: '#' } %}
+        {% else %}
+          {% set button_obj = null %}
+        {% endif %}
+
         <div class="swiper-slide">
           <div class="card">
-            <div class="icon">
-              {% if item.icon %}
-                {{ macros.image(item.icon, content.content.size, alt, lazyLoad) }}
-              {% else %}
-                <img src="/wp-content/uploads/2025/06/icon-robot.svg" alt="Placeholder image" class="breakdance-image-object" style="width:100%; height:auto;" />
-              {% endif %}
-            </div>
-            <h3>{{ item.heading  }}</h3>
-            <p>{{ item.content  }}</p>
-            {% set button_obj = (item.button is defined and item.button.text|length > 0) 
-              ? item.button 
-              : { text: 'Learn more', url: '#' } %}
-            {% if button_obj.text %}
+            {# ICON: show only if explicitly provided #}
+            {% if item.icon %}
+              <div class="icon">
+                {{ macros.getMedia(item.icon, media_size, media_lazy) }}
+              </div>
+            {% endif %}
+
+            <h3>{{ item.heading|default('') }}</h3>
+            <p>{{ item.content|default('') }}</p>
+
+            {% if button_obj %}
               <div class="content-module module-buttons">
                 {{ macros.atomV1ButtonHtml(
                   button_obj,
@@ -119,9 +146,17 @@
       {% endfor %}
     </div>
   </div>
-   <div class="slider-navigation">
+
+  {# Show arrows only if there are more than 4 cards #}
+  {% if total_cards > 8 %}
+    <div class="slider-navigation">
       <button class="swiper-button-prev swiper-button-prev-%%UNIQUESLUG%% custom-nav-btn"></button>
       <div class="swiper-pagination swiper-pagination-%%UNIQUESLUG%%"></div>
       <button class="swiper-button-next swiper-button-next-%%UNIQUESLUG%% custom-nav-btn"></button>
     </div>
-  </div>
+  {% else %}
+    <div class="slider-navigation">
+      <div class="swiper-pagination swiper-pagination-%%UNIQUESLUG%%"></div>
+    </div>
+  {% endif %}
+</div>

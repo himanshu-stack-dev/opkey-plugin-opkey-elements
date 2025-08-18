@@ -239,7 +239,7 @@ class Columnsfourimages extends \Breakdance\Elements\Element
         "content",
         "Content",
         [],
-        ['type' => 'text', 'layout' => 'vertical'],
+        ['type' => 'richtext', 'layout' => 'vertical'],
         false,
         false,
         [],

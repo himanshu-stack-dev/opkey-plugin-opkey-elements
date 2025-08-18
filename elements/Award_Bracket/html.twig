@@ -1,8 +1,9 @@
 <div class="module-container">
-  {% set ey   = content.eyebrow.text               |default('')|trim %}
-  {% set hd   = content.heading.text               |default('')|trim %}
-  {% set sh   = content.subhead.text               |default('')|trim %}
-  {% set bd   = content.content.text               |default('')|trim %}
+  {# --- Text bits --- #}
+  {% set ey   = content.eyebrow.text                  |default('')|trim %}
+  {% set hd   = content.heading.text                  |default('')|trim %}
+  {% set sh   = content.subhead.text                  |default('')|trim %}
+  {% set bd   = content.content.text                  |default('')|trim %}
   {% set pbt  = content.buttons.primary_button.text   |default('')|trim %}
   {% set sbt  = content.buttons.secondary_button.text |default('')|trim %}
 
@@ -17,20 +18,20 @@
         <div class="content-module module-buttons">
           {% if pbt %}
             {{ macros.atomV1ButtonHtml(
-                 content.buttons.primary_button,
-                 'opkey-primary',
-                 path.to.button_design_preset_section,
-                 'primary',
-                 pbt
+              content.buttons.primary_button,
+              'opkey-primary',
+              path.to.button_design_preset_section,
+              'primary',
+              pbt
             ) }}
           {% endif %}
           {% if sbt %}
             {{ macros.atomV1ButtonHtml(
-                 content.buttons.secondary_button,
-                 'opkey-link-text',
-                 path.to.button_design_preset_section,
-                 'secondary',
-                 sbt
+              content.buttons.secondary_button,
+              'opkey-link-text',
+              path.to.button_design_preset_section,
+              'secondary',
+              sbt
             ) }}
           {% endif %}
         </div>
@@ -38,15 +39,12 @@
     </div>
   {% endif %}
 
+  {# --- Defaults --- #}
   {% set default_awards = [
     '/wp-content/uploads/2025/07/award-high-performer.png',
     '/wp-content/uploads/2025/07/award-capterra.png',
     '/wp-content/uploads/2025/07/award-gartner.png'
   ] %}
-  {% set awards = (content.awards.item is defined and content.awards.item|length > 0)
-      ? content.awards.item
-      : default_awards
-  %}
 
   {% set default_partners = [
     '/wp-content/uploads/2025/07/Placeholder_180x70.png',
@@ -54,56 +52,90 @@
     '/wp-content/uploads/2025/07/Placeholder_180x70.png',
     '/wp-content/uploads/2025/07/Placeholder_180x70.png'
   ] %}
-  {% set partners = (content.partners.logos is defined and content.partners.logos|length > 0)
-      ? content.partners.logos
-      : default_partners
-  %}
+
+  {# --- Normalize AWARDS: prefer real items; show defaults only in editor --- #}
+  {% set awards = [] %}
+  {% if content.awards.item is defined and content.awards.item|length > 0 %}
+    {% for a in content.awards.item %}
+      {% if a.graphic is defined and a.graphic %}
+        {% set awards = awards|merge([a]) %}
+      {% elseif not (a is iterable) and (a|default('')|trim != '') %}
+        {# allow plain URL strings too #}
+        {% set awards = awards|merge([a]) %}
+      {% endif %}
+    {% endfor %}
+  {% endif %}
+  {% if awards|length == 0 and isEditor %}
+    {% set awards = default_awards %}
+  {% endif %}
+
+  {# --- Normalize PARTNERS: prefer real items; show defaults only in editor --- #}
+  {% set partners = [] %}
+  {% if content.partners.logos is defined and content.partners.logos|length > 0 %}
+    {% for p in content.partners.logos %}
+      {% if p.image is defined and p.image %}
+        {% set partners = partners|merge([p]) %}
+      {% elseif not (p is iterable) and (p|default('')|trim != '') %}
+        {# allow plain URL strings too #}
+        {% set partners = partners|merge([p]) %}
+      {% endif %}
+    {% endfor %}
+  {% endif %}
+  {% if partners|length == 0 and isEditor %}
+    {% set partners = default_partners %}
+  {% endif %}
 
   <div class="columns">
-    <div class="column">
-      <div class="column-container">
-        <svg preserveAspectRatio="none" viewBox="0 0 5 452" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M5 1V1C2.79086 1 1 2.79087 1 5V447C1 449.209 2.79086 451 5 451V451" stroke="currentColor"/>
-        </svg>
-        <div class="column-text">
-          <h4>Our Awards</h4>
-          <div class="awards">
-            {% for item in awards %}
-              {% if item.graphic is defined %}
-                {{ macros.image(item.graphic, content.content.size, alt, lazyLoad) }}
-              {% else %}
-                <img src="{{ item }}" alt="Award" loading="lazy" />
-              {% endif %}
-            {% endfor %}
+    {# --- Awards column (only if something to show) --- #}
+    {% if awards|length > 0 %}
+      <div class="column">
+        <div class="column-container">
+          <svg preserveAspectRatio="none" viewBox="0 0 5 452" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M5 1V1C2.79086 1 1 2.79087 1 5V447C1 449.209 2.79086 451 5 451V451" stroke="currentColor"/>
+          </svg>
+          <div class="column-text">
+            <h4>Our Awards</h4>
+            <div class="awards">
+              {% for item in awards %}
+                {% if item.graphic is defined %}
+                  {{ macros.image(item.graphic, content.content.size, alt, lazyLoad) }}
+                {% else %}
+                  <img src="{{ item }}" alt="Award" loading="lazy" />
+                {% endif %}
+              {% endfor %}
+            </div>
           </div>
+          <svg class="right" preserveAspectRatio="none" viewBox="0 0 5 452" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M5 1V1C2.79086 1 1 2.79087 1 5V447C1 449.209 2.79086 451 5 451V451" stroke="currentColor"/>
+          </svg>
         </div>
-        <svg class="right" preserveAspectRatio="none" viewBox="0 0 5 452" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M5 1V1C2.79086 1 1 2.79087 1 5V447C1 449.209 2.79086 451 5 451V451" stroke="currentColor"/>
-        </svg>
       </div>
-    </div>
+    {% endif %}
 
-    <div class="column {% if partners|length > 2 %}partner-grow{% endif %}">
-      <div class="column-container">
-        <svg preserveAspectRatio="none" viewBox="0 0 5 452" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M5 1V1C2.79086 1 1 2.79087 1 5V447C1 449.209 2.79086 451 5 451V451" stroke="currentColor"/>
-        </svg>
-        <div class="column-text">
-          <h4>Our Partners</h4>
-          <div class="partners">
-            {% for item in partners %}
-              {% if item.image is defined %}
-                {{ macros.image(item.image, content.content.size, alt, lazyLoad) }}
-              {% else %}
-                <img src="{{ item }}" alt="Partner" loading="lazy" />
-              {% endif %}
-            {% endfor %}
+    {# --- Partners column (only if something to show) --- #}
+    {% if partners|length > 0 %}
+      <div class="column {% if partners|length > 2 %}partner-grow{% endif %}">
+        <div class="column-container">
+          <svg preserveAspectRatio="none" viewBox="0 0 5 452" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M5 1V1C2.79086 1 1 2.79087 1 5V447C1 449.209 2.79086 451 5 451V451" stroke="currentColor"/>
+          </svg>
+          <div class="column-text">
+            <h4>Our Partners</h4>
+            <div class="partners">
+              {% for item in partners %}
+                {% if item.image is defined %}
+                  {{ macros.image(item.image, content.content.size, alt, lazyLoad) }}
+                {% else %}
+                  <img src="{{ item }}" alt="Partner" loading="lazy" />
+                {% endif %}
+              {% endfor %}
+            </div>
           </div>
+          <svg class="right" preserveAspectRatio="none" viewBox="0 0 5 452" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M5 1V1C2.79086 1 1 2.79087 1 5V447C1 449.209 2.79086 451 5 451V451" stroke="currentColor"/>
+          </svg>
         </div>
-        <svg class="right" preserveAspectRatio="none" viewBox="0 0 5 452" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M5 1V1C2.79086 1 1 2.79087 1 5V447C1 449.209 2.79086 451 5 451V451" stroke="currentColor"/>
-        </svg>
       </div>
-    </div>
+    {% endif %}
   </div>
 </div>

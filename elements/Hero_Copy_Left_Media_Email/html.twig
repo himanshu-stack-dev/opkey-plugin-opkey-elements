@@ -43,125 +43,101 @@
       {% endif %}
     </div>
   {% elseif media_type == 'video' %}
-    <div class="ee-video-container">
-        {% if content.video.video.type == 'video' %}
-            <video class="ee-video" src="{{ content.video.video.embedUrl }}"
-                   {% if content.video_options.autoplay %}autoplay='true'{% endif %}
-                    {% if content.video_options.controls %}controls='true'{% endif %}
-                    {% if content.video_options.poster.url %}poster='{{ content.video_options.poster.url }}'{% endif %}
-                    {% if content.video_options.loop %}loop='true'{% endif %}
-                    {% if content.video_options.muted %}muted='true'{% endif %}
-                    {% if not content.video_options.download_button %}controlsList="nodownload"{% endif %}
-                    playsinline
-            >
-            </video>
-        {% elseif content.video.video.type == 'oembed' %}
-            {% if content.video.video.provider == 'youtube' %}
-                {% if content.youtube.loading_method != 'lightweight' or not content.video.video.videoId %}
-                    {% if content.youtube.privacy_mode %}
-                        {% set videoUrl = content.video.video.embedUrl | replace({'https://www.youtube.com/': 'https://www.youtube-nocookie.com/'}) %}
-                    {% else %}
-                        {% set videoUrl = content.video.video.embedUrl %}
-                    {% endif %}
+  {# Normalize / detect the actual source first #}
+  {% set _v        = content.video.video %}
+  {% set _prov     = _v.provider|default('') %}
+  {% set _vid      = _v.videoId|default('') %}
+  {% set _embedUrl = _v.embedUrl|default('') %}
+  {% set has_oembed = (_prov in ['youtube','vimeo','dailymotion']) or (_v.type == 'oembed' and (_vid or _embedUrl)) %}
+  {% set has_upload = (_v.type == 'video') and _embedUrl and (_prov == '' or _prov == 'upload') %}
 
-                    {% set isLazyLoad = content.youtube.loading_method != 'embed' and not isBuilder %}
-                    {% set srcAttribute = isLazyLoad ? 'data-src' : 'src' %}
-
-                    <iframe
-                            class="ee-video {{ isLazyLoad ? 'lozad' : '' }}"
-                    title="{{ content.video.title }}"
-                    {# controls=0 overrides "modestbranding". Loop needs to have "playlist"  #}
-                    {{ srcAttribute }}="{{ videoUrl }}{{ content.youtube.hide_player_controls ? '&controls=0' }}{{ content.youtube.autoplay ? '&autoplay=1' }}{{ content.youtube.mute ? '&mute=1' }}{{ not content.youtube.play_inline ? '&playsinline=0' }}{{ content.youtube.modest_branding ? '&modestbranding=1' }}{{ content.youtube.start_time ? '&start=' ~content.youtube.start_time.number }}{{ content.youtube.end_time ? '&end=' ~content.youtube.end_time.number }}{{ content.youtube.suggested_videos == 'recommendations' ? '' : '&rel=0' }}{{ content.youtube.loop and content.video.video.videoId ? '&playlist=' ~ content.video.video.videoId ~ '&loop=1' }}&enablejsapi=1"
-                    frameborder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowfullscreen>
-                    </iframe>
-                {% else %}
-                    {% set defaultMaxRes = 'https://i.ytimg.com/vi/' ~ content.video.video.videoId ~ '/maxresdefault.jpg' %}
-                    {% set customBackground = content.youtube.background_image.sizes["full"].url %}
-                    {% set logo = content.youtube.logo.sizes["full"].url %}
-
-                    <lite-youtube
-                            videoid="{{ content.video.video.videoId }}"
-                            {# default bg image is 480px which looks ugly #}
-                            style="background-image: url({{ customBackground|default(defaultMaxRes) }}); {{ logo ? '--logoUrl: url(' ~ logo ~')' : '' }}"
-                            class="ee-video"
-                            title="{{ content.youtube.title }}"
-                            params="{{ content.youtube.hide_player_controls ? 'controls=0' }}{{ content.youtube.mute ? '&mute=1' }}{{ not content.youtube.play_inline ? '&playsinline=0' }}{{ content.youtube.modest_branding ? '&modestbranding=1' }}{{ content.youtube.start_time ? '&start=' ~content.youtube.start_time.number }}{{ content.youtube.end_time ? '&end=' ~content.youtube.end_time.number }}{{ content.youtube.suggested_videos == 'recommendations' ? '' : '&rel=0' }}{{ content.youtube.loop and content.video.video.videoId ? '&playlist=' ~ content.video.video.videoId ~ '&loop=1' }}&enablejsapi=1"
-                    >
-                    </lite-youtube>
-                {% endif %}
-            {% endif %}
-
-            {% if content.video.video.provider == 'vimeo' %}
-                {% if content.vimeo.loading_method != 'lightweight' or not content.video.video.videoId %}
-                    {% set isLazyLoad = content.vimeo.loading_method != 'embed' and not isBuilder %}
-                    {% set srcAttribute = isLazyLoad ? 'data-src' : 'src' %}
-
-                    {#           todo can I delete this wrapper? #}
-                    <div class="ee-video ee-vimeo">
-                        <iframe
-                                class="ee-video {{ isLazyLoad ? 'lozad' : '' }}"
-                        title="{{ content.video.title }}"
-                        {{ srcAttribute }}=
-                        "{{ content.video.video.embedUrl }}{{ content.vimeo.autoplay ? '&autoplay=1' }}{{ content.vimeo.hide_player_controls ? '&controls=0' : '&controls=1' }}{{ content.vimeo.controls.color ? '&color=' ~content.vimeo.controls.color | slice(1, 6) }}{{ content.vimeo.loop ? '&loop=1' }}{{ content.vimeo.mute ? '&muted=1' }}{{ not content.vimeo.play_inline ? '&playsinline=0' }}{{ content.vimeo.start_time ? '#t=' ~content.vimeo.start_time.number }}
-                        "
-                        width="100%" height="100%" frameborder="0"
-                        allow="autoplay; fullscreen; picture-in-picture" allowfullscreen>
-                        </iframe>
-                    </div>
-                {% else %}
-                    {% set customBackground = content.vimeo.background_image.url %}
-                    {% if customBackground is not empty %}
-                        <div class="ee-vimeo-poster" style="background-image: url({{ customBackground }});background-size:cover;">
-                            <button class="ee-vimeo-play-button"></button>
-                        </div>
-                    {% else %}
-                        <lite-vimeo
-                                videoid="{{ content.video.video.videoId }}"
-                                {% if content.vimeo.start_time %}
-                                {# In the lite-vimeo documentation this attribute should be 'start'
-                                and there's an open/approved pull request to fix it, so if this stops
-                                working in a later version, the attribute likely needs updating #}
-                                videoPlay="content.vimeo.start_time.style"
-                                {% endif %}
-                                class="ee-video">
-                        </lite-vimeo>
-                    {% endif %}
-                {% endif %}
-            {% endif %}
-
-            {% if content.video.video.provider == 'dailymotion' %}
-                {% set isLazyLoad = content.dailymotion.loading_method != 'embed' and not isBuilder %}
-                {% set srcAttribute = isLazyLoad ? 'data-src' : 'src' %}
-
-                <div class="ee-video ee-dailymotion">
-                    <iframe frameborder="0" width="100%" height="100%"
-                            class="ee-video {{ isLazyLoad ? 'lozad' : '' }}"
-                    {{ srcAttribute }}=
-                    "{{ content.video.video.embedUrl }}{{ content.dailymotion.autoplay ? '&autoplay=1' }}{{ content.dailymotion.controls.hide_player_controls ? '&controls=0' : '&controls=1' }}{{ content.dailymotion.controls.color ? '&ui-highlight=' ~content.dailymotion.controls.color | slice(1, 6) }}{{ content.dailymotion.controls.hide_logo ? '&ui-logo=0' }}{{ content.dailymotion.controls.hide_video_info ? '&ui-start-screen-info=0' }}{{ content.dailymotion.controls.disable_sharing ? '&sharing-enable=0' }}{{ content.dailymotion.mute ? '&mute=1' }}{{ content.dailymotion.start_time ? '&start=' ~content.dailymotion.start_time.number }}
-                    &queue-autoplay-next=0"
-                    allowfullscreen
-                    allow="autoplay; fullscreen; picture-in-picture">
-                    </iframe>
-                </div>
-            {% endif %}
+  <div class="ee-video-container">
+    {# Prefer oEmbed if present, even if the old upload data still exists #}
+    {% if has_oembed %}
+      {% if _prov == 'youtube' %}
+        {% if content.youtube.loading_method != 'lightweight' or not _vid %}
+          {% if content.youtube.privacy_mode %}
+            {% set videoUrl = _embedUrl | replace({'https://www.youtube.com/': 'https://www.youtube-nocookie.com/'}) %}
+          {% else %}
+            {% set videoUrl = _embedUrl %}
+          {% endif %}
+          {% set isLazyLoad = content.youtube.loading_method != 'embed' and not isBuilder %}
+          {% set srcAttribute = isLazyLoad ? 'data-src' : 'src' %}
+          <iframe
+            class="ee-video {{ isLazyLoad ? 'lozad' : '' }}"
+            title="{{ content.video.title }}"
+            {{ srcAttribute }}="{{ videoUrl }}{{ content.youtube.hide_player_controls ? '&controls=0' }}{{ content.youtube.autoplay ? '&autoplay=1' }}{{ content.youtube.mute ? '&mute=1' }}{{ not content.youtube.play_inline ? '&playsinline=0' }}{{ content.youtube.modest_branding ? '&modestbranding=1' }}{{ content.youtube.start_time ? '&start=' ~ content.youtube.start_time.number }}{{ content.youtube.end_time ? '&end=' ~ content.youtube.end_time.number }}{{ content.youtube.suggested_videos == 'recommendations' ? '' : '&rel=0' }}{{ content.youtube.loop and _vid ? '&playlist=' ~ _vid ~ '&loop=1' }}&enablejsapi=1"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen>
+          </iframe>
+        {% else %}
+          {% set defaultMaxRes = 'https://i.ytimg.com/vi/' ~ _vid ~ '/maxresdefault.jpg' %}
+          {% set customBackground = content.youtube.background_image.sizes['full'].url %}
+          {% set logo = content.youtube.logo.sizes['full'].url %}
+          <lite-youtube
+            videoid="{{ _vid }}"
+            style="background-image: url({{ customBackground|default(defaultMaxRes) }}); {{ logo ? '--logoUrl: url(' ~ logo ~')' : '' }}"
+            class="ee-video"
+            title="{{ content.youtube.title }}"
+            params="{{ content.youtube.hide_player_controls ? 'controls=0' }}{{ content.youtube.mute ? '&mute=1' }}{{ not content.youtube.play_inline ? '&playsinline=0' }}{{ content.youtube.modest_branding ? '&modestbranding=1' }}{{ content.youtube.start_time ? '&start=' ~ content.youtube.start_time.number }}{{ content.youtube.end_time ? '&end=' ~ content.youtube.end_time.number }}{{ content.youtube.suggested_videos == 'recommendations' ? '' : '&rel=0' }}{{ content.youtube.loop and _vid ? '&playlist=' ~ _vid ~ '&loop=1' }}&enablejsapi=1">
+          </lite-youtube>
         {% endif %}
-
-        {% if design.container.overlay %}
-            <div class="ee-video-overlay"></div>
-        {% endif %}
-    </div>
-    {% elseif media_type == 'animation' %}
-    {% set src = content.lottie.asset_url.url  %}
-      <div class="hero-module module-media">
-        <div
-          class="bde-lottie-animation bde-lottie-target lottie-wrapper"
-          data-src="{{ src }}"
-          data-loop="true"
-          data-autoplay="true"
-          data-renderer="{{ content.lottie.renderer ?? 'svg' }}"
-        ></div>
-      </div>
+      {% elseif _prov == 'vimeo' %}
+        {% set isLazyLoad = content.vimeo.loading_method != 'embed' and not isBuilder %}
+        {% set srcAttribute = isLazyLoad ? 'data-src' : 'src' %}
+        <div class="ee-video ee-vimeo">
+          <iframe
+            class="ee-video {{ isLazyLoad ? 'lozad' : '' }}"
+            title="{{ content.video.title }}"
+            {{ srcAttribute }}="{{ _embedUrl }}{{ content.vimeo.autoplay ? '&autoplay=1' }}{{ content.vimeo.hide_player_controls ? '&controls=0' : '&controls=1' }}{{ content.vimeo.controls.color ? '&color=' ~ content.vimeo.controls.color | slice(1, 6) }}{{ content.vimeo.loop ? '&loop=1' }}{{ content.vimeo.mute ? '&muted=1' }}{{ not content.vimeo.play_inline ? '&playsinline=0' }}{{ content.vimeo.start_time ? '#t=' ~ content.vimeo.start_time.number }}"
+            width="100%" height="100%" frameborder="0"
+            allow="autoplay; fullscreen; picture-in-picture" allowfullscreen>
+          </iframe>
+        </div>
+      {% elseif _prov == 'dailymotion' %}
+        {% set isLazyLoad = content.dailymotion.loading_method != 'embed' and not isBuilder %}
+        {% set srcAttribute = isLazyLoad ? 'data-src' : 'src' %}
+        <div class="ee-video ee-dailymotion">
+          <iframe frameborder="0" width="100%" height="100%"
+            class="ee-video {{ isLazyLoad ? 'lozad' : '' }}"
+            {{ srcAttribute }}="{{ _embedUrl }}{{ content.dailymotion.autoplay ? '&autoplay=1' }}{{ content.dailymotion.controls.hide_player_controls ? '&controls=0' : '&controls=1' }}{{ content.dailymotion.controls.color ? '&ui-highlight=' ~ content.dailymotion.controls.color | slice(1, 6) }}{{ content.dailymotion.controls.hide_logo ? '&ui-logo=0' }}{{ content.dailymotion.controls.hide_video_info ? '&ui-start-screen-info=0' }}{{ content.dailymotion.controls.disable_sharing ? '&sharing-enable=0' }}{{ content.dailymotion.mute ? '&mute=1' }}{{ content.dailymotion.start_time ? '&start=' ~ content.dailymotion.start_time.number }}&queue-autoplay-next=0"
+            allowfullscreen allow="autoplay; fullscreen; picture-in-picture">
+          </iframe>
+        </div>
+      {% endif %}
+    {% elseif has_upload %}
+      <video class="ee-video"
+        src="{{ _embedUrl }}"
+        {% if content.video_options.autoplay %}autoplay="true"{% endif %}
+        {% if content.video_options.controls %}controls="true"{% endif %}
+        {% if content.video_options.poster.url %}poster="{{ content.video_options.poster.url }}"{% endif %}
+        {% if content.video_options.loop %}loop="true"{% endif %}
+        {% if content.video_options.muted %}muted="true"{% endif %}
+        {% if not content.video_options.download_button %}controlsList="nodownload"{% endif %}
+        playsinline>
+      </video>
+    {% else %}
+      {# Safety fallback (optional placeholder) #}
+      <div class="ee-video ee-empty"></div>
     {% endif %}
+
+    {% if design.container.overlay %}
+      <div class="ee-video-overlay"></div>
+    {% endif %}
+  </div>
+   {% elseif media_type == 'animation' %}
+  {% set src = content.lottie.asset_url.url  %}
+    <div class="content-module module-media">
+      <div
+        class="bde-lottie-animation bde-lottie-target lottie-wrapper"
+        data-src="{{ src }}"
+        data-speed="{{ content.lottie.animation_speed ?? 1 }}"
+        data-loop="{{ content.lottie.loop_animation ? 'true' : 'false' }}"
+        data-autoplay="true"
+        data-renderer="{{ content.lottie.renderer ?? 'svg' }}"
+      ></div>
+    </div>
+  {% endif %}
+</div>
 </div>

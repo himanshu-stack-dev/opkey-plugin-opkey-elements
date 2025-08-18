@@ -259,10 +259,10 @@ class Logoslider extends \Breakdance\Elements\Element
   document.querySelectorAll(\'.un-logo-bar__marquee-content.carousel-type__marquee\').forEach(function(el) {
     const logos = el.querySelectorAll(".un-logo-bar__logo-wrapper");
     const numLogos = logos.length / 3;
-    const secondsPerLogo = 3;
-    const min = 30;
-    const max = 400;
-    let duration = Math.max(min, Math.min(max, numLogos * secondsPerLogo));
+    const target = 525;         
+    const secondsPerLogo = target / numLogos;
+    const min = 0, max = 10000; 
+    const duration = Math.max(min, Math.min(max, numLogos * secondsPerLogo)); // = 525
     el.style.setProperty(\'--marquee-duration\', `${duration}s`);
   });
 }

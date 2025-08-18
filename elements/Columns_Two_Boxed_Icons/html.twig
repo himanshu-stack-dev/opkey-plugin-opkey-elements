@@ -52,71 +52,73 @@
     {% endif %}
   </div>
 
-  {# COLUMNS #}  
-  {# Fallback/default columns #}
-  {% set default_columns = [
-    {
-      icon: null,
-      heading: "Lorem ipsum dolor sit",
-      content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-      button: { text: "Learn more", url: "#" }
-    },
-    {
-      icon: null,
-      heading: "Lorem ipsum dolor sit",
-      content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-      button: { text: "Learn more", url: "#" }
-    },
-    {
-      icon: null,
-      heading: "Lorem ipsum dolor sit",
-      content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-      button: { text: "Learn more", url: "#" }
-    },
-    {
-      icon: null,
-      heading: "Lorem ipsum dolor sit",
-      content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-      button: { text: "Learn more", url: "#" }
-    }
-  ] %}
+  {# COLUMNS #}
+{# Fallback/default columns – used ONLY in Builder for preview #}
+{% set default_columns = [
+  {
+    icon: null,
+    heading: "Lorem ipsum dolor sit",
+    content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    button: { text: "Learn more", url: "#" }
+  },
+  {
+    icon: null,
+    heading: "Lorem ipsum dolor sit",
+    content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    button: { text: "Learn more", url: "#" }
+  },
+  {
+    icon: null,
+    heading: "Lorem ipsum dolor sit",
+    content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    button: { text: "Learn more", url: "#" }
+  },
+  {
+    icon: null,
+    heading: "Lorem ipsum dolor sit",
+    content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    button: { text: "Learn more", url: "#" }
+  }
+] %}
 
-  {# Use columns if they exist, otherwise fallback to two defaults #}
-  {% set columns = content.columns.column | length > 0 ? content.columns.column : default_columns %}
+{# Use real columns if present; otherwise show defaults only in Builder #}
+{% set has_real_cols = content.columns.column|length > 0 %}
+{% set columns = has_real_cols ? content.columns.column : (isBuilder ? default_columns : []) %}
 
-  <div class="columns">
-    {% for item in columns %}
-      <div class="column">
-        <div class="icon">
-          {% if item.icon %}
-            {{ macros.image(item.icon, content.content.size, alt, lazyLoad) }}
-          {% else %}
-            <img src="/wp-content/uploads/2025/06/icon-robot.svg" alt="Placeholder image" class="breakdance-image-object" style="width:100%; height:auto;" />
-          {% endif %}
-        </div>
-
-        {# Heading fallback #}
-        <h3>{{ item.heading  }}</h3>
-
-        {# Body fallback #}
-        <p>{{ item.content  }}</p>
-
-        {# BUTTON with fallback #}
-        {% set button_obj = (item.button is defined and item.button.text|length > 0) 
-          ? item.button 
-          : { text: 'Learn more', url: '#' } %}
-        {% if button_obj.text %}
-          <div class="content-module module-buttons">
-            {{ macros.atomV1ButtonHtml(
-                button_obj,
-                'opkey-link-text',
-                path.to.button_design_preset_section,
-                'secondary',
-                button_obj.text
-            ) }}
-          </div>
+<div class="columns">
+  {% for item in columns %}
+    <div class="column">
+      <div class="icon">
+        {% if item.icon %}
+          {{ macros.image(item.icon, content.content.size, alt, lazyLoad) }}
+        {% else %}
+          <img src="/wp-content/uploads/2025/06/icon-robot.svg" alt="Placeholder image" class="breakdance-image-object" style="width:100%; height:auto;" />
         {% endif %}
       </div>
-    {% endfor %}
-  </div>
+
+      {# Heading #}
+      {% if item.heading %}<h3>{{ item.heading }}</h3>{% endif %}
+
+      {# Body #}
+      {% if item.content %}<p>{{ item.content }}</p>{% endif %}
+
+      {# BUTTON — only render if actually populated (no defaults) #}
+      {% set btn = item.button is defined ? item.button : null %}
+      {% set btn_text = btn and (btn.text|default('')|trim) ? btn.text|trim : '' %}
+      {% set btn_url  = btn and (btn.url|default('')|trim)  ? btn.url|trim  : '' %}
+
+      {% if btn_text and btn_url %}
+        <div class="content-module module-buttons">
+          {{ macros.atomV1ButtonHtml(
+              btn,
+              'opkey-link-text',
+              path.to.button_design_preset_section,
+              'secondary',
+              btn_text
+          ) }}
+        </div>
+      {% endif %}
+    </div>
+  {% endfor %}
+</div>
 </div>

@@ -67,11 +67,10 @@
   </div>
 
   {# FORM #}
-  {% set email_embed = content.shortcode.full_shortcode  %}
-  {% if email_embed %}
-      <div class="demo-gradient-border-wrapper">%%SSR%%</div>
+  {% set form_embed = content.shortcode.full_shortcode  %}
+  {% if form_embed %}
+     <div class="module-form">
+      %%SSR%%
+	 </div>
   {% endif %}
-
-  {# Renders custom embed if present, otherwise falls back to the default dummy form #}
-  {{ content.form.embed_code  }}
 </div>

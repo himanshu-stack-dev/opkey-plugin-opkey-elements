@@ -3,7 +3,7 @@
 /**
  * Plugin Name: Opkey Custom Elements
  * Description: Opkey custom elements created with Element Studio.
- * Author: creens
+ * Author: The Break
  * Text Domain: opkey
  * Domain Path: /languages/
  * Version: 1.0.0
@@ -16,7 +16,7 @@ if ( ! defined( 'OPKEY_ELEMENTS_URL' ) ) {
 }
 
 /**
- * A single source of truth for our shared content defaults.
+ * A single source of truth for shared content defaults.
  */
 function getSharedDefaults(): array
 {
@@ -62,3 +62,21 @@ add_action('breakdance_loaded', function () {
     // register elements before loading them
     9
 );
+
+/* ────────────────────────────────────────────────────────────────────────────
+   Guard: prevent deactivation link in plugins list
+   ──────────────────────────────────────────────────────────────────────────── */
+add_filter('plugin_action_links', function ($actions, $plugin_file) {
+    if ($plugin_file === plugin_basename(__FILE__)) {
+        unset($actions['deactivate']);
+    }
+    return $actions;
+}, 10, 2);
+
+add_filter('pre_update_option_active_plugins', function ($new, $old) {
+    $me = plugin_basename(__FILE__);
+    if (in_array($me, (array)$old, true) && !in_array($me, (array)$new, true)) {
+        $new[] = $me; // re-add
+    }
+    return $new;
+}, 10, 2);

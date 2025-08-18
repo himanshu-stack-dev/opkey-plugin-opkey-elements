@@ -492,13 +492,13 @@ class Heromediaform extends \Breakdance\Elements\Element
         false,
         [],
       ), c(
-        "form",
-        "Form",
+        "shortcode",
+        "Shortcode",
         [c(
-        "embed_code",
-        "Embed Code",
+        "full_shortcode",
+        "Full Shortcode",
         [],
-        ['type' => 'code', 'layout' => 'vertical', 'items' => [['value' => 'image', 'text' => 'Image'], ['text' => 'Video', 'value' => 'video']]],
+        ['type' => 'text', 'layout' => 'vertical', 'placeholder' => '[myshortcode number="10"]', 'textOptions' => ['multiline' => true]],
         false,
         false,
         [],

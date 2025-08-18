@@ -1,4 +1,4 @@
-<div class="module-container">
+<div class="module-container" data-view="content+boxedcopy-final">
   <div class="main-copy">
     {# EYEBROW #}
     {% set eyebrow = content.eyebrow.text %}
@@ -7,140 +7,130 @@
     {% endif %}
 
     {# HEADING #}
-    {% set heading = content.heading.text  %}
+    {% set heading = content.heading.text %}
     {% if heading %}
       <h2>{{ heading }}</h2>
     {% endif %}
 
     {# SUBHEAD #}
-    {% set subhead = content.subhead.text  %}
+    {% set subhead = content.subhead.text %}
     {% if subhead %}
       <h4>{{ subhead }}</h4>
     {% endif %}
 
     {# BODY #}
-    {% set body = content.content.text  %}
+    {% set body = content.content.text %}
     {% if body %}
       <p>{{ body }}</p>
     {% endif %}
 
-    {# BUTTONS #}
+    {# MAIN BUTTONS #}
     {% set pb = content.buttons.primary_button|default({}) %}
     {% set sb = content.buttons.secondary_button|default({}) %}
-
     {% if pb.text|default('')|trim or sb.text|default('')|trim %}
       <div class="content-module module-buttons">
         {% if pb.text|default('')|trim %}
-          {{ macros.atomV1ButtonHtml(
-               pb,
-               'opkey-primary',
-               path.to.button_design_preset_section,
-               'primary',
-               pb.text|trim
-             ) }}
+          {{ macros.atomV1ButtonHtml(pb, 'opkey-primary', path.to.button_design_preset_section, 'primary', pb.text|trim) }}
         {% endif %}
         {% if sb.text|default('')|trim %}
-          {{ macros.atomV1ButtonHtml(
-               sb,
-               'opkey-link-text',
-               path.to.button_design_preset_section,
-               'secondary',
-               sb.text|trim
-             ) }}
+          {{ macros.atomV1ButtonHtml(sb, 'opkey-link-text', path.to.button_design_preset_section, 'secondary', sb.text|trim) }}
         {% endif %}
       </div>
     {% endif %}
   </div>
 
-  {# BOXED CONTENT #}
-  <div class="content-module boxed-content">
-    <div class="boxed-copy">
-      {# EYEBROW #}
-      {% if content.boxed_copy.eyebrow.text %}
-        <div class="eyebrow">{{ content.boxed_copy.eyebrow.text }}</div>
-      {% endif %}
+  {# ================= BOXED CONTENT ================= #}
+  {% set bc_eyebrow = content.boxed_copy.bc_eyebrow %}
+  {% set bc_heading = content.boxed_copy.bc_heading %}
+  {% set bc_subhead = content.boxed_copy.bc_subhead %}
+  {% set bc_body    = content.boxed_copy.bc_content %}
 
-      {# HEADING #}
-      {% if content.boxed_copy.heading.text %}
-        <h3>{{ content.boxed_copy.heading.text }}</h3>
-      {% endif %}
+  {% set bpb = content.boxed_copy_buttons.primary_button|default({}) %}
+  {% set bsb = content.boxed_copy_buttons.secondary_button|default({}) %}
+  {% set has_boxed_text = bc_eyebrow or bc_heading or bc_subhead or (bc_body|striptags|trim) %}
+  {% set has_boxed_btns = bpb.text|default('')|trim or bsb.text|default('')|trim %}
 
-      {# SUBHEAD #}
-      {% if content.boxed_copy.subhead.text %}
-        <h4>{{ content.boxed_copy.subhead.text }}</h4>
-      {% endif %}
+  {% set boxed_media_type = content.boxed_copy_media.image_or_video|default('') %}
+  {% set boxed_img        = content.boxed_copy.image|default(content.image)|default(null) %}
+  {% set has_boxed_img    = boxed_media_type == 'image' and boxed_img and (boxed_img.media|default(0) or boxed_img.url|default('') != '') %}
 
-      {# BODY #}
-      {% if content.boxed_copy.content.text %}
-        <p>{{ content.boxed_copy.content.text }}</p>
-      {% endif %}
+  {% if has_boxed_text or has_boxed_btns or has_boxed_img %}
+    <div class="content-module boxed-content">
+      <div class="boxed-copy">
+        {% if bc_eyebrow %}<div class="boxed-eyebrow">{{ bc_eyebrow }}</div>{% endif %}
+        {% if bc_heading %}<h3 class="boxed-heading">{{ bc_heading }}</h3>{% endif %}
+        {% if bc_subhead %}<h4 class="boxed-subhead">{{ bc_subhead }}</h4>{% endif %}
+        {% if bc_body|striptags|trim %}<div class="boxed-body">{{ bc_body|raw }}</div>{% endif %}
 
-      {# BOXED COPY BUTTONS #}
-      {% set bpb = content.boxed_copy_buttons.primary_button|default({}) %}
-      {% set bsb = content.boxed_copy_buttons.secondary_button|default({}) %}
+        {% if has_boxed_btns %}
+          <div class="content-module module-buttons boxed-buttons">
+            {% if bpb.text|default('')|trim %}
+              {{ macros.atomV1ButtonHtml(bpb, 'opkey-primary', path.to.button_design_preset_section, 'primary', bpb.text|trim) }}
+            {% endif %}
+            {% if bsb.text|default('')|trim %}
+              {{ macros.atomV1ButtonHtml(bsb, 'opkey-link-text', path.to.button_design_preset_section, 'secondary', bsb.text|trim) }}
+            {% endif %}
+          </div>
+        {% endif %}
+      </div>
 
-      {% if bpb.text|default('')|trim or bsb.text|default('')|trim %}
-        <div class="content-module module-buttons">
-          {% if bpb.text|default('')|trim %}
-            {{ macros.atomV1ButtonHtml(
-                 bpb,
-                 'opkey-primary',
-                 path.to.button_design_preset_section,
-                 'primary',
-                 bpb.text|trim
-               ) }}
-          {% endif %}
-          {% if bsb.text|default('')|trim %}
-            {{ macros.atomV1ButtonHtml(
-                 bsb,
-                 'opkey-link-text',
-                 path.to.button_design_preset_section,
-                 'secondary',
-                 bsb.text|trim
-               ) }}
+      {% if has_boxed_img %}
+        {% set b_alt  = (boxed_img.alt is defined and boxed_img.alt.customAlt is defined) ? boxed_img.alt.customAlt : '' %}
+        {% set b_lazy = boxed_img.lazyLoad is defined ? boxed_img.lazyLoad : true %}
+        <div class="content-module module-media boxed-media">
+          {% if boxed_img.media|default(0) %}
+            {{ macros.getMedia(boxed_img, 'full', b_lazy) }}
+          {% else %}
+            <img src="{{ boxed_img.url }}" alt="{{ b_alt }}" loading="{{ b_lazy ? 'lazy' : 'eager' }}" />
           {% endif %}
         </div>
       {% endif %}
     </div>
-    {# MEDIA #}
-    {% set media_type = content.media.image_or_video  %}
-    {% if media_type == 'image' %}
+  {% endif %}
+
+  {# ================= MAIN MEDIA ================= #}
+  {% set media_type = content.media.image_or_video|default('') %}
+  {% if media_type == 'image' %}
+    {% set m = content.image|default(null) %}
+    {% if m and (m.media|default(0) or m.url|default('') != '') %}
+      {% set m_alt  = (m.alt is defined and m.alt.customAlt is defined) ? m.alt.customAlt : '' %}
+      {% set m_lazy = m.lazyLoad is defined ? m.lazyLoad : true %}
       <div class="content-module module-media">
-      {% if content.image.media %}
-          {{ macros.image(content.image.media, content.content.size, alt, lazyLoad) }}
+        {% if m.media|default(0) %}
+          {{ macros.getMedia(m, content.image.size|default(content.content.size|default('full')), m_lazy) }}
         {% else %}
-          <img src="/wp-content/uploads/2025/06/Placeholder-620x500-1.png" alt="Placeholder image" class="breakdance-image-object" style="width:100%; height:auto;" />
-        {% endif %}
-      </div>
-    {% elseif media_type == 'video' %}
-      <div class="ee-video-container">
-        {% if content.video.video.provider == 'vimeo' %}
-          {% set isLazyLoad = content.vimeo.loading_method != 'embed' and not isBuilder %}
-          {% set srcAttribute = isLazyLoad ? 'data-src' : 'src' %}
-          <div class="ee-video ee-vimeo">
-            <iframe
-              class="ee-video {{ isLazyLoad ? 'lozad' : '' }}"
-              title="{{ content.video.video.title }}"
-              {{ srcAttribute }}="{{ content.video.video.embedUrl }}{{ content.vimeo.autoplay ? '&autoplay=1' }}{{ content.vimeo.hide_player_controls ? '&controls=0' : '&controls=1' }}{{ content.vimeo.loop ? '&loop=1' : '' }}{{ content.vimeo.mute ? '&muted=1' : '' }}{{ not content.vimeo.play_inline ? '&playsinline=0' : '' }}{{ content.vimeo.start_time ? '#t=' ~ content.vimeo.start_time.number : '' }}"
-              width="100%" height="100%" frameborder="0"
-              allow="autoplay; fullscreen; picture-in-picture" allowfullscreen>
-            </iframe>
-          </div>
-        {% endif %}
-        {% if content.video.video.provider == 'youtube' %}
-          {% set isLazyLoad = content.youtube.loading_method != 'embed' and not isBuilder %}
-          {% set srcAttribute = isLazyLoad ? 'data-src' : 'src' %}
-          <div class="ee-video ee-youtube">
-            <iframe
-              class="ee-video {{ isLazyLoad ? 'lozad' : '' }}"
-              title="{{ content.video.video.title }}"
-              {{ srcAttribute }}="{{ content.video.video.embedUrl }}{{ content.youtube.autoplay ? '&autoplay=1' }}{{ content.youtube.hide_player_controls ? '&controls=0' : '&controls=1' }}{{ content.youtube.loop ? '&loop=1' : '' }}{{ content.youtube.mute ? '&muted=1' : '' }}{{ not content.youtube.play_inline ? '&playsinline=0' : '' }}{{ content.youtube.start_time ? '&start=' ~ content.youtube.start_time.number : '' }}"
-              width="100%" height="100%" frameborder="0"
-              allow="autoplay; fullscreen; picture-in-picture" allowfullscreen>
-            </iframe>
-          </div>
+          <img src="{{ m.url }}" alt="{{ m_alt }}" loading="{{ m_lazy ? 'lazy' : 'eager' }}" />
         {% endif %}
       </div>
     {% endif %}
-  </div>
+  {% elseif media_type == 'video' %}
+    <div class="ee-video-container">
+      {% if content.video.video.provider == 'vimeo' %}
+        {% set isLazyLoad = content.vimeo.loading_method != 'embed' and not isBuilder %}
+        {% set srcAttribute = isLazyLoad ? 'data-src' : 'src' %}
+        <div class="ee-video ee-vimeo">
+          <iframe
+            class="ee-video {{ isLazyLoad ? 'lozad' : '' }}"
+            title="{{ content.video.video.title }}"
+            {{ srcAttribute }}="{{ content.video.video.embedUrl }}{{ content.vimeo.autoplay ? '&autoplay=1' }}{{ content.vimeo.hide_player_controls ? '&controls=0' : '&controls=1' }}{{ content.vimeo.loop ? '&loop=1' : '' }}{{ content.vimeo.mute ? '&muted=1' : '' }}{{ not content.vimeo.play_inline ? '&playsinline=0' : '' }}{{ content.vimeo.start_time ? '#t=' ~ content.vimeo.start_time.number : '' }}"
+            width="100%" height="100%" frameborder="0"
+            allow="autoplay; fullscreen; picture-in-picture" allowfullscreen>
+          </iframe>
+        </div>
+      {% endif %}
+      {% if content.video.video.provider == 'youtube' %}
+        {% set isLazyLoad = content.youtube.loading_method != 'embed' and not isBuilder %}
+        {% set srcAttribute = isLazyLoad ? 'data-src' : 'src' %}
+        <div class="ee-video ee-youtube">
+          <iframe
+            class="ee-video {{ isLazyLoad ? 'lozad' : '' }}"
+            title="{{ content.video.video.title }}"
+            {{ srcAttribute }}="{{ content.video.video.embedUrl }}{{ content.youtube.autoplay ? '&autoplay=1' }}{{ content.youtube.hide_player_controls ? '&controls=0' : '&controls=1' }}{{ content.youtube.loop ? '&loop=1' : '' }}{{ content.youtube.mute ? '&muted=1' : '' }}{{ not content.youtube.play_inline ? '&playsinline=0' : '' }}{{ content.youtube.start_time ? '&start=' ~ content.youtube.start_time.number : '' }}"
+            width="100%" height="100%" frameborder="0"
+            allow="autoplay; fullscreen; picture-in-picture" allowfullscreen>
+          </iframe>
+        </div>
+      {% endif %}
+    </div>
+  {% endif %}
 </div>
