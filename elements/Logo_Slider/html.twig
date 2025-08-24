@@ -59,14 +59,16 @@
   {% endif %}
 
   <div class="un-logo-bar__marquee-content carousel-type__marquee" data-logo-count="{{ logo_items|length }}">
-    {# Repeat the logo list 3x for seamless scrolling #}
+    {# Repeat the logo list 6x for seamless scrolling #}
     {% for repeat in [1,2,3,4,5,6] %}
       {% for item in logo_items %}
         {% if item is iterable %}
           {% if item.link %}
-            {{ macros.linkStart(item.link, 'un-logo-bar__logo-wrapper') }}
+            <a href="{{ item.link.url }}"
+               class="un-logo-bar__logo-wrapper"
+               {% if item.link.target == '_blank' %}target="_blank" rel="noopener"{% endif %}>
               {{ macros.image(item.image, item.size, item.alt, true) }}
-            {{ macros.linkEnd() }}
+            </a>
           {% else %}
             <div class="un-logo-bar__logo-wrapper">
               {{ macros.image(item.image, item.size, item.alt, true) }}
@@ -74,7 +76,7 @@
           {% endif %}
         {% else %}
           <div class="un-logo-bar__logo-wrapper">
-            <img src="{{ site_url ~ item }}" alt="Logo placeholder">
+            <img src="{{ site_url ~ item }}" alt="Logo placeholder" />
           </div>
         {% endif %}
       {% endfor %}
