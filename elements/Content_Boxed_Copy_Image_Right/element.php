@@ -4,7 +4,6 @@ namespace BreakdanceCustomElements;
 
 use function Breakdance\Elements\c;
 use function Breakdance\Elements\PresetSections\getPresetSection;
-use function OpkeyCustomElements\getSharedDefaults;
 
 
 \Breakdance\ElementStudio\registerElementForEditing(
@@ -71,32 +70,7 @@ class Contentboxedcopyimageright extends \Breakdance\Elements\Element
 
     static function defaultProperties()
     {
-        $shared = getSharedDefaults();
-        if ( ! is_array( $shared ) ) {
-            $shared = [];
-        }
-        $shared['media'] = [
-            'image_or_video' => 'image',
-        ];
-        $shared['image'] = [
-            'from'     => 'url',
-            'url'      => plugin_dir_url( dirname( __DIR__, 2 ) . '/opkey-elements.php' ) . 'assets/Placeholder-620x620.png',
-            'media'    => 0,
-            'alt'      => [
-                'type'      => 'custom',
-                'customAlt' => 'Placeholder image',
-            ],
-            'lazyLoad' => false,
-        ];
-        $shared['boxed_copy'] = $shared;
-        $shared['boxed_copy_buttons'] = [
-            'primary_button'   => $shared['buttons']['primary_button'],
-            'secondary_button' => $shared['buttons']['secondary_button'],
-        ];
-
-        return [
-            'content' => $shared,
-        ];
+        return ['content' => ['eyebrow' => ['text' => ''], 'heading' => ['text' => ''], 'subhead' => ['text' => ''], 'content' => ['text' => ''], 'buttons' => ['primary_button' => ['text' => '', 'link' => ''], 'secondary_button' => ['text' => '', 'link' => '']], 'media' => ['image_or_video' => ''], 'image' => ['from' => '', 'url' => '', 'media' => 0, 'alt' => ['type' => 'custom', 'customAlt' => ''], 'lazyLoad' => true], 'boxed_copy' => ['bc_eyebrow' => '', 'bc_heading' => '', 'bc_subhead' => '', 'bc_content' => '', 'buttons' => ['primary_button' => ['text' => '', 'link' => ''], 'secondary_button' => ['text' => '', 'link' => '']], 'media' => ['image_or_video' => ''], 'image' => ['from' => '', 'url' => '', 'media' => 0, 'alt' => ['type' => 'custom', 'customAlt' => ''], 'lazyLoad' => true]], 'boxed_copy_buttons' => ['primary_button' => ['text' => '', 'link' => ''], 'secondary_button' => ['text' => '', 'link' => '']]]];
     }
 
     static function defaultChildren()
@@ -224,32 +198,26 @@ class Contentboxedcopyimageright extends \Breakdance\Elements\Element
       ), c(
         "buttons",
         "Buttons",
-        [
-          getPresetSection(
-            "EssentialElements\\AtomV1ButtonContent",
-            "Primary Button",
-            "primary_button",
-            [ 'type' => 'popout' ]
-          ),
-          getPresetSection(
-            "EssentialElements\\AtomV1ButtonContent",
-            "Secondary Button",
-            "secondary_button",
-            [ 'type' => 'popout' ]
-          ),
-        ],
-        [
-          'type'   => 'section',
-          'layout' => 'vertical',
-        ],
+        [getPresetSection(
+      "EssentialElements\\AtomV1ButtonContent",
+      "Primary Button",
+      "primary_button",
+       ['type' => 'popout']
+     ), getPresetSection(
+      "EssentialElements\\AtomV1ButtonContent",
+      "Secondary Button",
+      "secondary_button",
+       ['type' => 'popout']
+     )],
+        ['type' => 'section', 'layout' => 'vertical'],
         false,
         false,
-        []
+        [],
       ), c(
         "boxed_copy",
         "Boxed Copy",
         [c(
-        "eyebrow",
+        "bc_eyebrow",
         "Eyebrow",
         [],
         ['type' => 'text', 'layout' => 'vertical'],
@@ -257,7 +225,7 @@ class Contentboxedcopyimageright extends \Breakdance\Elements\Element
         false,
         [],
       ), c(
-        "heading",
+        "bc_heading",
         "Heading",
         [],
         ['type' => 'text', 'layout' => 'vertical'],
@@ -265,7 +233,7 @@ class Contentboxedcopyimageright extends \Breakdance\Elements\Element
         false,
         [],
       ), c(
-        "subhead",
+        "bc_subhead",
         "Subhead",
         [],
         ['type' => 'text', 'layout' => 'vertical'],
@@ -273,7 +241,7 @@ class Contentboxedcopyimageright extends \Breakdance\Elements\Element
         false,
         [],
       ), c(
-        "content",
+        "bc_content",
         "Content",
         [],
         ['type' => 'richtext', 'layout' => 'vertical'],
