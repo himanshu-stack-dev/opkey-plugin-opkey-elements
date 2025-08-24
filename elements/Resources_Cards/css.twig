@@ -62,4 +62,9 @@
     %%SELECTOR%% .bde-tab-list .swiper-button-prev::after{
       filter:invert(0)!important;
   }
+
+{% else %}
+  %%SELECTOR%% { background: transparent; }
 {% endif %}
+
+/* Resources_Cards CSS end */

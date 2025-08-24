@@ -8,6 +8,9 @@
   background-color: {{ design.container.overlay }};
   pointer-events:none;
 }
+
+{% else %}
+  %%SELECTOR%% { background: transparent; }
 {% endif %}
 %%SELECTOR%% .ee-video-container {
   {% if content.video.ratio == 'custom' %}
@@ -136,4 +139,9 @@
     %%SELECTOR%% .demo-gradient-form button span::after { border-top: .125rem solid #190D2C; border-right: .125rem solid #190D2C;}
 {% elseif design.theme_color.color == 'light-gray' %}
     %%SELECTOR%% { background: #EDF7F9; }
+
+{% else %}
+  %%SELECTOR%% { background: transparent; }
 {% endif %}
+
+/* Hero_Copy_Left_Media_Email CSS end */

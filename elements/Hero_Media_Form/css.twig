@@ -8,6 +8,9 @@
   background-color: {{ design.container.overlay }};
   pointer-events:none;
 }
+
+{% else %}
+  %%SELECTOR%% { background: transparent; }
 {% endif %}
 %%SELECTOR%% .ee-video-container {
   {% if content.video.ratio == 'custom' %}
@@ -119,4 +122,9 @@
       }
       %%SELECTOR%% .opkey-link-text .button-atom__text { color: #fff !important; }
     }
+
+{% else %}
+  %%SELECTOR%% { background: transparent; }
 {% endif %}
+
+/* Hero_Media_Form CSS end */

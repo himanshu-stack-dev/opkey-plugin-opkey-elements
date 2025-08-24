@@ -8,6 +8,9 @@
   background-color: {{ design.container.overlay }};
   pointer-events:none;
 }
+
+{% else %}
+  %%SELECTOR%% { background: transparent; }
 {% endif %}
 %%SELECTOR%% .ee-video-container {
   {% if content.video.ratio == 'custom' %}
@@ -118,4 +121,9 @@
     }
 {% elseif design.theme_color.color == 'light-gray' %}
     %%SELECTOR%% { background: #EDF7F9; }
+
+{% else %}
+  %%SELECTOR%% { background: transparent; }
 {% endif %}
+
+/* Hero_Copy_Left_Media CSS end */
