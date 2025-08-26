@@ -8,9 +8,6 @@
   background-color: {{ design.container.overlay }};
   pointer-events:none;
 }
-
-{% else %}
-  %%SELECTOR%% { background: transparent; }
 {% endif %}
 %%SELECTOR%% .ee-video-container {
   {% if content.video.ratio == 'custom' %}
@@ -240,5 +237,3 @@
       %%SELECTOR%% .boxed-content .opkey-link-text .button-atom__text { color: #fff!important; }
     }
 {% endif %}
-
-/* Content_Boxed_Copy_Image_Left CSS end */
