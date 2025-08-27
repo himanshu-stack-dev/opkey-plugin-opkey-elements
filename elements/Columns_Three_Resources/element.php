@@ -294,8 +294,8 @@ class Columnsthreeresources extends \Breakdance\Elements\Element
       0:    { slidesPerView: 1, slidesPerGroup: 1 }
     },
     on: {
-      init: () => setEqualSlideHeights(\'.swiper.swiper-%%UNIQUESLUG%%\'),
-      slideChange: () => setEqualSlideHeights(\'.swiper.swiper-%%UNIQUESLUG%%\')
+      init:       () => setEqualSlideHeights(\'.swiper.swiper-%%UNIQUESLUG%%\'),
+      slideChange:() => setEqualSlideHeights(\'.swiper.swiper-%%UNIQUESLUG%%\')
     }
   };
 
@@ -307,16 +307,21 @@ class Columnsthreeresources extends \Breakdance\Elements\Element
     if (!container) return;
 
     const slides = container.querySelectorAll(\'.swiper-slide\');
-    let maxHeight = 0;
+    if (!slides.length) return;
 
+    // reset before measuring
+    slides.forEach(slide => { slide.style.minHeight = \'0\'; slide.style.height = \'\'; });
+
+    // tallest wins; use scrollHeight so nothing clips
+    let maxHeight = 0;
     slides.forEach(slide => {
-      slide.style.height = \'auto\';
-      const height = slide.offsetHeight;
-      if (height > maxHeight) maxHeight = height;
+      const h = slide.scrollHeight;
+      if (h > maxHeight) maxHeight = h;
     });
 
+    const BUFFER = 8; // small headroom
     slides.forEach(slide => {
-      slide.style.height = `${maxHeight}px`;
+      slide.style.minHeight = (maxHeight + BUFFER) + \'px\';
     });
   }
 
@@ -332,6 +337,7 @@ class Columnsthreeresources extends \Breakdance\Elements\Element
 
   initColumnsSlider();
   window.addEventListener(\'resize\', () => setEqualSlideHeights(\'.swiper.swiper-%%UNIQUESLUG%%\'));
+  window.addEventListener(\'load\',   () => setEqualSlideHeights(\'.swiper.swiper-%%UNIQUESLUG%%\'));
 
   if (window.BREAKDANCE) {
     window.BREAKDANCE.on(\'builder:loaded builder:rendered\', initColumnsSlider);
