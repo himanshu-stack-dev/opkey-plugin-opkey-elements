@@ -279,6 +279,7 @@ class Columnsthreeresources extends \Breakdance\Elements\Element
         return ['0' =>  ['scripts' => ['%%BREAKDANCE_ELEMENTS_PLUGIN_URL%%dependencies-files/swiper@8/swiper-bundle.min.js','%%BREAKDANCE_ELEMENTS_PLUGIN_URL%%dependencies-files/breakdance-swiper/breakdance-swiper.js'],'inlineScripts' => [';(function(){
   const config = {
     spaceBetween: 20,
+    watchOverflow: true,
     navigation: {
       nextEl: \'.swiper-button-next-%%UNIQUESLUG%%\',
       prevEl: \'.swiper-button-prev-%%UNIQUESLUG%%\'
