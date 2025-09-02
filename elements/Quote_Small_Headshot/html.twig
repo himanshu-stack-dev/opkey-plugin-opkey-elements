@@ -38,11 +38,16 @@
   <div class="module-quote">
     <div class="quote-content">
       <div class="gradient-wrapper">
+
+        {# Define slides once and count them #}
+        {% set slides = (content.quotes.slides is defined and content.quotes.slides|length > 0) 
+          ? content.quotes.slides 
+          : [defaults.quote] %}
+        {% set slide_count = slides|length %}
+
         <div class="breakdance-swiper-wrapper" data-swiper-id="%%ID%%">
           <div class="swiper swiper-%%UNIQUESLUG%%">
             <div class="swiper-wrapper">
-              {% set slides = (content.quotes.slides is defined and content.quotes.slides|length > 0) ? content.quotes.slides : [defaults.quote] %}
-
               {% for item in slides %}
                 {% set is_fallback = item.text|default('') == defaults.quote.text %}
 
@@ -97,13 +102,16 @@
             </div>
           </div>
         </div>
-      </div>
-    </div>
+      </div><!-- /.gradient-wrapper -->
+    </div><!-- /.quote-content -->
 
-    <div class="slider-navigation">
-      <button class="swiper-button-prev swiper-button-prev-%%UNIQUESLUG%% custom-nav-btn"></button>
-      <div class="swiper-pagination swiper-pagination-%%UNIQUESLUG%%"></div>
-      <button class="swiper-button-next swiper-button-next-%%UNIQUESLUG%% custom-nav-btn"></button>
-    </div>
-  </div>
-</div>
+    {# Only show navigation/pagination if there are 2+ slides #}
+    {% if slide_count > 1 %}
+      <div class="slider-navigation">
+        <button class="swiper-button-prev swiper-button-prev-%%UNIQUESLUG%% custom-nav-btn"></button>
+        <div class="swiper-pagination swiper-pagination-%%UNIQUESLUG%%"></div>
+        <button class="swiper-button-next swiper-button-next-%%UNIQUESLUG%% custom-nav-btn"></button>
+      </div>
+    {% endif %}
+  </div><!-- /.module-quote -->
+</div><!-- /.module-container -->

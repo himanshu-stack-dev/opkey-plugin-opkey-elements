@@ -375,41 +375,8 @@ class Topnavaccordion extends \Breakdance\Elements\Element
             tab.style.display = j === activeIndex ? "block" : "none";
           });
 
-          const swiperEl = module.querySelector(`.swiper-${activeIndex}`);
-          if (swiperEl && !swiperEl.classList.contains("swiper-initialized")) {
-            new Swiper(`.swiper-${activeIndex}`, {
-              slidesPerView: 1,
-              spaceBetween: 24,
-              pagination: {
-                el: `.swiper-pagination-${activeIndex}`,
-                clickable: true
-              },
-              navigation: {
-                nextEl: `.swiper-button-next-${activeIndex}`,
-                prevEl: `.swiper-button-prev-${activeIndex}`
-              }
-            });
-          }
-
           rebuildDropdown(activeIndex);
         });
-      });
-    }
-
-    // init the very first Swiper (panel 0)
-    const firstSwiper = module.querySelector(`.swiper-0`);
-    if (firstSwiper && !firstSwiper.classList.contains("swiper-initialized")) {
-      new Swiper(`.swiper-0`, {
-        slidesPerView: 1,
-        spaceBetween: 24,
-        pagination: {
-          el: `.swiper-pagination-0`,
-          clickable: true
-        },
-        navigation: {
-          nextEl: `.swiper-button-next-0`,
-          prevEl: `.swiper-button-prev-0`
-        }
       });
     }
 
@@ -565,6 +532,92 @@ class Topnavaccordion extends \Breakdance\Elements\Element
       initAll();
     }
   });
+
+  // === MOBILE-ONLY: make each accordion item a slide (per visible tab) ===
+  const mobileSwipers = new Map();
+
+  function getActiveMobileTabIndex() {
+    const tabs = module.querySelectorAll(\'.bde-mobile-tab-content\');
+    for (let i = 0; i < tabs.length; i++) {
+      if (tabs[i].style.display !== \'none\') return i;
+    }
+    return 0;
+  }
+
+  function buildSwiperForTab(idx) {
+    if (!isMobile() || typeof Swiper === \'undefined\') return;
+
+    const tab = module.querySelector(\'.bde-mobile-tab-content.tab-\' + idx);
+    if (!tab) return;
+
+    const el = tab.querySelector(\'.swiper.swiper-\' + idx) || tab.querySelector(\'.swiper\');
+    if (!el) return;
+
+    // Already initialized? update & exit
+    if (el.swiper) { el.swiper.update(); el.swiper.slideTo(0, 0); mobileSwipers.set(idx, el.swiper); return el.swiper; }
+
+    // Scope nav/pagination to this tab only
+    const next = tab.querySelector(\'.swiper-button-next-\' + idx) || tab.querySelector(\'.swiper-button-next\');
+    const prev = tab.querySelector(\'.swiper-button-prev-\' + idx) || tab.querySelector(\'.swiper-button-prev\');
+    const pag  = tab.querySelector(\'.swiper-pagination-\' + idx)  || tab.querySelector(\'.swiper-pagination\');
+
+    const s = new Swiper(el, {
+      slidesPerView: 1,
+      spaceBetween: 20,
+      autoHeight: true,
+      observer: true,
+      observeParents: true,
+      observeSlideChildren: true,
+      watchOverflow: true,
+      navigation: (next && prev) ? { nextEl: next, prevEl: prev } : undefined,
+      pagination: pag ? { el: pag, clickable: true, type: \'bullets\' } : undefined,
+      on: {
+        init(sw){ sw.update(); },
+        imagesReady(sw){ sw.update(); },
+        resize(sw){ sw.update(); }
+      }
+    });
+
+    mobileSwipers.set(idx, s);
+    return s;
+  }
+
+  function destroyMobileSwipers() {
+    mobileSwipers.forEach(sw => { try { sw.destroy(true, true); } catch(e){} });
+    mobileSwipers.clear();
+  }
+
+  // Init once after your mobile UI builds
+  if (isMobile()) {
+    setTimeout(() => buildSwiperForTab(getActiveMobileTabIndex()), 0);
+  }
+
+  // When the mobile dropdown picks a different tab, lazy-init that tab’s swiper
+  module.addEventListener(\'click\', (e) => {
+    const li = e.target.closest(\'.bde-mobile-dropdown-options li[data-tab-index]\');
+    if (!li || !isMobile()) return;
+    const idx = parseInt(li.dataset.tabIndex, 10);
+    // Your code shows the tab; then we init/update
+    setTimeout(() => buildSwiperForTab(idx), 0);
+  });
+
+  // Breakpoint changes
+  window.addEventListener(\'resize\', () => {
+    if (!isMobile()) {
+      destroyMobileSwipers();
+    } else {
+      setTimeout(() => buildSwiperForTab(getActiveMobileTabIndex()), 0);
+    }
+  });
+
+  // Re-init inside Breakdance builder renders
+  if (window.BREAKDANCE) {
+    window.BREAKDANCE.on(\'builder:loaded builder:rendered\', () => {
+      destroyMobileSwipers();
+      if (isMobile()) setTimeout(() => buildSwiperForTab(getActiveMobileTabIndex()), 0);
+    });
+  }
+
 })();
 '],'scripts' => ['%%BREAKDANCE_ELEMENTS_PLUGIN_URL%%dependencies-files/swiper@8/swiper-bundle.min.js','%%BREAKDANCE_ELEMENTS_PLUGIN_URL%%dependencies-files/breakdance-swiper/breakdance-swiper.js'],'styles' => ['%%BREAKDANCE_ELEMENTS_PLUGIN_URL%%dependencies-files/swiper@8/swiper-bundle.min.css','%%BREAKDANCE_ELEMENTS_PLUGIN_URL%%dependencies-files/swiper@8/breakdance-swiper-preset-defaults.css'],'title' => 'Swiper',],'1' =>  ['title' => 'Lottie','scripts' => ['%%BREAKDANCE_ELEMENTS_PLUGIN_URL%%dependencies-files/lottie-web@5/lottie_light-v-5-7-8.min.js','%%BREAKDANCE_ELEMENTS_PLUGIN_URL%%dependencies-files/lottie-web@5/breakdanceLottie.js'],'inlineScripts' => ['(function watchAndInitLottie() {
   const baseSelector      = "%%SELECTOR%%";
