@@ -65,6 +65,7 @@
         }
       ]
   %}
+  {% set tab_count = tabs|length %}
 
   <div class="module-navigator bde-accordion-nav-with-media">
     <div class="breakdance-swiper-wrapper show-mobile" data-swiper-id="%%UNIQUESLUG%%">
@@ -74,6 +75,7 @@
       {% set active_index = 0 %}
       {% set active_tab = tabs[active_index] %}
 
+      {% if tab_count > 1 %}
       <div class="bde-mobile-dropdown-wrapper">
         <button class="bde-accordion-trigger bde-mobile-tab-trigger" aria-expanded="false" tabindex="0">
           <span class="bde-accordion-title">{{ active_tab.tab_title }}</span>
@@ -87,6 +89,7 @@
           {% endfor %}
         </ul>
       </div>
+      {% endif %}
 
       {# CONTENT FOR EACH PERSONA (One Swiper per tab) #}
       {% for tab in tabs %}
@@ -148,6 +151,7 @@
     </div>
 
     <div class="bde-accordion-tabs show-desktop">
+      {% if tab_count > 1 %}
       <div class="bde-tab-list" role="tablist">
         {% for tab in tabs %}
           <button
@@ -162,6 +166,7 @@
           </button>
         {% endfor %}
       </div>
+      {% endif %}
 
       <div class="bde-tabpanels">
         {% for tab in tabs %}

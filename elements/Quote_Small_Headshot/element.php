@@ -273,6 +273,9 @@ class Quotesmallheadshot extends \Breakdance\Elements\Element
     slidesPerView: 1,
     slidesPerGroup: 1,
     spaceBetween: 20,
+    autoHeight: true,
+    observer: true,
+    observeParents: true,
 
     navigation: {
       nextEl: \'.slider-navigation .swiper-button-next-%%UNIQUESLUG%%\',
