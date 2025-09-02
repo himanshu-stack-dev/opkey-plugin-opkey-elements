@@ -6,7 +6,7 @@
  * Author: The Break
  * Text Domain: opkey
  * Domain Path: /languages/
- * Version: 1.0.2
+ * Version: 1.0.3
  */
 
 namespace OpkeyCustomElements;

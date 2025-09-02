@@ -11,47 +11,25 @@
 
 <div class="module-container">
   <div class="module-text">
-    {# EYEBROW #}
     {% set eyebrow = content.eyebrow.text %}
-    {% if eyebrow %}
-      <div class="eyebrow">{{ eyebrow }}</div>
-    {% endif %}
+    {% if eyebrow %}<div class="eyebrow">{{ eyebrow }}</div>{% endif %}
 
-    {# HEADING #}
     {% set heading = content.heading.text %}
-    {% if heading %}
-      <h2>{{ heading }}</h2>
-    {% endif %}
+    {% if heading %}<h2>{{ heading }}</h2>{% endif %}
 
-    {# SUBHEAD #}
     {% set subhead = content.subhead.text %}
-    {% if subhead %}
-      <h4>{{ subhead }}</h4>
-    {% endif %}
+    {% if subhead %}<h4>{{ subhead }}</h4>{% endif %}
 
-    {# BUTTONS #}
     {% set pb = content.buttons.primary_button|default({}) %}
     {% set sb = content.buttons.secondary_button|default({}) %}
 
     {% if pb.text|default('')|trim or sb.text|default('')|trim %}
       <div class="content-module module-buttons">
         {% if pb.text|default('')|trim %}
-          {{ macros.atomV1ButtonHtml(
-            pb,
-            'opkey-primary',
-            path.to.button_design_preset_section,
-            'primary',
-            pb.text|trim
-          ) }}
+          {{ macros.atomV1ButtonHtml(pb,'opkey-primary',path.to.button_design_preset_section,'primary',pb.text|trim) }}
         {% endif %}
         {% if sb.text|default('')|trim %}
-          {{ macros.atomV1ButtonHtml(
-            sb,
-            'opkey-link-text',
-            path.to.button_design_preset_section,
-            'secondary',
-            sb.text|trim
-          ) }}
+          {{ macros.atomV1ButtonHtml(sb,'opkey-link-text',path.to.button_design_preset_section,'secondary',sb.text|trim) }}
         {% endif %}
       </div>
     {% endif %}
@@ -63,25 +41,35 @@
         <div class="breakdance-swiper-wrapper" data-swiper-id="%%ID%%">
           <div class="swiper swiper-%%UNIQUESLUG%%">
             <div class="swiper-wrapper">
-              {% set slides = (content.quotes.slides is defined and content.quotes.slides|length > 0) 
-                  ? content.quotes.slides 
-                  : [defaults.quote] %}
+              {% set slides = (content.quotes.slides is defined and content.quotes.slides|length > 0) ? content.quotes.slides : [defaults.quote] %}
 
               {% for item in slides %}
-              {% set is_fallback = item.text == defaults.quote.text %}
+                {% set is_fallback = item.text|default('') == defaults.quote.text %}
 
-                {% set btn_text = item.link_to_case_study.text|default('')|trim %}
-                {% set btn_url = item.link_to_case_study.url|default('#')|trim %}
+                {# the raw link control as saved in the repeater #}
+                {% set raw_link = item.link_to_case_study|default({}) %}
+
+                {# Build a proper Breakdance link-control object for fallback #}
+                {% set fallback_link = {
+                  text: defaults.quote.button.text,
+                  link: { url: defaults.quote.button.url, new_window: false, nofollow: false }
+                } %}
+
+                {# Use raw repeater link when present; else fallback #}
+                {% set linkObj = is_fallback ? fallback_link : raw_link %}
+
+                {# Derive a label (macro's 5th arg) #}
+                {% set label = linkObj.text|default('Learn more')|trim %}
 
                 <div class="swiper-slide">
                   <div class="bde-basicslider__slide">
                     <div class="bde-basicslider__content">
                       <h4 class="bde-basicslider__title">{{ item.title }}</h4>
                       <div class="bde-basicslider__text">{{ item.text }}</div>
+
                       <div class="quote-attribution">
                         <div class="headshot">
-                         {% if item.headshot is defined and item.headshot is not empty 
-                                and (item.headshot.url is defined or item.headshot.ID is defined or item.headshot.id is defined) %}
+                          {% if item.headshot is defined and item.headshot is not empty and (item.headshot.url is defined or item.headshot.ID is defined or item.headshot.id is defined) %}
                             {{ macros.image(item.headshot, content.content.size, alt, lazyLoad) }}
                           {% else %}
                             <img src="{{ defaults.quote.headshot }}" alt="Placeholder headshot" loading="lazy">
@@ -92,15 +80,15 @@
                           <div class="company">{{ item.role_company }}</div>
                         </div>
                       </div>
-                      {% if (btn_text and btn_url != '') or is_fallback %}
-                          {{ macros.atomV1ButtonHtml(
-                            is_fallback 
-                              ? defaults.quote.button 
-                              : { text: btn_text, url: btn_url },
-                            'bde-basicslider__button opkey-link-text',
-                            design.button,
-                            'content.quotes.slides[' ~ loop.index0 ~ '].link_to_case_study.text'
-                          ) }}
+
+                      {% if label %}
+                        {{ macros.atomV1ButtonHtml(
+                          linkObj,
+                          'bde-basicslider__button opkey-link-text',
+                          path.to.button_design_preset_section,
+                          'text',
+                          label
+                        ) }}
                       {% endif %}
                     </div>
                   </div>
@@ -111,12 +99,11 @@
         </div>
       </div>
     </div>
-    {% if slides|length > 1 %}
+
     <div class="slider-navigation">
       <button class="swiper-button-prev swiper-button-prev-%%UNIQUESLUG%% custom-nav-btn"></button>
       <div class="swiper-pagination swiper-pagination-%%UNIQUESLUG%%"></div>
       <button class="swiper-button-next swiper-button-next-%%UNIQUESLUG%% custom-nav-btn"></button>
     </div>
-    {% endif %}
   </div>
 </div>
