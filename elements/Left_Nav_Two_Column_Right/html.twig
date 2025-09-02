@@ -73,8 +73,11 @@
     {# Hidden slide storage goes outside Swiper! #}
     <div class="all-slide-groups" style="display: none;">
       {% for category in categories %}
+        {% set cat_index = loop.index %}   {# <-- stable outer index #}
         {% for resource in category.resources %}
-          <div class="swiper-slide" data-category-index="{{ loop.parent.loop.index }}">
+          <div class="swiper-slide"
+               data-category-index="{{ cat_index }}"  
+               data-sort="{{ loop.index }}">           
             <div class="card">
               <svg preserveAspectRatio="none" viewBox="0 0 5 452" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M5 1V1C2.79086 1 1 2.79087 1 5V447C1 449.209 2.79086 451 5 451V451" stroke="currentColor"/>

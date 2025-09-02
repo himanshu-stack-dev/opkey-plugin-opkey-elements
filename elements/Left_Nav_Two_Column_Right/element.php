@@ -275,23 +275,13 @@ class Leftnavtwocolumnright extends \Breakdance\Elements\Element
     static function dependencies()
     {
         return ['0' =>  ['scripts' => ['%%BREAKDANCE_ELEMENTS_PLUGIN_URL%%dependencies-files/swiper@8/swiper-bundle.min.js','%%BREAKDANCE_ELEMENTS_PLUGIN_URL%%dependencies-files/breakdance-swiper/breakdance-swiper.js'],'styles' => ['%%BREAKDANCE_ELEMENTS_PLUGIN_URL%%dependencies-files/swiper@8/swiper-bundle.min.css','%%BREAKDANCE_ELEMENTS_PLUGIN_URL%%dependencies-files/swiper@8/breakdance-swiper-preset-defaults.css'],'inlineScripts' => [';(function () {
-  const config = {
+  const baseConfig = {
+    spaceBetween: 20,
     slidesPerView: 1,
     slidesPerGroup: 1,
-    spaceBetween: 20,
-    grid: { rows: 1, fill: "row" },
-    breakpoints: {
-      600: {
-        slidesPerView: 2,
-        slidesPerGroup: 2,
-        grid: { rows: 2, fill: "row" }
-      },
-      1024: {
-        slidesPerView: 2,
-        slidesPerGroup: 4,
-        grid: { rows: 2, fill: "row" }
-      }
-    },
+    observer: true,
+    observeParents: true,
+    autoHeight: true,
     navigation: {
       nextEl: ".slider-navigation .swiper-button-next-%%UNIQUESLUG%%",
       prevEl: ".slider-navigation .swiper-button-prev-%%UNIQUESLUG%%"
@@ -303,121 +293,144 @@ class Leftnavtwocolumnright extends \Breakdance\Elements\Element
     }
   };
 
-  function equalizeCardHeights(wrapper) {
-    const cards = wrapper.querySelectorAll(\'.swiper-slide .card\');
-    let maxHeight = 0;
-    cards.forEach(card => card.style.height = \'auto\');
-    cards.forEach(card => { maxHeight = Math.max(maxHeight, card.offsetHeight); });
-    cards.forEach(card => { card.style.height = `${maxHeight}px`; });
-  }
+  const chunk = (arr, size) => {
+    const out = [];
+    for (let i = 0; i < arr.length; i += size) out.push(arr.slice(i, i + size));
+    return out;
+  };
+  const perPage = () => (window.innerWidth < 768 ? 1 : 4); // ← your breakpoints
 
   function initColumnsSlider() {
     document.querySelectorAll(".swiper-%%UNIQUESLUG%%").forEach((el) => {
-      const container = el.closest(".module-container");
+      const container    = el.closest(".module-container");
       const paginationEl = container.querySelector(".slider-navigation .swiper-pagination-%%UNIQUESLUG%%");
-      config.pagination.el = paginationEl;
-
       if (!el.swiper) {
-        const swiper = new Swiper(el, config);
+        const cfg = { ...baseConfig, pagination: { ...baseConfig.pagination, el: paginationEl } };
+        const swiper = new Swiper(el, cfg);
         wireCategoryFilter(swiper, el);
       }
     });
   }
 
-   // Hide desktop tab-nav and mobile dropdown if only one tab/category exists
-   function hideSingleTabsAndDropdowns() {
-     // Desktop tab nav + set swiper wrapper max-width
-     document.querySelectorAll(\'.tab-nav.desktop-only\').forEach(function(tabNav) {
-       const tabs = tabNav.querySelectorAll(\'.bde-tab\');
-       const swiperWrapper = tabNav.closest(\'.module-content-row\').querySelector(\'.breakdance-swiper-wrapper\');
-       if (tabs.length < 2) {
-         tabNav.style.display = \'none\';
-         if (swiperWrapper) swiperWrapper.style.maxWidth = \'none\';
-       } else {
-         tabNav.style.display = \'\';
-         if (swiperWrapper) swiperWrapper.style.maxWidth = \'\'; // Resets to CSS default
-       }
-     });
-
-     // Mobile dropdown
-     document.querySelectorAll(\'.tab-dropdown.mobile-only\').forEach(function(dropdown) {
-       const options = dropdown.querySelectorAll(\'option\');
-       if (options.length < 2) {
-         dropdown.style.display = \'none\';
-       } else {
-         dropdown.style.display = \'\';
-       }
-     });
-   }
+  function hideSingleTabsAndDropdowns() {
+    document.querySelectorAll(\'.tab-nav.desktop-only\').forEach(tabNav => {
+      const tabs = tabNav.querySelectorAll(\'.bde-tab\');
+      const wrap = tabNav.closest(\'.module-content-row\')?.querySelector(\'.breakdance-swiper-wrapper\');
+      if (tabs.length < 2) {
+        tabNav.style.display = \'none\';
+        if (wrap) wrap.style.maxWidth = \'none\';
+      } else {
+        tabNav.style.display = \'\';
+        if (wrap) wrap.style.maxWidth = \'\';
+      }
+    });
+    document.querySelectorAll(\'.tab-dropdown.mobile-only\').forEach(dropdown => {
+      dropdown.style.display = (dropdown.querySelectorAll(\'option\').length < 2) ? \'none\' : \'\';
+    });
+  }
 
   function wireCategoryFilter(swiper, sliderEl) {
     const container = sliderEl.closest(".module-container");
-    const tabs = container.querySelectorAll(".bde-tab[data-category-index]");
-    const dropdown = container.querySelector("#category-select-%%UNIQUESLUG%%");
-    const wrapper = sliderEl.querySelector(".swiper-wrapper");
-    const allSlides = container.querySelectorAll(".all-slide-groups .swiper-slide");
+    const tabs      = container.querySelectorAll(".bde-tab[data-category-index]");
+    const dropdown  = container.querySelector("#category-select-%%UNIQUESLUG%%");
+
+    const allSlides = Array.from(container.querySelectorAll(".all-slide-groups .swiper-slide"));
+    const indicesWithSlides = Array.from(new Set(
+      allSlides.map(s => (s.dataset.categoryIndex || \'\').trim()).filter(Boolean)
+    ));
+
+    const sortByRepeater = (list) =>
+      list.sort((a, b) => (parseInt(a.dataset.sort || \'9999\', 10) - parseInt(b.dataset.sort || \'9999\', 10)));
+
+    // Build a Swiper "page": 1 card for mobile, 2×2 grid for tablet/desktop
+    function buildPage(group) {
+      const slide = document.createElement(\'div\');
+      slide.className = \'swiper-slide page-slide\';
+
+      // 1-per-slide on mobile: just append the single card
+      if (group.length === 1 || perPage() === 1) {
+        const s = group[0];
+        const clone = s.cloneNode(true);
+        clone.classList.remove(\'swiper-slide\');
+        slide.appendChild(clone.querySelector(\'.card\') || clone);
+        return slide;
+      }
+
+      // 4-per-slide on >=768px: render as 2×2 grid
+      const grid = document.createElement(\'div\');
+      grid.className = \'page-grid\';
+      group.forEach(s => {
+        const clone = s.cloneNode(true);
+        clone.classList.remove(\'swiper-slide\');
+        const card = clone.querySelector(\'.card\') || clone;
+        grid.appendChild(card);
+      });
+      slide.appendChild(grid);
+      return slide;
+    }
+
+    let currentCat = null;
+    let lastPageSize = perPage();
 
     function showCategory(catIndex) {
-      catIndex = String(catIndex).trim();
-      wrapper.innerHTML = "";
+      catIndex = String(catIndex || \'\').trim();
+      if (!indicesWithSlides.includes(catIndex) && indicesWithSlides.length) {
+        catIndex = indicesWithSlides[0];
+      }
+      currentCat = catIndex;
 
-      let slideCount = 0;
-      allSlides.forEach((slide) => {
-        if (String(slide.dataset.categoryIndex).trim() === catIndex) {
-          wrapper.appendChild(slide.cloneNode(true));
-          slideCount++;
-        }
-      });
+      const list  = sortByRepeater(allSlides.filter(s => (s.dataset.categoryIndex || \'\').trim() === catIndex));
+      const pages = chunk(list, perPage()).map(buildPage);
 
-      swiper.slides = swiper.wrapperEl.querySelectorAll(`.${swiper.params.slideClass}`);
+      swiper.removeAllSlides();
+      if (pages.length) swiper.appendSlide(pages);
+
+      swiper.updateSlides();
       swiper.update();
+      if (swiper.pagination?.el) { swiper.pagination.render(); swiper.pagination.update(); }
+      swiper.slideTo(0, 0, false);
 
-      setTimeout(() => {
-        if (swiper.pagination?.el) {
-          swiper.pagination.render();
-          swiper.pagination.update();
-        }
-      }, 50);
-
-      swiper.slideTo(0, 0);
-
-      tabs.forEach((t) => {
-        const isActive = String(t.dataset.categoryIndex).trim() === catIndex;
-        t.setAttribute("aria-selected", isActive ? "true" : "false");
-        t.classList.toggle("is-active", isActive);
+      tabs.forEach(t => {
+        const active = (t.dataset.categoryIndex || \'\').trim() === catIndex;
+        t.setAttribute(\'aria-selected\', active ? \'true\' : \'false\');
+        t.classList.toggle(\'is-active\', active);
       });
+      if (dropdown && dropdown.value !== catIndex) dropdown.value = catIndex;
 
-      // ====== Show/hide nav based on resource count ======
-      const sliderNav = container.querySelector(\'.slider-navigation-%%UNIQUESLUG%%\');
+      const sliderNav = container.querySelector(".slider-navigation-%%UNIQUESLUG%%") || container.querySelector(".slider-navigation");
       if (sliderNav) {
-        if (slideCount > 4) {
-          sliderNav.style.display = \'\';
-          sliderNav.querySelectorAll(\'button\').forEach(btn => btn.disabled = false);
-        } else {
-          sliderNav.style.display = \'none\';
-          sliderNav.querySelectorAll(\'button\').forEach(btn => btn.disabled = true);
-        }
+        const needNav = pages.length > 1;
+        sliderNav.style.display = needNav ? \'\' : \'none\';
+        sliderNav.querySelectorAll(\'button\').forEach(btn => (btn.disabled = !needNav));
       }
     }
 
-    tabs.forEach((tab) => {
-      tab.addEventListener("click", () => {
-        showCategory(tab.dataset.categoryIndex);
-      });
+    tabs.forEach(tab => tab.addEventListener(\'click\', () => showCategory(tab.dataset.categoryIndex)));
+    if (dropdown) dropdown.addEventListener(\'change\', e => showCategory(e.target.value));
+
+    // initial render
+    requestAnimationFrame(() => {
+      const firstTabWithSlides = Array.from(tabs).find(t =>
+        indicesWithSlides.includes((t.dataset.categoryIndex || \'\').trim())
+      );
+      if (firstTabWithSlides)          showCategory(firstTabWithSlides.dataset.categoryIndex);
+      else if (dropdown?.value)        showCategory(dropdown.value);
+      else if (indicesWithSlides[0])   showCategory(indicesWithSlides[0]);
     });
 
-    if (dropdown) {
-      dropdown.addEventListener("change", (e) => {
-        showCategory(e.target.value);
-      });
-    }
-
-    if (tabs.length > 0) {
-      showCategory(tabs[0].dataset.categoryIndex);
-    }
+    // Rebuild pages on breakpoint changes
+    let resizeTimer = null;
+    window.addEventListener(\'resize\', () => {
+      const size = perPage();
+      if (size === lastPageSize) return;
+      lastPageSize = size;
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        if (currentCat) showCategory(currentCat);
+      }, 100);
+    });
   }
 
-  // Call after slider is initialized, and on builder events
   function runAll() {
     initColumnsSlider();
     hideSingleTabsAndDropdowns();

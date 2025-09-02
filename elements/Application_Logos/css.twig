@@ -40,28 +40,6 @@
     border-top: 2px solid #81F0FD !important;
     border-right: 2px solid #81F0FD !important;
   }
-  /* COLUMNS */
-  %%SELECTOR%% .swiper-slide .card { background:transparent; }
-  %%SELECTOR%% .swiper-slide .card  h3 { color:white; }
-  %%SELECTOR%% .swiper-slide .card .icon { filter:invert(1) hue-rotate(187deg) }
-  %%SELECTOR%%  .swiper-slide .card svg { color: #A956FF; }
-  %%SELECTOR%% .custom-nav-btn { background:#fff; }
-  %%SELECTOR%% .custom-nav-btn::after { border-color:black!important; }
-  %%SELECTOR%% .slider-navigation .swiper-pagination-bullet { background:transparent; border:2px solid white;}
-  %%SELECTOR%% .slider-navigation .swiper-pagination-bullet-active { background:white; }
-  @media (max-width: 1023px) {
-    %%SELECTOR%% .opkey-link-text .button-atom__text { color: #fff !important; }
-  }
-  @media (min-width: 1024px) {
-    %%SELECTOR%% .bde-tab-list button[aria-selected="true"],
-    %%SELECTOR%% .bde-tab-list button[aria-selected="true"]:hover { color:black!important; background:white!important; }
-    %%SELECTOR%% .bde-tab-list button { color:white!important; }
-    %%SELECTOR%% .bde-tab-list button::before, 
-    %%SELECTOR%% .bde-tab-list button::after { filter:invert(100%)!important; }
-    %%SELECTOR%% .bde-tab-list .swiper-button-next::after,
-    %%SELECTOR%% .bde-tab-list .swiper-button-prev::after{
-      filter:invert(0)!important;
-  }
 {% elseif design.theme_color.color == 'light-gray' %}
     %%SELECTOR%% { background: #EDF7F9; }
 {% endif %}

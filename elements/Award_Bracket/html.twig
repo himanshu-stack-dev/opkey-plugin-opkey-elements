@@ -123,11 +123,13 @@
             <h4>Our Partners</h4>
             <div class="partners">
               {% for item in partners %}
+              <div class="partner-container">
                 {% if item.image is defined %}
                   {{ macros.image(item.image, content.content.size, alt, lazyLoad) }}
                 {% else %}
                   <img src="{{ item }}" alt="Partner" loading="lazy" />
                 {% endif %}
+              </div>
               {% endfor %}
             </div>
           </div>
