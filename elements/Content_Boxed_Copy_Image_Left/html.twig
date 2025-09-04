@@ -1,4 +1,4 @@
-{# Content + Boxed Copy + Image Left — clean, with defaults + video params #}
+{# Content + Boxed Copy + Media Left — cleaned + wired to controls #}
 
 {% set in_builder = (isBuilder is defined and isBuilder) %}
 
@@ -8,7 +8,6 @@
 {% set subhead = content.subhead.text|default('') %}
 {% set body    = content.content.text|default('') %}
 
-{# Buttons (main) #}
 {% set pb = content.buttons.primary_button|default({}) %}
 {% set sb = content.buttons.secondary_button|default({}) %}
 {% set has_main_btns = pb.text|default('')|trim or sb.text|default('')|trim %}
@@ -25,32 +24,48 @@
 {% set has_boxed_text = bc_eyebrow or bc_heading or bc_subhead or (bc_body|striptags|trim) %}
 {% set has_boxed_btns = bpb.text|default('')|trim or bsb.text|default('')|trim %}
 
-{# -------- BOXED MEDIA -------- #}
-{% set media_choice = content.boxed_copy_media.image_or_video|default('')|lower %}
+{# -------- BOXED MEDIA (exact control wiring) -------- #}
+{% set boxed_media_choice = content.boxed_copy_media.image_or_video|default('')|lower %}
 
-{# image path #}
-{% set img_field    = content.image|default(null) %}
-{% set has_boxed_img = img_field and (
-  (img_field.media is defined and img_field.media) or
-  (img_field.url|default('') != '')
+{# Image group under Boxed Copy Media → Image #}
+{% set boxed_img = content.boxed_copy_media.image|default({}) %}
+{% set img_from  = boxed_img.from|default('media_library')|lower %}
+{% set img_media = boxed_img.media|default(null) %}
+{% set img_url   = boxed_img.url|default('') %}
+{% set img_alt_mode   = boxed_img.alt|default('default')|lower %}
+{% set img_custom_alt = boxed_img.customAlt|default('') %}
+{% set b_alt = img_alt_mode in ['custom','custom_alt'] ? img_custom_alt : '' %}
+{% set b_lazy = boxed_img.lazyLoad is defined ? boxed_img.lazyLoad : true %}
+
+{% set has_boxed_img =
+     ((img_from in ['media_library','media']) and img_media)
+  or ((img_from == 'url') and (img_url|trim != ''))
+%}
+
+{# Video group (keeps compatibility if your video lives in boxed_copy_media.video or content.video) #}
+{% set boxed_video = content.boxed_copy_media.video|default(content.video)|default({}) %}
+{% set has_boxed_video = boxed_video is defined and boxed_video.video is defined and boxed_video.video %}
+
+{% set show_boxed_img   = (boxed_media_choice in ['image','']) and has_boxed_img %}
+{% set show_boxed_video = (boxed_media_choice == 'video') and has_boxed_video %}
+
+{# -------- MAIN MEDIA (separate group) -------- #}
+{% set main_choice = content.media.image_or_video|default('')|lower %}
+{% set main_img    = content.media.image|default(null) %}
+{% set has_main_img = (main_choice == 'image') and main_img and (
+  (main_img.media is defined and main_img.media) or
+  (main_img.url|default('') != '')
 ) %}
-
-{# video path #}
-{% set has_boxed_video = content.video is defined and content.video.video is defined and content.video.video %}
-
-{% set show_boxed_img = (media_choice in ['image','']) and has_boxed_img %}
-{% set show_boxed_video = (media_choice == 'video') and has_boxed_video %}
-
-{# -------- MAIN MEDIA -------- #}
-{% set main_type = content.media.image_or_video|default('') %}
-{% set m         = content.image|default(null) %}
-{% set has_main_img   = main_type == 'image' and m and (m.media|default(0) or m.url|default('') != '') %}
-{% set has_main_video = main_type == 'video' and (content.video.video.provider in ['vimeo','youtube']) %}
+{% set main_video = content.media.video|default({}) %}
+{% set has_main_video = (main_choice == 'video') and (main_video.video is defined and main_video.video) %}
 {% set has_main_media = has_main_img or has_main_video %}
 
-{# -------- DEFAULTS (Builder only) -------- #}
+{# -------- Default demo content (builder-only if truly empty) -------- #}
 {% set has_any_user_content =
-  has_main_text or has_main_btns or has_boxed_text or has_boxed_btns or show_boxed_img or show_boxed_video or has_main_media
+  has_main_text or has_main_btns or
+  has_boxed_text or has_boxed_btns or
+  show_boxed_img or show_boxed_video or
+  has_main_media
 %}
 {% set use_defaults = in_builder and (not has_any_user_content) %}
 
@@ -60,7 +75,6 @@
   {% set heading = 'Lorem ipsum dolor sit amet' %}
   {% set subhead = 'Short supporting subhead' %}
   {% set body    = '<p>This is example body copy so the layout is clear before you add real content.</p>' %}
-
   {% set has_main_btns = true %}
   {% set demo_primary_text  = 'Contact sales' %}
   {% set demo_secondary_text = 'Learn more ↗' %}
@@ -73,17 +87,19 @@
   {% set has_boxed_text = true %}
   {% set has_boxed_btns = true %}
 
-  {# Boxed image default #}
-  {% set media_choice = 'image' %}
-  {% set img_field = { url: '/wp-content/uploads/2025/06/Placeholder-1-1.png', alt: { customAlt: '' }, lazyLoad: true } %}
-  {% set has_boxed_img = true %}
+  {# Defaults: show ONLY a boxed image, not a main image, to avoid a stray big image below #}
+  {% set boxed_media_choice = 'image' %}
+  {% set img_from  = 'url' %}
+  {% set img_url   = '/wp-content/uploads/2025/06/Placeholder-1-1.png' %}
+  {% set b_alt     = '' %}
+  {% set b_lazy    = true %}
   {% set show_boxed_img = true %}
   {% set show_boxed_video = false %}
 
-  {# Main media default #}
-  {% set main_type = 'image' %}
-  {% set m = { url: '/wp-content/uploads/2025/06/Placeholder-1-1.png', alt: { customAlt: '' }, lazyLoad: true } %}
-  {% set has_main_media = true %}
+  {# No default main media #}
+  {% set has_main_media = false %}
+  {% set has_main_img = false %}
+  {% set has_main_video = false %}
 {% endif %}
 
 <div class="module-container" data-view="content+boxedcopy-final" {{ use_defaults ? 'data-demo="1"' : '' }}>
@@ -136,28 +152,19 @@
 
       {# --- BOXED MEDIA RENDER --- #}
       {% if show_boxed_img %}
-        {% set b_alt = '' %}
-        {% if img_field.alt is defined %}
-          {% if img_field.alt is iterable and img_field.alt.customAlt is defined and img_field.alt.customAlt %}
-            {% set b_alt = img_field.alt.customAlt %}
-          {% elseif img_field.alt is not iterable %}
-            {% set b_alt = img_field.alt %}
-          {% endif %}
-        {% endif %}
-        {% set b_lazy = img_field.lazyLoad is defined ? img_field.lazyLoad : true %}
-
         <div class="content-module module-media boxed-media" data-choice="image">
-          {% if img_field.media is defined and img_field.media %}
-            {{ macros.image(img_field.media, 'full', b_alt, b_lazy) }}
-          {% elseif (img_field.sizes is defined) or (img_field.url|default('')) %}
-            {{ macros.getMedia(img_field, 'full', b_lazy) }}
+          {% if (img_from in ['media_library','media']) and img_media %}
+            {{ macros.image(img_media, 'full', b_alt, b_lazy) }}
+          {% elseif (img_from == 'url') and (img_url|trim != '') %}
+            <img src="{{ img_url|trim }}" alt="{{ b_alt }}" loading="{{ b_lazy ? 'lazy' : 'eager' }}">
           {% endif %}
         </div>
 
       {% elseif show_boxed_video %}
         <div class="content-module module-media boxed-media" data-choice="video">
-          {% if content.video.video.provider == 'youtube' %}
-            {% set videoUrl = content.video.video.embedUrl %}
+          {% set v = boxed_video.video %}
+          {% if v.provider == 'youtube' %}
+            {% set videoUrl = v.embedUrl %}
             {% if content.youtube.privacy_mode %}
               {% set videoUrl = videoUrl|replace({'https://www.youtube.com/': 'https://www.youtube-nocookie.com/'}) %}
             {% endif %}
@@ -165,9 +172,7 @@
             {% set params = '' %}
             {% if content.youtube.autoplay %}{% set params = params ~ '&autoplay=1' %}{% endif %}
             {% if content.youtube.mute %}{% set params = params ~ '&mute=1' %}{% endif %}
-            {% if content.youtube.loop and content.video.video.videoId %}
-              {% set params = params ~ '&loop=1&playlist=' ~ content.video.video.videoId %}
-            {% endif %}
+            {% if content.youtube.loop and v.videoId %}{% set params = params ~ '&loop=1&playlist=' ~ v.videoId %}{% endif %}
             {% if content.youtube.hide_player_controls %}{% set params = params ~ '&controls=0' %}{% endif %}
             {% if content.youtube.modest_branding %}{% set params = params ~ '&modestbranding=1' %}{% endif %}
             {% if not content.youtube.play_inline %}{% set params = params ~ '&playsinline=0' %}{% endif %}
@@ -177,14 +182,14 @@
 
             <iframe
               class="ee-video"
-              title="{{ content.video.video.title }}"
+              title="{{ v.title }}"
               src="{{ videoUrl }}{{ params }}"
               width="100%" height="100%" frameborder="0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowfullscreen>
             </iframe>
           {% else %}
-            {{ macros.video(content.video.video) }}
+            {{ macros.video(v) }}
           {% endif %}
         </div>
       {% endif %}
@@ -192,21 +197,19 @@
   {% endif %}
 
   {# ================= MAIN MEDIA ================= #}
-  {% if main_type == 'image' %}
-    {% if m and (m.media|default(0) or m.url|default('') != '') %}
-      {% set m_alt  = (m.alt is defined and m.alt.customAlt is defined) ? m.alt.customAlt : '' %}
-      {% set m_lazy = m.lazyLoad is defined ? m.lazyLoad : true %}
-      <div class="content-module module-media">
-        {% if m.media|default(0) %}
-          {{ macros.getMedia(m, content.image.size|default(content.content.size|default('full')), m_lazy) }}
-        {% else %}
-          <img src="{{ m.url }}" alt="{{ m_alt }}" loading="{{ m_lazy ? 'lazy' : 'eager' }}" />
-        {% endif %}
-      </div>
-    {% endif %}
-  {% elseif main_type == 'video' and has_main_video %}
+  {% if has_main_img %}
+    {% set m_alt  = (main_img.alt is defined and main_img.alt.customAlt is defined) ? main_img.alt.customAlt : '' %}
+    {% set m_lazy = main_img.lazyLoad is defined ? main_img.lazyLoad : true %}
+    <div class="content-module module-media">
+      {% if main_img.media|default(0) %}
+        {{ macros.image(main_img.media, content.media.size|default(content.content.size|default('full')), m_alt, m_lazy) }}
+      {% else %}
+        <img src="{{ main_img.url }}" alt="{{ m_alt }}" loading="{{ m_lazy ? 'lazy' : 'eager' }}" />
+      {% endif %}
+    </div>
+  {% elseif has_main_video %}
     <div class="ee-video-container">
-      {{ macros.video(content.video.video) }}
+      {{ macros.video(main_video.video) }}
     </div>
   {% endif %}
 </div>

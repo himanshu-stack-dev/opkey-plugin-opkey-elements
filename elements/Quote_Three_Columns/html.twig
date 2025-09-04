@@ -1,137 +1,176 @@
 <div class="module-container">
   <div class="module-columns module-text">
-    {# EYEBROW #}
     {% set eyebrow = content.eyebrow.text %}
-    {% if eyebrow %}
-      <div class="eyebrow">{{ eyebrow }}</div>
-    {% endif %}
+    {% if eyebrow %}<div class="eyebrow">{{ eyebrow }}</div>{% endif %}
 
-    {# HEADING #}
-    {% set heading = content.heading.text  %}
-    {% if heading %}
-      <h2>{{ heading }}</h2>
-    {% endif %}
+    {% set heading = content.heading.text %}
+    {% if heading %}<h2>{{ heading }}</h2>{% endif %}
 
-    {# SUBHEAD #}
-    {% set subhead = content.subhead.text  %}
-    {% if subhead %}
-      <h4>{{ subhead }}</h4>
-    {% endif %}
+    {% set subhead = content.subhead.text %}
+    {% if subhead %}<h4>{{ subhead }}</h4>{% endif %}
 
-    {# BODY #}
-    {% set body = content.content.text  %}
-    {% if body %}
-      <p>{{ body }}</p>
-    {% endif %}
+    {% set body = content.content.text %}
+    {% if body %}<p>{{ body }}</p>{% endif %}
 
-    {# BUTTONS #}
     {% set pb = content.buttons.primary_button|default({}) %}
     {% set sb = content.buttons.secondary_button|default({}) %}
-
     {% if pb.text|default('')|trim or sb.text|default('')|trim %}
       <div class="content-module module-buttons">
         {% if pb.text|default('')|trim %}
-          {{ macros.atomV1ButtonHtml(
-               pb,
-               'opkey-primary',
-               path.to.button_design_preset_section,
-               'primary',
-               pb.text|trim
-             ) }}
+          {{ macros.atomV1ButtonHtml(pb,'opkey-primary',path.to.button_design_preset_section,'primary',pb.text|trim) }}
         {% endif %}
         {% if sb.text|default('')|trim %}
-          {{ macros.atomV1ButtonHtml(
-               sb,
-               'opkey-link-text',
-               path.to.button_design_preset_section,
-               'secondary',
-               sb.text|trim
-             ) }}
+          {{ macros.atomV1ButtonHtml(sb,'opkey-link-text',path.to.button_design_preset_section,'secondary',sb.text|trim) }}
         {% endif %}
       </div>
     {% endif %}
   </div>
 
-  {# COLUMNS #}
   {% set default_columns = [
-    {
-      heading: "Lorem ipsum dolor sit amet consectetur adipiscing elit",
+    { heading: "Lorem ipsum dolor sit amet consectetur adipiscing elit",
       content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-      button: { text: "Learn more", url: "#" }
+      button: { text: "Learn more", url: "#" },
+      name: "Lorem Dolor",
+      role_company: "Lorem ipsum, Company",
+      headshot: null
     },
-    {
-      heading: "Lorem ipsum dolor sit amet consectetur adipiscing elit",
+    { heading: "Lorem ipsum dolor sit amet consectetur adipiscing elit",
       content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-      button: { text: "Learn more", url: "#" }
+      button: { text: "Learn more", url: "#" },
+      name: "Lorem Dolor",
+      role_company: "Lorem ipsum, Company",
+      headshot: null
     },
-    {
-      heading: "Lorem ipsum dolor sit amet consectetur adipiscing elit",
+    { heading: "Lorem ipsum dolor sit amet consectetur adipiscing elit",
       content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-      button: { text: "Learn more", url: "#" }
+      button: { text: "Learn more", url: "#" },
+      name: "Lorem Dolor",
+      role_company: "Lorem ipsum, Company",
+      headshot: null
     }
   ] %}
 
-  {% set has_quotes = content.columns is defined and content.columns.quotes is defined and content.columns.quotes|length > 0 %}
-  {% set columns = has_quotes ? content.columns.quotes : default_columns %}
+  {# ----- locate repeater and mark it as defined if the group exists at all ----- #}
+  {% set raw = [] %}
+
+  {# KEY CHANGE: group existence alone marks it as "defined" #}
+  {% set repeater_defined = (content.columns is defined) or (content.quotes is defined) %}
+
+  {% if content.columns is defined %}
+    {% if content.columns.quotes is defined and content.columns.quotes is iterable %}
+      {% set raw = content.columns.quotes %}
+    {% elseif content.columns.column is defined and content.columns.column is iterable %}
+      {% set raw = content.columns.column %}
+    {% elseif content.columns.items is defined and content.columns.items is iterable %}
+      {% set raw = content.columns.items %}
+    {% elseif content.columns is iterable %}
+      {% set raw = content.columns %}
+    {% endif %}
+  {% endif %}
+  {% if raw is empty and content.quotes is defined and content.quotes is iterable %}
+    {% set raw = content.quotes %}
+  {% endif %}
+
+  {# filter out empty stubs #}
+  {% set user_columns = [] %}
+  {% for it in raw %}
+    {% set has_any =
+      (it.heading|default(it.title|default(''))|trim)
+      or (it.content|default(it.text|default(''))|trim)
+      or (it.name|default('')|trim)
+      or (it.role_company|default('')|trim)
+      or (it.headshot is defined and it.headshot is not empty)
+      or (it.button is defined and it.button.text|default('')|trim)
+      or (it.primary_button is defined and it.primary_button.text|default('')|trim)
+      or (it.cta is defined and (it.cta.text|default(it.cta.label|default(''))|trim))
+      or (it.link is defined and (it.link.text|default(it.link.label|default(''))|trim))
+      or (it.link_to_case_study is defined and it.link_to_case_study.text|default('')|trim)
+      or (it.case_study_link is defined and it.case_study_link.text|default('')|trim)
+      or (it.button_text|default(it.button_label|default(''))|trim)
+    %}
+    {% if has_any %}
+      {% set user_columns = user_columns|merge([it]) %}
+    {% endif %}
+  {% endfor %}
+
+  {# Defaults ONLY if the group doesn't exist at all and there are no rows #}
+  {% set has_rows = user_columns|length > 0 %}
+  {% set using_defaults = (not repeater_defined) and (not has_rows) %}
+  {% set columns = using_defaults ? default_columns : user_columns %}
 
   <div class="columns">
     {% for item in columns %}
+      {% set item_heading = using_defaults ? item.heading : item.heading|default(item.title)|default('') %}
+      {% set item_content = using_defaults ? item.content : item.content|default(item.text)|default('') %}
+
+      {# normalize per-row button, including Link to Case Study #}
+      {% set btn_obj = {} %}
+      {% set _candidates = ['button','primary_button','cta','link','link_to_case_study','case_study_link'] %}
+      {% for k in _candidates %}
+        {% set v = attribute(item, k)|default(null) %}
+        {% if v is iterable and btn_obj is empty %}
+          {% set btn_obj = v %}
+        {% endif %}
+      {% endfor %}
+      {% set btn_text = btn_obj.text|default(btn_obj.label|default(''))|trim %}
+      {% set btn_url  = btn_obj.url|default(btn_obj.href|default('')) %}
+      {% if btn_text == '' %}{% set btn_text = attribute(item,'button_text')|default(attribute(item,'button_label')|default(''))|trim %}{% endif %}
+      {% if btn_url  == '' %}{% set btn_url  = attribute(item,'button_url')|default(attribute(item,'cta_url')|default(attribute(item,'link_url')|default(attribute(item,'href')|default('')))) %}{% endif %}
+
       <div class="quote-content">
         <div class="gradient-wrapper">
           <div class="column">
             <div class="column-container">
-              <h4 class="bde-basicslider__title">
-                {{ item.heading is defined and item.heading|trim|length > 0
-                  ? item.heading
-                  : 'Lorem ipsum dolor sit amet consectetur adipiscing elit' }}
-              </h4>
-              <p>
-                {{ item.content is defined and item.content|trim|length > 0
-                  ? item.content
-                  : 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.' }}
-              </p>
+
+              {% if using_defaults %}
+                <h4 class="bde-basicslider__title">{{ item_heading }}</h4>
+              {% elseif item_heading|trim %}
+                <h4 class="bde-basicslider__title">{{ item_heading|trim }}</h4>
+              {% endif %}
+
+              {% if using_defaults %}
+                <p>{{ item_content }}</p>
+              {% elseif item_content|trim %}
+                <p>{{ item_content|trim }}</p>
+              {% endif %}
+
               <div class="quote-attribution">
                 <div class="headshot">
-                  {% if item.headshot is defined and item.headshot is not empty %}
-                    {{ macros.image(item.headshot, content.content.size, alt, lazyLoad) }}
-                  {% else %}
+                  {% if using_defaults %}
                     <img src="/wp-content/uploads/2025/07/Placeholder_headshot.png" alt="Placeholder headshot" loading="lazy">
+                  {% elseif item.headshot is defined and item.headshot is not empty %}
+                    {{ macros.image(item.headshot, content.content.size, alt, lazyLoad) }}
                   {% endif %}
                 </div>
                 <div class="name-company">
-                  <div class="name">
-                    {{ item.name is defined and item.name|trim|length > 0
-                      ? item.name
-                      : 'Lorem Dolor' }}
-                  </div>
-                  <div class="company">
-                    {{ item.role_company is defined and item.role_company|trim|length > 0
-                      ? item.role_company
-                      : 'Lorem ipsum, Company' }}
-                  </div>
+                  {% if using_defaults %}
+                    <div class="name">{{ item.name }}</div>
+                    <div class="company">{{ item.role_company }}</div>
+                  {% else %}
+                    {% if item.name|default('')|trim %}<div class="name">{{ item.name|trim }}</div>{% endif %}
+                    {% if item.role_company|default('')|trim %}<div class="company">{{ item.role_company|trim }}</div>{% endif %}
+                  {% endif %}
                 </div>
               </div>
-              {% if item.button is defined and item.button.text is defined and item.button.text|trim|length > 0 %}
+
+              {% if using_defaults %}
                 {{ macros.atomV1ButtonHtml(
-                  {
-                    text: item.button.text,
-                    url: item.button.url
-                  },
+                  { text: (btn_text|default('Learn more')|trim), url: (btn_url|default('#')) },
                   'bde-basicslider__button opkey-link-text',
                   design.button,
                   'columns[' ~ loop.index0 ~ '].button.text'
                 ) }}
               {% else %}
-                {{ macros.atomV1ButtonHtml(
-                  {
-                    text: 'Learn more',
-                    url: '#'
-                  },
-                  'bde-basicslider__button opkey-link-text',
-                  design.button,
-                  'columns[' ~ loop.index0 ~ '].button.text'
-                ) }}
+                {% if btn_text %}
+                  {{ macros.atomV1ButtonHtml(
+                    { text: btn_text, url: btn_url },
+                    'bde-basicslider__button opkey-link-text',
+                    design.button,
+                    'columns[' ~ loop.index0 ~ '].button.text'
+                  ) }}
+                {% endif %}
               {% endif %}
+
             </div>
           </div>
         </div>

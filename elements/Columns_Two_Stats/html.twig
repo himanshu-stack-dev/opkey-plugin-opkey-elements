@@ -52,7 +52,7 @@
     {% endif %}
   </div>
 
-  {# COLUMNS #}  
+  {# COLUMNS #}
   {# Fallback/default columns #}
   {% set default_columns = [
     {
@@ -70,41 +70,50 @@
   ] %}
 
   {# Use columns if they exist, otherwise fallback to two defaults #}
-  {% set columns = content.columns.column | length > 0 ? content.columns.column : default_columns %}
+  {% set real_columns   = content.columns.column|default([]) %}
+  {% set using_defaults = real_columns|length == 0 %}
+  {% set columns        = using_defaults ? default_columns : real_columns %}
 
   <div class="columns">
     {% for item in columns %}
+      {# normalize to avoid undefined errors #}
+      {% set item_button = item.button|default({}) %}
+
       <div class="column">
         <div class="column-container">
           <svg preserveAspectRatio="none" viewBox="0 0 5 452" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M5 1V1C2.79086 1 1 2.79087 1 5V447C1 449.209 2.79086 451 5 451V451" stroke="currentColor"/>
           </svg>
+
           <div class="column-text">
             {# Heading fallback #}
-            <h4>{{ item.heading  }}</h4>
+            <h4>{{ item.heading }}</h4>
 
             {# Stat fallback #}
-            <div class="module-stat">{{ item.stat  }}</div>
+            <div class="module-stat">{{ item.stat }}</div>
 
             {# Body fallback #}
-            <p>{{ item.content  }}</p>
+            <p>{{ item.content }}</p>
 
-            {# BUTTON with fallback #}
-            {% set button_obj = (item.button is defined and item.button.text|length > 0) 
-              ? item.button 
-              : { text: 'Learn more', url: '#' } %}
-            {% if button_obj.text %}
+            {# BUTTON — fall back only in defaults; otherwise disappear when cleared #}
+            {% set button_obj = using_defaults
+              ? { text: item_button.text|default('Learn more')|trim, url: item_button.url|default('#') }
+              : (item_button.text|default('')|trim ? item_button : {})
+            %}
+
+            {% if button_obj.text|default('')|trim %}
               <div class="content-module module-buttons">
                 {{ macros.atomV1ButtonHtml(
-                    button_obj,
-                    'opkey-link-text',
-                    path.to.button_design_preset_section,
-                    'secondary',
-                    button_obj.text
+                  button_obj,
+                  'opkey-link-text',
+                  path.to.button_design_preset_section,
+                  'secondary',
+                  button_obj.text|trim
                 ) }}
               </div>
             {% endif %}
           </div>
+
           <svg class="right" preserveAspectRatio="none" viewBox="0 0 5 452" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M5 1V1C2.79086 1 1 2.79087 1 5V447C1 449.209 2.79086 451 5 451V451" stroke="currentColor"/>
           </svg>

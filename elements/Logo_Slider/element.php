@@ -198,15 +198,7 @@ class Logoslider extends \Breakdance\Elements\Element
       ), c(
         "buttons",
         "Buttons",
-        [c(
-        "remove_",
-        "Remove?",
-        [],
-        ['type' => 'toggle', 'layout' => 'vertical'],
-        false,
-        false,
-        [],
-      ), getPresetSection(
+        [getPresetSection(
       "EssentialElements\\AtomV1ButtonContent",
       "Primary Button",
       "primary_button",

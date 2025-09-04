@@ -7,24 +7,24 @@
     {% endif %}
 
     {# HEADING #}
-    {% set heading = content.heading.text  %}
+    {% set heading = content.heading.text %}
     {% if heading %}
       <h2>{{ heading }}</h2>
     {% endif %}
 
     {# SUBHEAD #}
-    {% set subhead = content.subhead.text  %}
+    {% set subhead = content.subhead.text %}
     {% if subhead %}
       <h4>{{ subhead }}</h4>
     {% endif %}
 
     {# BODY #}
-    {% set body = content.content.text  %}
+    {% set body = content.content.text %}
     {% if body %}
       <p>{{ body }}</p>
     {% endif %}
 
-    {# BUTTONS #}
+    {# BUTTONS (top area) #}
     {% set pb = content.buttons.primary_button|default({}) %}
     {% set sb = content.buttons.secondary_button|default({}) %}
 
@@ -52,7 +52,7 @@
     {% endif %}
   </div>
 
-  {# COLUMNS #}  
+  {# COLUMNS #}
   {# Fallback/default columns #}
   {% set default_columns = [
     {
@@ -69,45 +69,82 @@
     }
   ] %}
 
-  {# Use columns if they exist, otherwise fallback to two defaults #}
-  {% set columns = content.columns.column | length > 0 ? content.columns.column : default_columns %}
+  {# Decide if we are using defaults or real editor content #}
+  {% set real_columns   = content.columns.column|default([]) %}
+  {% set using_defaults = real_columns|length == 0 %}
+  {% set columns        = using_defaults ? default_columns : real_columns %}
 
   <div class="columns">
     {% for item in columns %}
+      {# Normalize button data early so we can use it for image link + aria-label #}
+      {% set button_data = item.button|default({}) %}
+      {% set has_button  = button_data.text|default('')|trim != '' %}
+
+      {# When using defaults, supply a fallback; otherwise only keep a button when the editor set one #}
+      {% set button_obj = using_defaults
+        ? {
+            text: button_data.text|default('Learn more')|trim,
+            url:  button_data.url|default('#')
+          }
+        : (has_button ? button_data : {})
+      %}
+
+      {# Only wrap the image in a link if there's a URL.
+         In defaults we allow '#'; in real content, no link if empty. #}
+      {% set image_link = using_defaults
+        ? (button_data.url|default('#'))
+        : (button_data.url|default(''))
+      %}
+
       <div class="column">
         <div class="column-container">
           <svg preserveAspectRatio="none" viewBox="0 0 5 452" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M5 1V1C2.79086 1 1 2.79087 1 5V447C1 449.209 2.79086 451 5 451V451" stroke="currentColor"/>
           </svg>
+
           <div class="column-image">
-            {% set image_link = item.button.url  %}
-            <a href="{{ image_link }}" class="column-image-link" aria-label="{{ item.button.text  }}">
+            {% if image_link %}
+              <a href="{{ image_link }}" class="column-image-link"
+                 {% if button_obj.text|default('')|trim %}aria-label="{{ button_obj.text|trim }}"{% endif %}>
+                {% if item.image %}
+                  {{ macros.image(item.image, content.content.size, alt, lazyLoad) }}
+                {% else %}
+                  <img src="/wp-content/uploads/2025/07/Placeholder-596x320-1.png" alt="Placeholder image" class="breakdance-image-object" style="width:100%; height:auto;" />
+                {% endif %}
+              </a>
+            {% else %}
               {% if item.image %}
                 {{ macros.image(item.image, content.content.size, alt, lazyLoad) }}
               {% else %}
                 <img src="/wp-content/uploads/2025/07/Placeholder-596x320-1.png" alt="Placeholder image" class="breakdance-image-object" style="width:100%; height:auto;" />
               {% endif %}
-            </a>
+            {% endif %}
           </div>
+
           <div class="column-text">
-          {# Heading fallback #}
-            <h4>{{ item.heading  }}</h4>
+            {# Heading (avoid empty tags when real content is blank) #}
+            {% if item.heading|default('')|trim %}
+              <h4>{{ item.heading }}</h4>
+            {% elseif using_defaults %}
+              <h4>{{ item.heading }}</h4>
+            {% endif %}
 
-            {# Body fallback #}
-            <p>{{ item.content  }}</p>
+            {# Body (avoid empty tags when real content is blank) #}
+            {% if item.content|default('')|trim %}
+              <p>{{ item.content }}</p>
+            {% elseif using_defaults %}
+              <p>{{ item.content }}</p>
+            {% endif %}
 
-            {# BUTTON with fallback #}
-            {% set button_obj = (item.button is defined and item.button.text|length > 0) 
-              ? item.button 
-              : { text: 'Learn more', url: '#' } %}
-            {% if button_obj.text %}
+            {# BUTTON — fall back only in defaults; otherwise disappear when cleared #}
+            {% if button_obj.text|default('')|trim %}
               <div class="content-module module-buttons">
                 {{ macros.atomV1ButtonHtml(
                     button_obj,
                     'opkey-link-text',
                     path.to.button_design_preset_section,
                     'secondary',
-                    button_obj.text
+                    button_obj.text|trim
                 ) }}
               </div>
             {% endif %}

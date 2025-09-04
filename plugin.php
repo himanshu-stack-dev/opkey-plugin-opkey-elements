@@ -11,8 +11,9 @@
 
 namespace OpkeyCustomElements;
 
-if ( ! defined( 'OPKEY_ELEMENTS_URL' ) ) {
-    define( 'OPKEY_ELEMENTS_URL', plugin_dir_url( __FILE__ ) );
+if ( ! defined('OPKEY_ELEM_ASSETS_URL') ) {
+    // Full absolute URL to your plugin's /assets/ folder
+    define('OPKEY_ELEM_ASSETS_URL', plugins_url('assets/', __FILE__));
 }
 
 /**
@@ -31,6 +32,12 @@ function getSharedDefaults(): array
         ]
     ];
 }
+
+add_action('breakdance_register_twig_context', function (&$context) {
+    // Absolute URL to /assets/ folder inside this plugin
+    $context['assets_url'] = plugin_dir_url(__FILE__) . 'assets/';
+});
+
 
 use function Breakdance\Util\getDirectoryPathRelativeToPluginFolder;
 
