@@ -91,14 +91,36 @@
                   <path d="M5 1V1C2.79086 1 1 2.79087 1 5V447C1 449.209 2.79086 451 5 451V451" stroke="currentColor"/>
                 </svg>
                 <div class="column-image">
-                  {% set image_link = item.button.url  %}
-                  <a href="{{ image_link }}" class="column-image-link" aria-label="{{ item.button.text  }}">
-                    {% if item.image %}
-                      {{ macros.image(item.image, content.content.size, alt, lazyLoad) }}
+                  {# robustly extract a URL from item.button (array OR string) #}
+                  {% set image_link = '' %}
+                  {% if item.button is defined %}
+                    {% if item.button is iterable %}
+                      {# common Breakdance shapes: button.link.url OR button.url OR button.href #}
+                      {% set image_link = (item.button.link.url
+                                           |default(item.button.url
+                                           |default(item.button.href
+                                           |default(''))))|trim %}
                     {% else %}
-                      <img src="/wp-content/uploads/2025/08/654a4caad22756eef09aa2a8_blog-image-3-min.jpg" alt="Placeholder image" class="breakdance-image-object" style="width:100%; height:auto;" />
+                      {# plain string URL #}
+                      {% set image_link = item.button|trim %}
                     {% endif %}
-                  </a>
+                  {% endif %}
+                  {% set image_link_valid = image_link not in ['', '#', '#!'] %}
+                  {% if image_link_valid %}
+                    <a href="{{ image_link|e('html_attr') }}"
+                       class="column-image-link">
+                  {% endif %}
+
+                    {% if item.image %}
+                      {{ macros.image(item.image, content.content.size, item.image.alt|default(''), lazyLoad) }}
+                    {% else %}
+                      <img src="/wp-content/uploads/2025/08/654a4caad22756eef09aa2a8_blog-image-3-min.jpg"
+                           alt="Placeholder image" class="breakdance-image-object" style="width:100%; height:auto;" />
+                    {% endif %}
+
+                  {% if image_link_valid %}
+                    </a>
+                  {% endif %}
                 </div>
                 <div class="column-text">
                   <span class="mobile-eyebrow">{{ item.eyebrow  }}</span>
