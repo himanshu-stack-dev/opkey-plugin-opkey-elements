@@ -45,12 +45,14 @@
 
   /* MOBILE */
   @media (max-width: 1023px) {
-    %%SELECTOR%% .button-atom--primary .button-atom__text {
-      color: #fff !important;
-    }
+    %%SELECTOR%% .button-atom--primary .button-atom__text { color: #fff !important; }
     %%SELECTOR%% .opkey-link-text .button-atom__text { color: #fff !important; }
   }
 
 {% elseif design.theme_color.color == 'light-gray' %}
   %%SELECTOR%% { background: #EDF7F9; }
+{% elseif design.theme_color.color == 'white' %}
+  %%SELECTOR%% { background: #fff; }
+{% else %}
+	%%SELECTOR%% { background: transparent; }
 {% endif %}
