@@ -51,16 +51,97 @@
       </div>
     {% endif %}
   </div>
-{# MEDIA #}
-{% set media_type = content.media.image_video_or_animation  %}
-{% if media_type == 'image' %}
-  <div class="hero-module module-media">
-  {% if content.image.media %}
-      {{ macros.image(content.image.media, content.content.size, alt, lazyLoad) }}
-    {% else %}
-      <img src="/wp-content/plugins/opkey-elements/assets/Placeholder-620x620.svg" alt="Placeholder image" class="breakdance-image-object" style="width:100%; height:auto;" />
-    {% endif %}
-  </div>
+  {# MEDIA #}
+  {% set media_type = content.media.image_video_or_animation %}
+  {% if media_type == 'image' %}
+    <div class="hero-module module-media">
+
+      {# --- Normalize lazyLoad --- #}
+      {% set lazyLoad = content.image.lazyLoad ?? false %}
+
+      {# --- Detect legacy vs flat alt controls --- #}
+      {% set hasLegacyAltObj = content.image.alt is iterable %}
+      {% set altMode = hasLegacyAltObj
+        ? content.image.alt.type|default('from_media_library')
+        : content.image.alt|default('from_media_library') %}
+
+      {% set customAlt = hasLegacyAltObj
+        ? content.image.alt.customAlt|default('')
+        : content.image.custom_alt|default('') %}
+
+      {# --- Compute final alt --- #}
+      {% set alt = '' %}
+      {% if content.image.from == 'media_library' %}
+        {% if altMode == 'decorative' %}
+          {% set alt = '' %}
+        {% elseif altMode == 'custom' %}
+          {% set alt = customAlt %}
+        {% else %}
+          {# Inherit attachment alt; fall back to title/filename #}
+          {% set m = content.image.media ?? {} %}
+          {% set alt = m.alt
+            |default(m.alt_text)
+            |default(m.title)
+            |default(m.filename)
+            |default('') %}
+        {% endif %}
+      {% else %}
+        {# URL source: use provided custom_alt; otherwise heading/subhead #}
+        {% set alt = customAlt|default(heading|default(subhead|default(''))) %}
+      {% endif %}
+
+      {# --- Derive src/srcset/size from media library when available --- #}
+      {% set m = content.image.media ?? {} %}
+      {% set full = m.sizes['full'] ?? {} %}
+      {% set src = full.url|default(m.url|default(content.image.url|default(''))) %}
+      {% set width = full.width|default(m.width|default('')) %}
+      {% set height = full.height|default(m.height|default('')) %}
+
+      {% set srcsetParts = [] %}
+      {% for k in ['thumbnail','medium','medium_large','large','1536x1536','2048x2048','full'] %}
+        {% set s = m.sizes[k] ?? null %}
+        {% if s and s.url %}
+          {% set w = s.width|default('') %}
+          {% set srcsetParts = srcsetParts|merge([ w ? (s.url ~ ' ' ~ w ~ 'w') : s.url ]) %}
+        {% endif %}
+      {% endfor %}
+      {% set srcset = srcsetParts|join(', ') %}
+
+      {# --- Render <img> (ensures alt attribute always present) --- #}
+      {% if content.image.from == 'media_library' and src %}
+        <img
+          src="{{ src }}"
+          {% if srcset %}srcset="{{ srcset }}"{% endif %}
+          sizes="100vw"
+          {% if width %}width="{{ width }}"{% endif %}
+          {% if height %}height="{{ height }}"{% endif %}
+          alt="{{ alt }}"
+          class="breakdance-image-object"
+          style="width:100%; height:auto;"
+          {% if lazyLoad %}loading="lazy"{% endif %}
+        />
+      {% elseif content.image.from == 'url' and content.image.url %}
+        <img
+          src="{{ content.image.url }}"
+          alt="{{ alt }}"
+          class="breakdance-image-object"
+          style="width:100%; height:auto;"
+          {% if lazyLoad %}loading="lazy"{% endif %}
+        />
+      {% else %}
+        <img
+          src="/wp-content/plugins/opkey-elements/assets/Placeholder-620x620.svg"
+          alt="Placeholder image"
+          class="breakdance-image-object"
+          style="width:100%; height:auto;"
+        />
+      {% endif %}
+
+      {# DEBUG: temporarily uncomment to verify computed values in page source
+      <!-- alt-debug: mode={{ altMode }}, from={{ content.image.from }}, alt={{ alt|e }} -->
+      #}
+
+    </div>
   {% elseif media_type == 'video' %}
     <div class="ee-video-container">
 

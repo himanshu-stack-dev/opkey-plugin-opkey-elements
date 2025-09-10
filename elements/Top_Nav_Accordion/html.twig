@@ -103,7 +103,7 @@
                       <div class="bde-mobile-accordion-item">
                         {% if item.content_icon %}
                           <span class="bde-accordion-icon">
-                            <img src="{{ item.content_icon is iterable ? item.content_icon.url : item.content_icon }}" alt="Icon" style="width:36px;height:36px;" />
+                            <img src="{{ item.content_icon is iterable ? item.content_icon.url : item.content_icon }}" alt="" role="presentation" style="width:36px;height:36px;" />
                           </span>
                         {% endif %}
                         <h3>{{ item.content_title }}</h3>
@@ -140,11 +140,26 @@
                 </div>
               {% endfor %}
             </div>
-            <div class="slider-navigation">
-              <button class="swiper-button-prev swiper-button-prev-{{ loop.index0 }} custom-nav-btn"></button>
-              <div class="swiper-pagination swiper-pagination-{{ loop.index0 }}"></div>
-              <button class="swiper-button-next swiper-button-next-{{ loop.index0 }} custom-nav-btn"></button>
+            <div class="slider-navigation" aria-label="Carousel controls">
+              <button
+                type="button"
+                class="swiper-button-prev swiper-button-prev-{{ loop.index0 }} custom-nav-btn"
+                aria-label="Previous slide">
+              </button>
+
+              <div
+                class="swiper-pagination swiper-pagination-{{ loop.index0 }}"
+                aria-label="Slide pagination"
+                aria-live="polite">
+              </div>
+
+              <button
+                type="button"
+                class="swiper-button-next swiper-button-next-{{ loop.index0 }} custom-nav-btn"
+                aria-label="Next slide">
+              </button>
             </div>
+
           </div>
         </div>
       {% endfor %}

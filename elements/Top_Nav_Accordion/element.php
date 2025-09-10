@@ -725,6 +725,83 @@ class Topnavaccordion extends \Breakdance\Elements\Element
       setTimeout(initAllExceptFirst, 100);
     }));
 })();
+'],],'2' =>  ['inlineScripts' => ['// a11y
+(function () {
+  // Scope to the desktop tabs container
+  const tabsRoot = document.querySelector(\'.bde-accordion-tabs.show-desktop\');
+  if (!tabsRoot) return;
+
+  const tablist = tabsRoot.querySelector(\'[role="tablist"]\');
+  const tabs = Array.from(tablist.querySelectorAll(\'[role="tab"]\'));
+  const panels = Array.from(tabsRoot.querySelectorAll(\'[role="tabpanel"]\'));
+
+  function activateTab(tab) {
+    const panelId = tab.getAttribute(\'aria-controls\');
+    const panel = tabsRoot.querySelector(\'#\' + panelId);
+
+    // Deactivate all
+    tabs.forEach(t => {
+      t.setAttribute(\'aria-selected\', \'false\');
+      t.setAttribute(\'tabindex\', \'-1\');
+    });
+    panels.forEach(p => p.setAttribute(\'hidden\', \'\'));
+
+    // Activate current
+    tab.setAttribute(\'aria-selected\', \'true\');
+    tab.setAttribute(\'tabindex\', \'0\');
+    if (panel) panel.removeAttribute(\'hidden\');
+    tab.focus();
+  }
+
+  // Click to activate
+  tabs.forEach(tab => {
+    tab.addEventListener(\'click\', () => activateTab(tab));
+  });
+
+  // Arrow key navigation (Left/Right, Home/End)
+  tablist.addEventListener(\'keydown\', (e) => {
+    const currentIndex = tabs.indexOf(document.activeElement);
+    if (currentIndex === -1) return;
+
+    let nextIndex = null;
+    switch (e.key) {
+      case \'ArrowRight\':
+      case \'Right\':
+        nextIndex = (currentIndex + 1) % tabs.length;
+        break;
+      case \'ArrowLeft\':
+      case \'Left\':
+        nextIndex = (currentIndex - 1 + tabs.length) % tabs.length;
+        break;
+      case \'Home\':
+        nextIndex = 0;
+        break;
+      case \'End\':
+        nextIndex = tabs.length - 1;
+        break;
+      default:
+        return; // don’t preventDefault for other keys
+    }
+    e.preventDefault();
+    const nextTab = tabs[nextIndex];
+    // Move focus first (per WAI-ARIA Authoring Practices), activate on Enter/Space
+    nextTab.focus();
+  });
+
+  // Activate on Enter/Space
+  tabs.forEach(tab => {
+    tab.addEventListener(\'keydown\', (e) => {
+      if (e.key === \'Enter\' || e.key === \' \') {
+        e.preventDefault();
+        activateTab(tab);
+      }
+    });
+  });
+
+  // Ensure only one tab is tabbable on load (in case markup was altered)
+  const selected = tabs.find(t => t.getAttribute(\'aria-selected\') === \'true\') || tabs[0];
+  tabs.forEach(t => t.setAttribute(\'tabindex\', t === selected ? \'0\' : \'-1\'));
+})();
 '],],];
     }
 

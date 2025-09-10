@@ -115,6 +115,8 @@
         {% if content.video_options.loop %}loop="true"{% endif %}
         {% if content.video_options.muted %}muted="true"{% endif %}
         {% if not content.video_options.download_button %}controlsList="nodownload"{% endif %}
+        aria-hidden="true"
+        tabindex="-1"
         playsinline>
       </video>
     {% else %}
