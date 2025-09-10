@@ -206,7 +206,7 @@
                     <button class="bde-accordion-trigger" aria-expanded="false">
                       {% if has_icon %}
                         <span class="bde-accordion-icon{{ is_active ? ' active' : '' }}">
-                          <img src="{{ item.content_icon is iterable ? item.content_icon.url : item.content_icon }}" alt="Icon" style="width:36px;height:36px;" />
+                          <img src="{{ item.content_icon is iterable ? item.content_icon.url : item.content_icon }}" alt="" role="presentation" style="width:36px;height:36px;" />
                         </span>
                       {% endif %}
                       <span class="bde-accordion-title">{{ item.content_title }}</span>
