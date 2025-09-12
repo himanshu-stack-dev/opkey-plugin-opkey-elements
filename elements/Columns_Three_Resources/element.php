@@ -97,11 +97,13 @@ class Columnsthreeresources extends \Breakdance\Elements\Element
         false,
         false,
         [],
+        
       )],
         ['type' => 'section'],
         false,
         false,
         [],
+        
       ), c(
         "remove_padding",
         "Remove Padding",
@@ -113,6 +115,7 @@ class Columnsthreeresources extends \Breakdance\Elements\Element
         false,
         false,
         [],
+        
       ), c(
         "remove_bottom",
         "Remove Bottom",
@@ -121,11 +124,13 @@ class Columnsthreeresources extends \Breakdance\Elements\Element
         false,
         false,
         [],
+        
       )],
         ['type' => 'section'],
         false,
         false,
         [],
+        
       )];
     }
 
@@ -142,11 +147,13 @@ class Columnsthreeresources extends \Breakdance\Elements\Element
         false,
         false,
         [],
+        
       )],
         ['type' => 'section', 'layout' => 'vertical'],
         false,
         false,
         [],
+        
       ), c(
         "heading",
         "Heading",
@@ -158,11 +165,13 @@ class Columnsthreeresources extends \Breakdance\Elements\Element
         false,
         false,
         [],
+        
       )],
         ['type' => 'section', 'layout' => 'vertical'],
         false,
         false,
         [],
+        
       ), c(
         "subhead",
         "Subhead",
@@ -174,11 +183,13 @@ class Columnsthreeresources extends \Breakdance\Elements\Element
         false,
         false,
         [],
+        
       )],
         ['type' => 'section', 'layout' => 'vertical'],
         false,
         false,
         [],
+        
       ), c(
         "content",
         "Content",
@@ -190,11 +201,13 @@ class Columnsthreeresources extends \Breakdance\Elements\Element
         false,
         false,
         [],
+        ['accepts' => 'string']
       )],
         ['type' => 'section', 'layout' => 'vertical'],
         false,
         false,
         [],
+        
       ), c(
         "buttons",
         "Buttons",
@@ -213,6 +226,7 @@ class Columnsthreeresources extends \Breakdance\Elements\Element
         false,
         false,
         [],
+        
       ), c(
         "columns",
         "Columns",
@@ -227,6 +241,7 @@ class Columnsthreeresources extends \Breakdance\Elements\Element
         false,
         false,
         [],
+        
       ), c(
         "eyebrow",
         "Eyebrow",
@@ -235,6 +250,7 @@ class Columnsthreeresources extends \Breakdance\Elements\Element
         false,
         false,
         [],
+        
       ), c(
         "heading",
         "Heading",
@@ -243,6 +259,7 @@ class Columnsthreeresources extends \Breakdance\Elements\Element
         false,
         false,
         [],
+        
       ), c(
         "content",
         "Content",
@@ -251,6 +268,7 @@ class Columnsthreeresources extends \Breakdance\Elements\Element
         false,
         false,
         [],
+        
       ), getPresetSection(
       "EssentialElements\\AtomV1ButtonContent",
       "Button",
@@ -261,11 +279,13 @@ class Columnsthreeresources extends \Breakdance\Elements\Element
         false,
         false,
         [],
+        
       )],
         ['type' => 'section', 'layout' => 'vertical'],
         false,
         false,
         [],
+        
       )];
     }
 
@@ -385,7 +405,7 @@ class Columnsthreeresources extends \Breakdance\Elements\Element
 
     static function nestingRule()
     {
-        return ["type" => "final",   ];
+        return ['type' => 'final'];
     }
 
     static function spacingBars()
@@ -403,6 +423,12 @@ class Columnsthreeresources extends \Breakdance\Elements\Element
         return false;
     }
 
+    static function availableIn()
+    {
+        return ['breakdance'];
+    }
+
+
     static function order()
     {
         return 0;
@@ -410,7 +436,7 @@ class Columnsthreeresources extends \Breakdance\Elements\Element
 
     static function dynamicPropertyPaths()
     {
-        return [['accepts' => 'string', 'path' => 'content.content.text'], ['accepts' => 'string', 'path' => 'content.content.link.url'], ['accepts' => 'string', 'path' => 'content.buttons.add_button.button.text'], ['accepts' => 'string', 'path' => 'content.buttons.add_button.button.link.url'], ['accepts' => 'string', 'path' => 'content.columns.box.button.text'], ['accepts' => 'string', 'path' => 'content.columns.box.button.link.url'], ['accepts' => 'string', 'path' => 'content.buttons.secondary_button.text'], ['accepts' => 'string', 'path' => 'content.buttons.secondary_button.link.url']];
+        return false;
     }
 
     static function additionalClasses()
