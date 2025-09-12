@@ -53,10 +53,33 @@
   </div>
 </div>
 
-{# ===== COLUMNS ===== #}
-
-{# Design-time defaults (editor only) #}
+{# COLUMNS #}  
+{# Fallback/default columns #}
 {% set default_columns = [
+  {
+    icon: null,
+    heading: "Lorem ipsum dolor sit",
+    content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    button: { text: "Learn more", url: "#" }
+  },
+  {
+    icon: null,
+    heading: "Lorem ipsum dolor sit",
+    content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    button: { text: "Learn more", url: "#" }
+  },
+  {
+    icon: null,
+    heading: "Lorem ipsum dolor sit",
+    content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    button: { text: "Learn more", url: "#" }
+  },
+  {
+    icon: null,
+    heading: "Lorem ipsum dolor sit",
+    content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    button: { text: "Learn more", url: "#" }
+  },
   {
     icon: null,
     heading: "Lorem ipsum dolor sit",
@@ -83,15 +106,9 @@
   }
 ] %}
 
-{# Determine source: real columns -> use them; otherwise show defaults ONLY in editor #}
-{% set has_real_columns = (content.columns is defined and content.columns.column is defined and content.columns.column|length > 0) %}
-{% if has_real_columns %}
-  {% set columns = content.columns.column %}
-{% elseif isEditor %}
-  {% set columns = default_columns %}
-{% else %}
-  {% set columns = [] %}
-{% endif %}
+{# Use columns if they exist, otherwise fallback to two defaults #}
+{% set using_default = content.columns.column | length == 0 %}
+{% set columns = using_default ? default_columns : content.columns.column %}
 
 {# Common media defaults #}
 {% set media_size = content.content.size|default('full') %}
@@ -121,11 +138,13 @@
         <div class="swiper-slide">
           <div class="card">
             {# ICON: show only if explicitly provided #}
-            {% if item.icon %}
-              <div class="icon">
-                {{ macros.getMedia(item.icon, media_size, media_lazy) }}
-              </div>
-            {% endif %}
+            <div class="icon">
+              {% if item.icon %}
+                {{ macros.image(item.icon, content.content.size, alt, lazyLoad) }}
+              {% else %}
+                <img src="/wp-content/uploads/2025/06/icon-robot.svg" alt="Placeholder image" class="breakdance-image-object" style="width:100%; height:auto;" />
+              {% endif %}
+            </div>
 
             <h3>{{ item.heading|default('') }}</h3>
             <p>{{ item.content|default('') }}</p>
