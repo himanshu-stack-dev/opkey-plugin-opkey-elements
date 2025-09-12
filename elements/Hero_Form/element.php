@@ -97,11 +97,13 @@ class Heroform extends \Breakdance\Elements\Element
         false,
         false,
         [],
+        
       )],
         ['type' => 'section'],
         false,
         false,
         [],
+        
       ), c(
         "remove_padding",
         "Remove Padding",
@@ -113,6 +115,7 @@ class Heroform extends \Breakdance\Elements\Element
         false,
         false,
         [],
+        
       ), c(
         "remove_bottom",
         "Remove Bottom",
@@ -121,11 +124,13 @@ class Heroform extends \Breakdance\Elements\Element
         false,
         false,
         [],
+        
       )],
         ['type' => 'section'],
         false,
         false,
         [],
+        
       )];
     }
 
@@ -142,11 +147,13 @@ class Heroform extends \Breakdance\Elements\Element
         false,
         false,
         [],
+        ['accepts' => 'string']
       )],
         ['type' => 'section', 'layout' => 'vertical'],
         false,
         false,
         [],
+        
       ), c(
         "heading",
         "Heading",
@@ -158,11 +165,13 @@ class Heroform extends \Breakdance\Elements\Element
         false,
         false,
         [],
+        ['accepts' => 'string']
       )],
         ['type' => 'section', 'layout' => 'vertical'],
         false,
         false,
         [],
+        
       ), c(
         "subhead",
         "Subhead",
@@ -174,11 +183,13 @@ class Heroform extends \Breakdance\Elements\Element
         false,
         false,
         [],
+        ['accepts' => 'string']
       )],
         ['type' => 'section', 'layout' => 'vertical'],
         false,
         false,
         [],
+        
       ), c(
         "content",
         "Content",
@@ -190,11 +201,13 @@ class Heroform extends \Breakdance\Elements\Element
         false,
         false,
         [],
+        ['accepts' => 'string']
       )],
         ['type' => 'section', 'layout' => 'vertical'],
         false,
         false,
         [],
+        
       ), c(
         "buttons",
         "Buttons",
@@ -213,6 +226,7 @@ class Heroform extends \Breakdance\Elements\Element
         false,
         false,
         [],
+        
       ), c(
         "shortcode",
         "Shortcode",
@@ -224,11 +238,13 @@ class Heroform extends \Breakdance\Elements\Element
         false,
         false,
         [],
+        
       )],
         ['type' => 'section', 'layout' => 'vertical'],
         false,
         false,
         [],
+        
       )];
     }
 
@@ -279,7 +295,7 @@ observer.observe();'],],];
 
     static function nestingRule()
     {
-        return ["type" => "final",   ];
+        return ['type' => 'final'];
     }
 
     static function spacingBars()
@@ -297,6 +313,12 @@ observer.observe();'],],];
         return false;
     }
 
+    static function availableIn()
+    {
+        return ['breakdance'];
+    }
+
+
     static function order()
     {
         return 0;
@@ -304,7 +326,7 @@ observer.observe();'],],];
 
     static function dynamicPropertyPaths()
     {
-        return [['accepts' => 'string', 'path' => 'content.content.text'], ['accepts' => 'string', 'path' => 'content.content.link.url'], ['accepts' => 'string', 'path' => 'content.buttons.add_button.button.text'], ['accepts' => 'string', 'path' => 'content.buttons.add_button.button.link.url'], ['accepts' => 'string', 'path' => 'content.buttons.secondary_button.text'], ['accepts' => 'string', 'path' => 'content.buttons.secondary_button.link.url'], ['accepts' => 'string', 'path' => 'content.eyebrow.text'], ['accepts' => 'string', 'path' => 'content.heading.text'], ['accepts' => 'string', 'path' => 'content.subhead.text']];
+        return false;
     }
 
     static function additionalClasses()

@@ -97,11 +97,13 @@ class Herocopyleftmedia extends \Breakdance\Elements\Element
         false,
         false,
         [],
+        
       )],
         ['type' => 'section'],
         false,
         false,
         [],
+        
       ), c(
         "remove_padding",
         "Remove Padding",
@@ -113,6 +115,7 @@ class Herocopyleftmedia extends \Breakdance\Elements\Element
         false,
         false,
         [],
+        
       ), c(
         "remove_bottom",
         "Remove Bottom",
@@ -121,11 +124,13 @@ class Herocopyleftmedia extends \Breakdance\Elements\Element
         false,
         false,
         [],
+        
       )],
         ['type' => 'section'],
         false,
         false,
         [],
+        
       )];
     }
 
@@ -142,11 +147,13 @@ class Herocopyleftmedia extends \Breakdance\Elements\Element
         false,
         false,
         [],
+        
       )],
         ['type' => 'section', 'layout' => 'vertical'],
         false,
         false,
         [],
+        
       ), c(
         "heading",
         "Heading",
@@ -158,11 +165,13 @@ class Herocopyleftmedia extends \Breakdance\Elements\Element
         false,
         false,
         [],
+        
       )],
         ['type' => 'section', 'layout' => 'vertical'],
         false,
         false,
         [],
+        
       ), c(
         "subhead",
         "Subhead",
@@ -174,11 +183,13 @@ class Herocopyleftmedia extends \Breakdance\Elements\Element
         false,
         false,
         [],
+        
       )],
         ['type' => 'section', 'layout' => 'vertical'],
         false,
         false,
         [],
+        
       ), c(
         "content",
         "Content",
@@ -190,11 +201,13 @@ class Herocopyleftmedia extends \Breakdance\Elements\Element
         false,
         false,
         [],
+        ['accepts' => 'string']
       )],
         ['type' => 'section', 'layout' => 'vertical'],
         false,
         false,
         [],
+        
       ), c(
         "buttons",
         "Buttons",
@@ -213,6 +226,7 @@ class Herocopyleftmedia extends \Breakdance\Elements\Element
         false,
         false,
         [],
+        
       ), c(
         "image",
         "Image",
@@ -224,6 +238,7 @@ class Herocopyleftmedia extends \Breakdance\Elements\Element
         false,
         false,
         [],
+        
       ), c(
         "media",
         "Media",
@@ -232,6 +247,7 @@ class Herocopyleftmedia extends \Breakdance\Elements\Element
         false,
         false,
         [],
+        
       ), c(
         "url",
         "URL",
@@ -240,6 +256,7 @@ class Herocopyleftmedia extends \Breakdance\Elements\Element
         false,
         false,
         [],
+        
       ), c(
         "alt",
         "Alt",
@@ -248,6 +265,7 @@ class Herocopyleftmedia extends \Breakdance\Elements\Element
         false,
         false,
         [],
+        
       ), c(
         "custom_alt",
         "Custom Alt",
@@ -256,11 +274,13 @@ class Herocopyleftmedia extends \Breakdance\Elements\Element
         false,
         false,
         [],
+        
       )],
         ['type' => 'section', 'layout' => 'vertical'],
         false,
         false,
         [],
+        
       )];
     }
 
@@ -291,7 +311,7 @@ class Herocopyleftmedia extends \Breakdance\Elements\Element
 
     static function nestingRule()
     {
-        return ["type" => "final",   ];
+        return ['type' => 'final'];
     }
 
     static function spacingBars()
@@ -309,6 +329,12 @@ class Herocopyleftmedia extends \Breakdance\Elements\Element
         return false;
     }
 
+    static function availableIn()
+    {
+        return ['breakdance'];
+    }
+
+
     static function order()
     {
         return 0;
@@ -316,7 +342,7 @@ class Herocopyleftmedia extends \Breakdance\Elements\Element
 
     static function dynamicPropertyPaths()
     {
-        return [['accepts' => 'string', 'path' => 'content.content.text'], ['accepts' => 'string', 'path' => 'content.content.link.url'], ['accepts' => 'string', 'path' => 'content.buttons.add_button.button.text'], ['accepts' => 'string', 'path' => 'content.buttons.add_button.button.link.url'], ['accepts' => 'string', 'path' => 'content.buttons.secondary_button.text'], ['accepts' => 'string', 'path' => 'content.buttons.secondary_button.link.url']];
+        return false;
     }
 
     static function additionalClasses()

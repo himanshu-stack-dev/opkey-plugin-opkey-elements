@@ -97,11 +97,13 @@ class Heromediaform extends \Breakdance\Elements\Element
         false,
         false,
         [],
+        
       )],
         ['type' => 'section'],
         false,
         false,
         [],
+        
       ), c(
         "remove_padding",
         "Remove Padding",
@@ -113,6 +115,7 @@ class Heromediaform extends \Breakdance\Elements\Element
         false,
         false,
         [],
+        
       ), c(
         "remove_bottom",
         "Remove Bottom",
@@ -121,11 +124,13 @@ class Heromediaform extends \Breakdance\Elements\Element
         false,
         false,
         [],
+        
       )],
         ['type' => 'section'],
         false,
         false,
         [],
+        
       )];
     }
 
@@ -142,11 +147,13 @@ class Heromediaform extends \Breakdance\Elements\Element
         false,
         false,
         [],
+        
       )],
         ['type' => 'section', 'layout' => 'vertical'],
         false,
         false,
         [],
+        
       ), c(
         "heading",
         "Heading",
@@ -158,11 +165,13 @@ class Heromediaform extends \Breakdance\Elements\Element
         false,
         false,
         [],
+        
       )],
         ['type' => 'section', 'layout' => 'vertical'],
         false,
         false,
         [],
+        
       ), c(
         "subhead",
         "Subhead",
@@ -174,11 +183,13 @@ class Heromediaform extends \Breakdance\Elements\Element
         false,
         false,
         [],
+        
       )],
         ['type' => 'section', 'layout' => 'vertical'],
         false,
         false,
         [],
+        
       ), c(
         "content",
         "Content",
@@ -190,11 +201,13 @@ class Heromediaform extends \Breakdance\Elements\Element
         false,
         false,
         [],
+        ['accepts' => 'string']
       )],
         ['type' => 'section', 'layout' => 'vertical'],
         false,
         false,
         [],
+        
       ), c(
         "media",
         "Media",
@@ -206,11 +219,13 @@ class Heromediaform extends \Breakdance\Elements\Element
         false,
         false,
         [],
+        
       )],
         ['type' => 'section', 'layout' => 'vertical'],
         false,
         false,
         [],
+        
       ), c(
         "image",
         "Image",
@@ -222,6 +237,7 @@ class Heromediaform extends \Breakdance\Elements\Element
         false,
         false,
         [],
+        
       ), c(
         "media",
         "Media",
@@ -230,6 +246,7 @@ class Heromediaform extends \Breakdance\Elements\Element
         false,
         false,
         [],
+        
       ), c(
         "url",
         "URL",
@@ -238,6 +255,7 @@ class Heromediaform extends \Breakdance\Elements\Element
         false,
         false,
         [],
+        
       ), c(
         "alt",
         "Alt",
@@ -246,6 +264,7 @@ class Heromediaform extends \Breakdance\Elements\Element
         false,
         false,
         [],
+        
       ), c(
         "custom_alt",
         "Custom Alt",
@@ -254,11 +273,13 @@ class Heromediaform extends \Breakdance\Elements\Element
         false,
         false,
         [],
+        
       )],
         ['type' => 'section', 'layout' => 'vertical', 'condition' => [[['path' => 'content.media.image_or_video', 'operand' => 'equals', 'value' => 'image']]]],
         false,
         false,
         [],
+        
       ), c(
         "video",
         "Video",
@@ -270,6 +291,7 @@ class Heromediaform extends \Breakdance\Elements\Element
         false,
         false,
         [],
+        
       ), c(
         "ratio",
         "Ratio",
@@ -278,6 +300,7 @@ class Heromediaform extends \Breakdance\Elements\Element
         false,
         false,
         [],
+        
       ), c(
         "custom_width",
         "Custom width",
@@ -286,6 +309,7 @@ class Heromediaform extends \Breakdance\Elements\Element
         false,
         false,
         [],
+        
       ), c(
         "custom_height",
         "Custom height",
@@ -294,6 +318,7 @@ class Heromediaform extends \Breakdance\Elements\Element
         false,
         false,
         [],
+        
       ), c(
         "title",
         "Title",
@@ -302,11 +327,13 @@ class Heromediaform extends \Breakdance\Elements\Element
         false,
         false,
         [],
+        
       )],
         ['type' => 'section', 'layout' => 'vertical', 'condition' => [[['path' => 'content.media.image_or_video', 'operand' => 'equals', 'value' => 'video']]]],
         false,
         false,
         [],
+        
       ), c(
         "youtube",
         "YouTube",
@@ -318,6 +345,7 @@ class Heromediaform extends \Breakdance\Elements\Element
         false,
         false,
         [],
+        
       ), c(
         "background_image",
         "Background Image",
@@ -326,6 +354,7 @@ class Heromediaform extends \Breakdance\Elements\Element
         false,
         false,
         [],
+        
       ), c(
         "logo",
         "Logo",
@@ -334,6 +363,7 @@ class Heromediaform extends \Breakdance\Elements\Element
         false,
         false,
         [],
+        
       ), c(
         "title",
         "Title",
@@ -342,6 +372,7 @@ class Heromediaform extends \Breakdance\Elements\Element
         false,
         false,
         [],
+        
       ), c(
         "autoplay",
         "Autoplay",
@@ -350,6 +381,7 @@ class Heromediaform extends \Breakdance\Elements\Element
         false,
         false,
         [],
+        
       ), c(
         "loop",
         "Loop",
@@ -358,6 +390,7 @@ class Heromediaform extends \Breakdance\Elements\Element
         false,
         false,
         [],
+        
       ), c(
         "mute",
         "Mute",
@@ -366,6 +399,7 @@ class Heromediaform extends \Breakdance\Elements\Element
         false,
         false,
         [],
+        
       ), c(
         "modest_branding",
         "Modest Branding",
@@ -374,6 +408,7 @@ class Heromediaform extends \Breakdance\Elements\Element
         false,
         false,
         [],
+        
       ), c(
         "hide_player_controls",
         "Hide Player Controls",
@@ -382,6 +417,7 @@ class Heromediaform extends \Breakdance\Elements\Element
         false,
         false,
         [],
+        
       ), c(
         "play_inline",
         "Play Inline",
@@ -390,6 +426,7 @@ class Heromediaform extends \Breakdance\Elements\Element
         false,
         false,
         [],
+        
       ), c(
         "privacy_mode",
         "Privacy mode",
@@ -398,6 +435,7 @@ class Heromediaform extends \Breakdance\Elements\Element
         false,
         false,
         [],
+        
       ), c(
         "start_time",
         "Start Time",
@@ -406,6 +444,7 @@ class Heromediaform extends \Breakdance\Elements\Element
         false,
         false,
         [],
+        
       ), c(
         "end_time",
         "End Time",
@@ -414,6 +453,7 @@ class Heromediaform extends \Breakdance\Elements\Element
         false,
         false,
         [],
+        
       ), c(
         "suggested_videos",
         "Suggested Videos",
@@ -422,11 +462,13 @@ class Heromediaform extends \Breakdance\Elements\Element
         false,
         false,
         [],
+        
       )],
         ['type' => 'section', 'layout' => 'vertical', 'condition' => [[['path' => 'content.video.video.source', 'operand' => 'is none of', 'value' => ['vimeo', 'dailymotion']], ['path' => 'content.media.image_or_video', 'operand' => 'equals', 'value' => 'video']]]],
         false,
         false,
         [],
+        
       ), c(
         "vimeo",
         "Vimeo",
@@ -438,6 +480,7 @@ class Heromediaform extends \Breakdance\Elements\Element
         false,
         false,
         [],
+        
       ), c(
         "autoplay",
         "Autoplay",
@@ -446,6 +489,7 @@ class Heromediaform extends \Breakdance\Elements\Element
         false,
         false,
         [],
+        
       ), c(
         "play_inline",
         "Play Inline",
@@ -454,6 +498,7 @@ class Heromediaform extends \Breakdance\Elements\Element
         false,
         false,
         [],
+        
       ), c(
         "loop",
         "Loop",
@@ -462,6 +507,7 @@ class Heromediaform extends \Breakdance\Elements\Element
         false,
         false,
         [],
+        
       ), c(
         "mute",
         "Mute",
@@ -470,6 +516,7 @@ class Heromediaform extends \Breakdance\Elements\Element
         false,
         false,
         [],
+        
       ), c(
         "hide_player_controls",
         "Hide Player Controls",
@@ -478,6 +525,7 @@ class Heromediaform extends \Breakdance\Elements\Element
         false,
         false,
         [],
+        
       ), c(
         "start_time",
         "Start Time",
@@ -486,11 +534,13 @@ class Heromediaform extends \Breakdance\Elements\Element
         false,
         false,
         [],
+        
       )],
         ['type' => 'section', 'layout' => 'vertical', 'condition' => [[['path' => 'content.video.video.source', 'operand' => 'is none of', 'value' => ['dailymotion', 'youtube']], ['path' => 'content.media.image_or_video', 'operand' => 'equals', 'value' => 'video']]]],
         false,
         false,
         [],
+        
       ), c(
         "shortcode",
         "Shortcode",
@@ -502,11 +552,13 @@ class Heromediaform extends \Breakdance\Elements\Element
         false,
         false,
         [],
+        
       )],
         ['type' => 'section', 'layout' => 'vertical'],
         false,
         false,
         [],
+        
       )];
     }
 
@@ -557,7 +609,7 @@ observer.observe();'],],];
 
     static function nestingRule()
     {
-        return ["type" => "final",   ];
+        return ['type' => 'final'];
     }
 
     static function spacingBars()
@@ -575,6 +627,12 @@ observer.observe();'],],];
         return false;
     }
 
+    static function availableIn()
+    {
+        return ['breakdance'];
+    }
+
+
     static function order()
     {
         return 0;
@@ -582,7 +640,7 @@ observer.observe();'],],];
 
     static function dynamicPropertyPaths()
     {
-        return [['accepts' => 'string', 'path' => 'content.content.text'], ['accepts' => 'string', 'path' => 'content.content.link.url'], ['accepts' => 'string', 'path' => 'content.buttons.add_button.button.text'], ['accepts' => 'string', 'path' => 'content.buttons.add_button.button.link.url'], ['accepts' => 'string', 'path' => 'content.buttons.secondary_button.text'], ['accepts' => 'string', 'path' => 'content.buttons.secondary_button.link.url']];
+        return false;
     }
 
     static function additionalClasses()
