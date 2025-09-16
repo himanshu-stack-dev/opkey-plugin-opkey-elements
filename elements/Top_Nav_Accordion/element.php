@@ -754,73 +754,57 @@ class Topnavaccordion extends \Breakdance\Elements\Element
 
   function wireTabs(root) {
     if (!root) return;
+
     const tablist = root.querySelector(\'[role="tablist"]\');
-    if (!tablist) return; // <-- guard keeps old behavior, no errors
+    if (!tablist) return;
 
     const tabs   = Array.from(tablist.querySelectorAll(\'[role="tab"]\'));
     const panels = Array.from(root.querySelectorAll(\'[role="tabpanel"]\'));
     if (!tabs.length || !panels.length) return;
 
-    function activateTab(tab) {
+    function activateTab(tab, shouldFocus /* boolean */) {
       const panelId = tab && tab.getAttribute(\'aria-controls\');
       const panel   = panelId ? root.querySelector(\'#\' + CSS.escape(panelId)) : null;
 
-      tabs.forEach(t => { t.setAttribute(\'aria-selected\',\'false\'); t.setAttribute(\'tabindex\',\'-1\'); });
-      panels.forEach(p => p.setAttribute(\'hidden\',\'\'));
+      // Deactivate all
+      tabs.forEach(t => {
+        t.setAttribute(\'aria-selected\', \'false\');
+        t.setAttribute(\'tabindex\', \'-1\');
+      });
+      panels.forEach(p => p.setAttribute(\'hidden\', \'\'));
+
+      // Activate current (no forced focus unless explicitly asked)
       if (tab) {
-        tab.setAttribute(\'aria-selected\',\'true\');
-        tab.setAttribute(\'tabindex\',\'0\');
+        tab.setAttribute(\'aria-selected\', \'true\');
+        tab.setAttribute(\'tabindex\', \'0\');
         if (panel) panel.removeAttribute(\'hidden\');
-        tab.focus({ preventScroll: true });
+        if (shouldFocus === true) {
+          try { tab.focus({ preventScroll: true }); } catch (_) {}
+        }
       }
     }
 
+    // Initial state: set selection but DO NOT steal focus
     const selected = tabs.find(t => t.getAttribute(\'aria-selected\') === \'true\') || tabs[0];
     tabs.forEach(t => t.setAttribute(\'tabindex\', t === selected ? \'0\' : \'-1\'));
-    if (selected) activateTab(selected);
+    if (selected) activateTab(selected, /* shouldFocus */ false);
 
-    tablist.addEventListener(\'click\', e => {
+    // Click → activate (focus already on the clicked tab; no need to force)
+    tablist.addEventListener(\'click\', (e) => {
       const tab = e.target.closest(\'[role="tab"]\');
-      if (tab && tablist.contains(tab)) activateTab(tab);
+      if (!tab || !tablist.contains(tab)) return;
+      activateTab(tab, false);
     });
 
-    tablist.addEventListener(\'keydown\', e => {
+    // Arrow/Home/End navigation moves focus only (activation on Enter/Space)
+    tablist.addEventListener(\'keydown\', (e) => {
       const currentIndex = tabs.indexOf(document.activeElement);
       if (currentIndex === -1) return;
 
       let nextIndex = null;
       switch (e.key) {
         case \'ArrowRight\': case \'Right\': nextIndex = (currentIndex + 1) % tabs.length; break;
-        case \'ArrowLeft\' : case \'Left\' : nextIndex = (currentIndex - 1 + tabs.length) % tabs.length; break;
-        case \'Home\': nextIndex = 0; break;
-        case \'End\' : nextIndex = tabs.length - 1; break;
-        default: return;
-      }
-      e.preventDefault();
-      tabs[nextIndex].focus();
-    });
-
-    tablist.addEventListener(\'keydown\', e => {
-      if (e.key !== \'Enter\' && e.key !== \' \') return;
-      const tab = document.activeElement.closest && document.activeElement.closest(\'[role="tab"]\');
-      if (tab && tablist.contains(tab)) { e.preventDefault(); activateTab(tab); }
-    });
-  }
-
-  function scan() {
-    // Desktop-only, same selector you had before
-    document.querySelectorAll(\'.bde-accordion-tabs.show-desktop\').forEach(wireTabs);
-  }
-
-  if (document.readyState === \'loading\') {
-    document.addEventListener(\'DOMContentLoaded\', scan);
-  } else {
-    scan();
-  }
-
-  // If the builder injects the tabs later, try again
-  new MutationObserver(scan).observe(document.documentElement, { childList: true, subtree: true });
-})();
+        case \'ArrowLeft\' : case \'Left\' : nextIndex = (currentIndex - 1 +
 '],],];
     }
 
