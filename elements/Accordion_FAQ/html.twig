@@ -26,47 +26,35 @@
   {# BUTTONS #}
   {% set pb = content.buttons.primary_button|default({}) %}
   {% set sb = content.buttons.secondary_button|default({}) %}
-
   {% if pb.text|default('')|trim or sb.text|default('')|trim %}
     <div class="content-module module-buttons">
       {% if pb.text|default('')|trim %}
-        {{ macros.atomV1ButtonHtml(
-             pb,
-             'opkey-primary',
-             path.to.button_design_preset_section,
-             'primary',
-             pb.text|trim
-           ) }}
+        {{ macros.atomV1ButtonHtml(pb, 'opkey-primary', path.to.button_design_preset_section, 'primary', pb.text|trim) }}
       {% endif %}
       {% if sb.text|default('')|trim %}
-        {{ macros.atomV1ButtonHtml(
-             sb,
-             'opkey-link-text',
-             path.to.button_design_preset_section,
-             'secondary',
-             sb.text|trim
-           ) }}
+        {{ macros.atomV1ButtonHtml(sb, 'opkey-link-text', path.to.button_design_preset_section, 'secondary', sb.text|trim) }}
       {% endif %}
     </div>
   {% endif %}
 
-  <div class="accordion-module">
-    {# Only render if the user has added at least one item #}
-    {% if content.settings is defined 
-          and content.settings.items is defined 
-          and content.settings.items|length > 0 %}
-      
+  <div class="accordion-module" data-bde-el-id="%%ID%%">
+    {% if content.settings is defined and content.settings.items is defined and content.settings.items|length > 0 %}
+
+      {% set open_first = content.settings.open_first|default(false) %}
+
       {% for item in content.settings.items %}
+        {% set is_open = open_first and loop.first %}
         <div class="bde-faq__item">
           {# Question button #}
           <{{ design.typography.title_tag|default('h3') }} class="bde-faq__title-tag">
             <button
-              id="bde-faq-{{ content.id }}-button-{{ loop.index }}"
-              aria-expanded="false"
-              aria-controls="bde-faq-{{ content.id }}-{{ loop.index }}"
+              id="bde-faq-%%ID%%-button-{{ loop.index }}"
               class="bde-faq__question js-faq-item"
+              aria-controls="bde-faq-%%ID%%-{{ loop.index }}"
+              aria-expanded="{{ is_open ? 'true' : 'false' }}"
+              type="button"
             >
-              <h3>{{ item.question }}</h3>
+              <span class="bde-faq__title">{{ item.question }}</span>
               <div aria-hidden="true" class="bde-faq__icon bde-faq__icon--rotate">
                 <img src="/wp-content/uploads/2025/07/Dropdown-Arrow.svg" alt="" aria-hidden="true" />
               </div>
@@ -75,10 +63,11 @@
 
           {# Answer panel #}
           <div
-            role="region"
-            aria-labelledby="bde-faq-{{ content.id }}-button-{{ loop.index }}"
-            id="bde-faq-{{ content.id }}-{{ loop.index }}"
+            id="bde-faq-%%ID%%-{{ loop.index }}"
             class="bde-faq__answer"
+            role="region"
+            aria-labelledby="bde-faq-%%ID%%-button-{{ loop.index }}"
+            {{ is_open ? '' : 'hidden' }}
           >
             <div class="bde-faq__answer-content">
               <div class="breakdance-rich-text-styles">

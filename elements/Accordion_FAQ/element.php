@@ -253,10 +253,18 @@ class Accordionfaq extends \Breakdance\Elements\Element
         return [];
     }
 
-    static function dependencies()
-    {
-        return ['0' =>  ['scripts' => ['%%BREAKDANCE_ELEMENTS_PLUGIN_URL%%elements/Frequently_Asked_Questions/assets/faq.js'],'title' => 'Tab.js',],'1' =>  ['title' => 'FAQ Frontend','inlineScripts' => ['new BreakdanceFaq(\'%%SELECTOR%%\', { accordion: {{ content.settings.accordion|json_encode }}, openFirst: {{ content.settings.first_tab_opened|json_encode }}  });'],],];
+    static function dependencies() {
+      return [
+        [
+          'scripts' => [
+            '%%PLUGIN_DIRECTORY_URL%%assets/accordion-faq.js',
+            // Inline init, scoped to this element instance via %%ID%%
+            "window.addEventListener('DOMContentLoaded', function(){ window.CreensAccordionFaq && window.CreensAccordionFaq.init('%%ID%%'); });",
+          ],
+        ],
+      ];
     }
+
 
     static function settings()
     {
