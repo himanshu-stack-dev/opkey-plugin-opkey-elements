@@ -273,10 +273,17 @@ class Accordionfaq extends \Breakdance\Elements\Element
 
     static function dependencies()
     {
-        return ['0' =>  ['inlineScripts' => ['window.CreensAccordionFaq && window.CreensAccordionFaq.init(\'%%ID%%\');
-
-(function () {
+        return ['0' =>  ['inlineScripts' => ['(function () {
   "use strict";
+
+  function setState(btn, panel, item, open) {
+    // ARIA
+    btn.setAttribute("aria-expanded", open ? "true" : "false");
+    if (panel) panel.setAttribute("aria-hidden", open ? "false" : "true");
+
+    // Visual state (CSS animates .is-active)
+    if (item) item.classList.toggle("is-active", !!open);
+  }
 
   function toggle(btns, btn) {
     var controls = btn.getAttribute("aria-controls");
@@ -285,18 +292,18 @@ class Accordionfaq extends \Breakdance\Elements\Element
 
     var isOpen = btn.getAttribute("aria-expanded") === "true";
 
-    // One-open-at-a-time behavior
     btns.forEach(function (b) {
-      var id = b.getAttribute("aria-controls");
-      var p = id ? document.getElementById(id) : null;
+      var id    = b.getAttribute("aria-controls");
+      var p     = id ? document.getElementById(id) : null;
+      var item  = b.closest(".bde-faq__item");
       if (!p) return;
 
       if (b === btn) {
-        b.setAttribute("aria-expanded", (!isOpen).toString());
-        p.hidden = isOpen;
+        // Open the clicked one (no `hidden`!)
+        setState(b, p, item, !isOpen);
       } else {
-        b.setAttribute("aria-expanded", "false");
-        p.hidden = true;
+        // Close others
+        setState(b, p, item, false);
       }
     });
   }
@@ -307,25 +314,28 @@ class Accordionfaq extends \Breakdance\Elements\Element
     var btns = Array.prototype.slice.call(root.querySelectorAll(".js-faq-item"));
     if (!btns.length) return;
 
-    // Ensure initial ARIA/hidden state is coherent
+    // Clear any server-rendered `hidden` and sync classes once
     btns.forEach(function (btn) {
       var controls = btn.getAttribute("aria-controls");
       var panel = controls ? document.getElementById(controls) : null;
       if (!panel) return;
 
-      var expanded = btn.getAttribute("aria-expanded");
-      if (expanded == null) btn.setAttribute("aria-expanded", "false");
+      // Remove hard visibility blocker so CSS can animate
+      if (panel.hasAttribute("hidden")) panel.hidden = false;
 
-      // If any button is marked expanded="true", ensure its panel is shown
-      panel.hidden = btn.getAttribute("aria-expanded") !== "true";
+      var item   = btn.closest(".bde-faq__item");
+      var opened = btn.getAttribute("aria-expanded") === "true";
 
-      // Click
+      // Ensure ARIA + class state is coherent from the start
+      panel.setAttribute("aria-hidden", opened ? "false" : "true");
+      if (item) item.classList.toggle("is-active", opened);
+
+      // Wire events
       btn.addEventListener("click", function (e) {
         e.preventDefault();
         toggle(btns, btn);
       });
 
-      // Keyboard (Space/Enter)
       btn.addEventListener("keydown", function (e) {
         if (e.key === " " || e.key === "Enter") {
           e.preventDefault();
@@ -335,20 +345,33 @@ class Accordionfaq extends \Breakdance\Elements\Element
     });
   }
 
-  // Public API: init by element instance id (%%ID%% in your Twig)
   window.CreensAccordionFaq = {
     init: function (id) {
-      // Prefer the data attribute your Twig sets on the wrapper:
-      // <div class="accordion-module" data-bde-el-id="%%ID%%">
       var root =
         document.querySelector(\'[data-bde-el-id="\' + id + \'"]\') ||
-        document.getElementById("bde-" + id) || // fallback if you ever use that pattern
+        document.getElementById("bde-" + id) ||
         null;
-
       wire(root);
-    },
+    }
   };
-})();'],],];
+
+  function scanAndInit() {
+    document.querySelectorAll(\'.accordion-module[data-bde-el-id]\').forEach(function (root) {
+      if (root.__bdeFaqWired) return;
+      root.__bdeFaqWired = true;
+      wire(root);
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", scanAndInit);
+  } else {
+    scanAndInit();
+  }
+
+  new MutationObserver(scanAndInit).observe(document.documentElement, { childList: true, subtree: true });
+})();
+'],],];
     }
 
     static function settings()
