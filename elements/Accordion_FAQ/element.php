@@ -97,11 +97,13 @@ class Accordionfaq extends \Breakdance\Elements\Element
         false,
         false,
         [],
+        
       )],
         ['type' => 'section'],
         false,
         false,
         [],
+        
       ), c(
         "remove_padding",
         "Remove Padding",
@@ -113,6 +115,7 @@ class Accordionfaq extends \Breakdance\Elements\Element
         false,
         false,
         [],
+        
       ), c(
         "remove_bottom",
         "Remove Bottom",
@@ -121,11 +124,13 @@ class Accordionfaq extends \Breakdance\Elements\Element
         false,
         false,
         [],
+        
       )],
         ['type' => 'section'],
         false,
         false,
         [],
+        
       )];
     }
 
@@ -142,11 +147,13 @@ class Accordionfaq extends \Breakdance\Elements\Element
         false,
         false,
         [],
+        
       )],
         ['type' => 'section', 'layout' => 'vertical'],
         false,
         false,
         [],
+        
       ), c(
         "heading",
         "Heading",
@@ -158,11 +165,13 @@ class Accordionfaq extends \Breakdance\Elements\Element
         false,
         false,
         [],
+        
       )],
         ['type' => 'section', 'layout' => 'vertical'],
         false,
         false,
         [],
+        
       ), c(
         "subhead",
         "Subhead",
@@ -174,11 +183,13 @@ class Accordionfaq extends \Breakdance\Elements\Element
         false,
         false,
         [],
+        
       )],
         ['type' => 'section', 'layout' => 'vertical'],
         false,
         false,
         [],
+        
       ), c(
         "content",
         "Content",
@@ -190,11 +201,13 @@ class Accordionfaq extends \Breakdance\Elements\Element
         false,
         false,
         [],
+        ['accepts' => 'string']
       )],
         ['type' => 'section', 'layout' => 'vertical'],
         false,
         false,
         [],
+        
       ), c(
         "buttons",
         "Buttons",
@@ -213,6 +226,7 @@ class Accordionfaq extends \Breakdance\Elements\Element
         false,
         false,
         [],
+        
       ), c(
         "settings",
         "Settings",
@@ -227,6 +241,7 @@ class Accordionfaq extends \Breakdance\Elements\Element
         false,
         false,
         [],
+        
       ), c(
         "answer",
         "Answer",
@@ -235,16 +250,19 @@ class Accordionfaq extends \Breakdance\Elements\Element
         false,
         false,
         [],
+        
       )],
         ['type' => 'repeater', 'layout' => 'vertical', 'repeaterOptions' => ['titleTemplate' => '{question}', 'defaultTitle' => 'Question', 'buttonName' => 'Add Question']],
         false,
         false,
         [],
+        
       )],
         ['type' => 'section', 'layout' => 'vertical'],
         false,
         false,
         [],
+        
       )];
     }
 
@@ -253,18 +271,85 @@ class Accordionfaq extends \Breakdance\Elements\Element
         return [];
     }
 
-    static function dependencies() {
-      return [
-        [
-          'scripts' => [
-            '%%PLUGIN_DIRECTORY_URL%%assets/accordion-faq.js',
-            // Inline init, scoped to this element instance via %%ID%%
-            "window.addEventListener('DOMContentLoaded', function(){ window.CreensAccordionFaq && window.CreensAccordionFaq.init('%%ID%%'); });",
-          ],
-        ],
-      ];
-    }
+    static function dependencies()
+    {
+        return ['0' =>  ['inlineScripts' => ['window.CreensAccordionFaq && window.CreensAccordionFaq.init(\'%%ID%%\');
 
+(function () {
+  "use strict";
+
+  function toggle(btns, btn) {
+    var controls = btn.getAttribute("aria-controls");
+    var panel = controls ? document.getElementById(controls) : null;
+    if (!panel) return;
+
+    var isOpen = btn.getAttribute("aria-expanded") === "true";
+
+    // One-open-at-a-time behavior
+    btns.forEach(function (b) {
+      var id = b.getAttribute("aria-controls");
+      var p = id ? document.getElementById(id) : null;
+      if (!p) return;
+
+      if (b === btn) {
+        b.setAttribute("aria-expanded", (!isOpen).toString());
+        p.hidden = isOpen;
+      } else {
+        b.setAttribute("aria-expanded", "false");
+        p.hidden = true;
+      }
+    });
+  }
+
+  function wire(root) {
+    if (!root) return;
+
+    var btns = Array.prototype.slice.call(root.querySelectorAll(".js-faq-item"));
+    if (!btns.length) return;
+
+    // Ensure initial ARIA/hidden state is coherent
+    btns.forEach(function (btn) {
+      var controls = btn.getAttribute("aria-controls");
+      var panel = controls ? document.getElementById(controls) : null;
+      if (!panel) return;
+
+      var expanded = btn.getAttribute("aria-expanded");
+      if (expanded == null) btn.setAttribute("aria-expanded", "false");
+
+      // If any button is marked expanded="true", ensure its panel is shown
+      panel.hidden = btn.getAttribute("aria-expanded") !== "true";
+
+      // Click
+      btn.addEventListener("click", function (e) {
+        e.preventDefault();
+        toggle(btns, btn);
+      });
+
+      // Keyboard (Space/Enter)
+      btn.addEventListener("keydown", function (e) {
+        if (e.key === " " || e.key === "Enter") {
+          e.preventDefault();
+          toggle(btns, btn);
+        }
+      });
+    });
+  }
+
+  // Public API: init by element instance id (%%ID%% in your Twig)
+  window.CreensAccordionFaq = {
+    init: function (id) {
+      // Prefer the data attribute your Twig sets on the wrapper:
+      // <div class="accordion-module" data-bde-el-id="%%ID%%">
+      var root =
+        document.querySelector(\'[data-bde-el-id="\' + id + \'"]\') ||
+        document.getElementById("bde-" + id) || // fallback if you ever use that pattern
+        null;
+
+      wire(root);
+    },
+  };
+})();'],],];
+    }
 
     static function settings()
     {
@@ -311,7 +396,7 @@ class Accordionfaq extends \Breakdance\Elements\Element
 
     static function nestingRule()
     {
-        return ["type" => "final",   ];
+        return ['type' => 'final'];
     }
 
     static function spacingBars()
@@ -329,6 +414,12 @@ class Accordionfaq extends \Breakdance\Elements\Element
         return false;
     }
 
+    static function availableIn()
+    {
+        return ['breakdance'];
+    }
+
+
     static function order()
     {
         return 0;
@@ -336,7 +427,7 @@ class Accordionfaq extends \Breakdance\Elements\Element
 
     static function dynamicPropertyPaths()
     {
-        return [['accepts' => 'string', 'path' => 'content.content.text'], ['accepts' => 'string', 'path' => 'content.content.link.url'], ['accepts' => 'string', 'path' => 'content.buttons.add_button.button.text'], ['accepts' => 'string', 'path' => 'content.buttons.add_button.button.link.url'], ['accepts' => 'string', 'path' => 'content.buttons.secondary_button.text'], ['accepts' => 'string', 'path' => 'content.buttons.secondary_button.link.url']];
+        return false;
     }
 
     static function additionalClasses()

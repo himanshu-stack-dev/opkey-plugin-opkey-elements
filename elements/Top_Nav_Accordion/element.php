@@ -97,11 +97,13 @@ class Topnavaccordion extends \Breakdance\Elements\Element
         false,
         false,
         [],
+        
       )],
         ['type' => 'section'],
         false,
         false,
         [],
+        
       ), c(
         "remove_padding",
         "Remove Padding",
@@ -113,6 +115,7 @@ class Topnavaccordion extends \Breakdance\Elements\Element
         false,
         false,
         [],
+        
       ), c(
         "remove_bottom",
         "Remove Bottom",
@@ -121,11 +124,13 @@ class Topnavaccordion extends \Breakdance\Elements\Element
         false,
         false,
         [],
+        
       )],
         ['type' => 'section'],
         false,
         false,
         [],
+        
       )];
     }
 
@@ -142,11 +147,13 @@ class Topnavaccordion extends \Breakdance\Elements\Element
         false,
         false,
         [],
+        
       )],
         ['type' => 'section', 'layout' => 'vertical'],
         false,
         false,
         [],
+        
       ), c(
         "heading",
         "Heading",
@@ -158,11 +165,13 @@ class Topnavaccordion extends \Breakdance\Elements\Element
         false,
         false,
         [],
+        
       )],
         ['type' => 'section', 'layout' => 'vertical'],
         false,
         false,
         [],
+        
       ), c(
         "subhead",
         "Subhead",
@@ -174,11 +183,13 @@ class Topnavaccordion extends \Breakdance\Elements\Element
         false,
         false,
         [],
+        
       )],
         ['type' => 'section', 'layout' => 'vertical'],
         false,
         false,
         [],
+        
       ), c(
         "content",
         "Content",
@@ -190,11 +201,13 @@ class Topnavaccordion extends \Breakdance\Elements\Element
         false,
         false,
         [],
+        ['accepts' => 'string']
       )],
         ['type' => 'section', 'layout' => 'vertical'],
         false,
         false,
         [],
+        
       ), c(
         "navigator",
         "Navigator",
@@ -209,6 +222,7 @@ class Topnavaccordion extends \Breakdance\Elements\Element
         false,
         false,
         [],
+        
       ), c(
         "accordion",
         "Accordion",
@@ -220,6 +234,7 @@ class Topnavaccordion extends \Breakdance\Elements\Element
         false,
         false,
         [],
+        
       ), c(
         "content_title",
         "Content Title",
@@ -228,6 +243,7 @@ class Topnavaccordion extends \Breakdance\Elements\Element
         false,
         false,
         [],
+        
       ), c(
         "content",
         "Content",
@@ -236,6 +252,7 @@ class Topnavaccordion extends \Breakdance\Elements\Element
         false,
         false,
         [],
+        
       ), c(
         "new_control",
         "New Control",
@@ -244,6 +261,7 @@ class Topnavaccordion extends \Breakdance\Elements\Element
         false,
         false,
         [],
+        
       ), c(
         "media",
         "Media",
@@ -252,6 +270,7 @@ class Topnavaccordion extends \Breakdance\Elements\Element
         false,
         false,
         [],
+        
       ), c(
         "animation_speed",
         "Animation Speed",
@@ -260,6 +279,7 @@ class Topnavaccordion extends \Breakdance\Elements\Element
         false,
         false,
         [],
+        
       ), c(
         "loop_animation",
         "Loop Animation",
@@ -268,21 +288,25 @@ class Topnavaccordion extends \Breakdance\Elements\Element
         false,
         false,
         [],
+        
       )],
         ['type' => 'repeater', 'layout' => 'vertical'],
         false,
         false,
         [],
+        
       )],
         ['type' => 'repeater', 'layout' => 'vertical', 'repeaterOptions' => ['titleTemplate' => '{title}', 'defaultTitle' => 'Tab', 'buttonName' => 'Add Tab']],
         false,
         false,
         [],
+        
       )],
         ['type' => 'section', 'layout' => 'vertical'],
         false,
         false,
         [],
+        
       )];
     }
 
@@ -725,82 +749,77 @@ class Topnavaccordion extends \Breakdance\Elements\Element
       setTimeout(initAllExceptFirst, 100);
     }));
 })();
-'],],'2' =>  ['inlineScripts' => ['// a11y
-(function () {
-  // Scope to the desktop tabs container
-  const tabsRoot = document.querySelector(\'.bde-accordion-tabs.show-desktop\');
-  if (!tabsRoot) return;
+'],],'2' =>  ['inlineScripts' => ['(function () {
+  \'use strict\';
 
-  const tablist = tabsRoot.querySelector(\'[role="tablist"]\');
-  const tabs = Array.from(tablist.querySelectorAll(\'[role="tab"]\'));
-  const panels = Array.from(tabsRoot.querySelectorAll(\'[role="tabpanel"]\'));
+  function wireTabs(root) {
+    if (!root) return;
+    const tablist = root.querySelector(\'[role="tablist"]\');
+    if (!tablist) return; // <-- guard keeps old behavior, no errors
 
-  function activateTab(tab) {
-    const panelId = tab.getAttribute(\'aria-controls\');
-    const panel = tabsRoot.querySelector(\'#\' + panelId);
+    const tabs   = Array.from(tablist.querySelectorAll(\'[role="tab"]\'));
+    const panels = Array.from(root.querySelectorAll(\'[role="tabpanel"]\'));
+    if (!tabs.length || !panels.length) return;
 
-    // Deactivate all
-    tabs.forEach(t => {
-      t.setAttribute(\'aria-selected\', \'false\');
-      t.setAttribute(\'tabindex\', \'-1\');
+    function activateTab(tab) {
+      const panelId = tab && tab.getAttribute(\'aria-controls\');
+      const panel   = panelId ? root.querySelector(\'#\' + CSS.escape(panelId)) : null;
+
+      tabs.forEach(t => { t.setAttribute(\'aria-selected\',\'false\'); t.setAttribute(\'tabindex\',\'-1\'); });
+      panels.forEach(p => p.setAttribute(\'hidden\',\'\'));
+      if (tab) {
+        tab.setAttribute(\'aria-selected\',\'true\');
+        tab.setAttribute(\'tabindex\',\'0\');
+        if (panel) panel.removeAttribute(\'hidden\');
+        tab.focus({ preventScroll: true });
+      }
+    }
+
+    const selected = tabs.find(t => t.getAttribute(\'aria-selected\') === \'true\') || tabs[0];
+    tabs.forEach(t => t.setAttribute(\'tabindex\', t === selected ? \'0\' : \'-1\'));
+    if (selected) activateTab(selected);
+
+    tablist.addEventListener(\'click\', e => {
+      const tab = e.target.closest(\'[role="tab"]\');
+      if (tab && tablist.contains(tab)) activateTab(tab);
     });
-    panels.forEach(p => p.setAttribute(\'hidden\', \'\'));
 
-    // Activate current
-    tab.setAttribute(\'aria-selected\', \'true\');
-    tab.setAttribute(\'tabindex\', \'0\');
-    if (panel) panel.removeAttribute(\'hidden\');
-    tab.focus();
+    tablist.addEventListener(\'keydown\', e => {
+      const currentIndex = tabs.indexOf(document.activeElement);
+      if (currentIndex === -1) return;
+
+      let nextIndex = null;
+      switch (e.key) {
+        case \'ArrowRight\': case \'Right\': nextIndex = (currentIndex + 1) % tabs.length; break;
+        case \'ArrowLeft\' : case \'Left\' : nextIndex = (currentIndex - 1 + tabs.length) % tabs.length; break;
+        case \'Home\': nextIndex = 0; break;
+        case \'End\' : nextIndex = tabs.length - 1; break;
+        default: return;
+      }
+      e.preventDefault();
+      tabs[nextIndex].focus();
+    });
+
+    tablist.addEventListener(\'keydown\', e => {
+      if (e.key !== \'Enter\' && e.key !== \' \') return;
+      const tab = document.activeElement.closest && document.activeElement.closest(\'[role="tab"]\');
+      if (tab && tablist.contains(tab)) { e.preventDefault(); activateTab(tab); }
+    });
   }
 
-  // Click to activate
-  tabs.forEach(tab => {
-    tab.addEventListener(\'click\', () => activateTab(tab));
-  });
+  function scan() {
+    // Desktop-only, same selector you had before
+    document.querySelectorAll(\'.bde-accordion-tabs.show-desktop\').forEach(wireTabs);
+  }
 
-  // Arrow key navigation (Left/Right, Home/End)
-  tablist.addEventListener(\'keydown\', (e) => {
-    const currentIndex = tabs.indexOf(document.activeElement);
-    if (currentIndex === -1) return;
+  if (document.readyState === \'loading\') {
+    document.addEventListener(\'DOMContentLoaded\', scan);
+  } else {
+    scan();
+  }
 
-    let nextIndex = null;
-    switch (e.key) {
-      case \'ArrowRight\':
-      case \'Right\':
-        nextIndex = (currentIndex + 1) % tabs.length;
-        break;
-      case \'ArrowLeft\':
-      case \'Left\':
-        nextIndex = (currentIndex - 1 + tabs.length) % tabs.length;
-        break;
-      case \'Home\':
-        nextIndex = 0;
-        break;
-      case \'End\':
-        nextIndex = tabs.length - 1;
-        break;
-      default:
-        return; // don’t preventDefault for other keys
-    }
-    e.preventDefault();
-    const nextTab = tabs[nextIndex];
-    // Move focus first (per WAI-ARIA Authoring Practices), activate on Enter/Space
-    nextTab.focus();
-  });
-
-  // Activate on Enter/Space
-  tabs.forEach(tab => {
-    tab.addEventListener(\'keydown\', (e) => {
-      if (e.key === \'Enter\' || e.key === \' \') {
-        e.preventDefault();
-        activateTab(tab);
-      }
-    });
-  });
-
-  // Ensure only one tab is tabbable on load (in case markup was altered)
-  const selected = tabs.find(t => t.getAttribute(\'aria-selected\') === \'true\') || tabs[0];
-  tabs.forEach(t => t.setAttribute(\'tabindex\', t === selected ? \'0\' : \'-1\'));
+  // If the builder injects the tabs later, try again
+  new MutationObserver(scan).observe(document.documentElement, { childList: true, subtree: true });
 })();
 '],],];
     }
@@ -1000,7 +1019,7 @@ class Topnavaccordion extends \Breakdance\Elements\Element
 
     static function nestingRule()
     {
-        return ["type" => "final",   ];
+        return ['type' => 'final'];
     }
 
     static function spacingBars()
@@ -1018,6 +1037,12 @@ class Topnavaccordion extends \Breakdance\Elements\Element
         return false;
     }
 
+    static function availableIn()
+    {
+        return ['breakdance'];
+    }
+
+
     static function order()
     {
         return 0;
@@ -1025,7 +1050,7 @@ class Topnavaccordion extends \Breakdance\Elements\Element
 
     static function dynamicPropertyPaths()
     {
-        return [['accepts' => 'string', 'path' => 'content.content.text'], ['accepts' => 'string', 'path' => 'content.content.link.url'], ['accepts' => 'string', 'path' => 'content.buttons.add_button.button.text'], ['accepts' => 'string', 'path' => 'content.buttons.add_button.button.link.url'], ['accepts' => 'string', 'path' => 'content.buttons.secondary_button.text'], ['accepts' => 'string', 'path' => 'content.buttons.secondary_button.link.url']];
+        return false;
     }
 
     static function additionalClasses()
