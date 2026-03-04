@@ -60,7 +60,7 @@
                   {% if content.video_options.loop %}loop='true'{% endif %}
                   {% if content.video_options.muted %}muted='true'{% endif %}
                   {% if not content.video_options.download_button %}controlsList="nodownload"{% endif %}
-                  playsinline
+                  playsinline preload='none'
           >
           </video>
       {% elseif content.video.video.type == 'oembed' %}

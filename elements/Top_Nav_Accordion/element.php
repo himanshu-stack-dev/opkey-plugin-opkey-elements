@@ -804,7 +804,58 @@ class Topnavaccordion extends \Breakdance\Elements\Element
       let nextIndex = null;
       switch (e.key) {
         case \'ArrowRight\': case \'Right\': nextIndex = (currentIndex + 1) % tabs.length; break;
-        case \'ArrowLeft\' : case \'Left\' : nextIndex = (currentIndex - 1 +
+        case \'ArrowLeft\' : case \'Left\' : nextIndex = (currentIndex - 1 + tabs.length) % tabs.length; break;
+        case \'Home\': nextIndex = 0; break;
+        case \'End\' : nextIndex = tabs.length - 1; break;
+        default: return;
+      }
+      e.preventDefault();
+      tabs[nextIndex].focus();
+    });
+
+    // Enter/Space → activate current tab (focus stays on it naturally)
+    tablist.addEventListener(\'keydown\', (e) => {
+      if (e.key !== \'Enter\' && e.key !== \' \') return;
+      const tab = document.activeElement.closest && document.activeElement.closest(\'[role="tab"]\');
+      if (!tab || !tablist.contains(tab)) return;
+      e.preventDefault();
+      activateTab(tab, false);
+    });
+  }
+
+  // Initial scan
+  function scanAll() {
+    document.querySelectorAll(\'.bde-accordion-tabs\').forEach(root => {
+      if (root.__bdeTabsWired) return;
+      root.__bdeTabsWired = true;
+      wireTabs(root);
+    });
+  }
+
+  if (document.readyState === \'loading\') {
+    document.addEventListener(\'DOMContentLoaded\', scanAll);
+  } else {
+    scanAll();
+  }
+
+  // Scoped MutationObserver: only wire when NEW tab widgets are added,
+  // not on every DOM change (prevents stealing focus when HubSpot mutates)
+  new MutationObserver(muts => {
+    muts.forEach(m => {
+      m.addedNodes && m.addedNodes.forEach(n => {
+        if (n.nodeType !== 1) return;
+        if (n.matches && n.matches(\'.bde-accordion-tabs\')) {
+          if (!n.__bdeTabsWired) { n.__bdeTabsWired = true; wireTabs(n); }
+        }
+        if (n.querySelectorAll) {
+          n.querySelectorAll(\'.bde-accordion-tabs\').forEach(root => {
+            if (!root.__bdeTabsWired) { root.__bdeTabsWired = true; wireTabs(root); }
+          });
+        }
+      });
+    });
+  }).observe(document.body, { childList: true, subtree: true });
+})();
 '],],];
     }
 
