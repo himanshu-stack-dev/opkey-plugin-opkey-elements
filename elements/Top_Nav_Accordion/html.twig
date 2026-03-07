@@ -35,11 +35,13 @@
           tab_icon_svg: '<svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="2"/><path d="M5 8l2 2 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
           accordion: [
             {
+              content_icon: '/wp-content/uploads/2025/07/Icon_Automate-1.svg',
               content_image: '/wp-content/uploads/2025/06/Placeholder-620x500-1.png',
               content_title: 'First accordion item',
               content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
             },
             {
+              content_icon: '/wp-content/uploads/2025/07/Icon_Automate-1.svg',
               content_image: '/wp-content/uploads/2025/06/Placeholder-620x500-1.png',
               content_title: 'Second accordion item',
               content: 'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.'
@@ -51,11 +53,13 @@
           tab_icon_svg: '<svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="2"/><path d="M5 8l2 2 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
           accordion: [
             {
+              content_icon: '/wp-content/uploads/2025/07/Icon_Automate-1.svg',
               content_image: '/wp-content/uploads/2025/06/Placeholder-620x500-1.png',
               content_title: 'Third accordion item',
               content: 'Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Duis aute irure dolor in reprehenderit.'
             },
             {
+              content_icon: '/wp-content/uploads/2025/07/Icon_Automate-1.svg',
               content_image: '/wp-content/uploads/2025/06/Placeholder-620x500-1.png',
               content_title: 'Fourth accordion item',
               content: 'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
@@ -99,7 +103,13 @@
                 <div class="swiper-slide">
                   <div class="bde-accordion-item open">
                     <div class="bde-accordion-row">
-                      <div class="bde-mobile-accordion-item">
+                      {% set content_icon_src = item.content_icon is iterable ? item.content_icon.url|default('') : item.content_icon|default('') %}
+                      <div class="bde-mobile-accordion-item{{ content_icon_src ? ' has-icon' : '' }}">
+                        {% if content_icon_src %}
+                          <span class="bde-accordion-icon">
+                            <img src="{{ content_icon_src }}" alt="" role="presentation" />
+                          </span>
+                        {% endif %}
                         <h3>{{ item.content_title }}</h3>
                       </div>
                       <div class="bde-accordion-content breakdance-rich-text-styles">
@@ -107,7 +117,9 @@
                       </div>
                     </div>
 
-                    {% set src = item.media is iterable ? item.media.url : item.media %}
+                    {% set media_src = item.media is iterable ? item.media.url|default('') : item.media|default('') %}
+                    {% set legacy_image_src = item.content_image is iterable ? item.content_image.url|default('') : item.content_image|default('') %}
+                    {% set src = media_src ? media_src : legacy_image_src %}
 
                     {% if src|lower ends with '.json' %}
                       <div class="bde-accordion-media">
@@ -230,6 +242,7 @@
           {% set accordion_items = (tab.accordion is defined and tab.accordion|length > 0) 
             ? tab.accordion 
             : [{
+                content_icon: '/wp-content/uploads/2025/07/Icon_Automate-1.svg',
                 content_image: '/wp-content/uploads/2025/06/Placeholder-620x500-1.png',
                 content_title: 'Lorem ipsum dolor sit amet consectetur sed do eiusmod',
                 content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
@@ -238,9 +251,15 @@
           <div class="bde-accordion-column">
             <div class="bde-accordion-list">
               {% for item in accordion_items %}
-                <div class="bde-accordion-item">
+                {% set content_icon_src = item.content_icon is iterable ? item.content_icon.url|default('') : item.content_icon|default('') %}
+                <div class="bde-accordion-item{{ content_icon_src ? ' has-icon' : '' }}">
                   <div class="bde-accordion-content">
                     <button class="bde-accordion-trigger" aria-expanded="false">
+                      {% if content_icon_src %}
+                        <span class="bde-accordion-icon">
+                          <img src="{{ content_icon_src }}" alt="" role="presentation" />
+                        </span>
+                      {% endif %}
                       <span class="bde-accordion-title">{{ item.content_title }}</span>
                     </button>
                     <div class="bde-accordion-panel">
@@ -257,7 +276,9 @@
           <div class="bde-accordion-media">
             {% for item in accordion_items %}
               {% set is_active = loop.first %}
-              {% set src = item.media is iterable ? item.media.url : item.media %}
+              {% set media_src = item.media is iterable ? item.media.url|default('') : item.media|default('') %}
+              {% set legacy_image_src = item.content_image is iterable ? item.content_image.url|default('') : item.content_image|default('') %}
+              {% set src = media_src ? media_src : legacy_image_src %}
 
               {% if src|lower ends with '.json' %}
                 <div class="bde-lottie-animation bde-lottie-target lottie-wrapper{{ is_active ? ' active' : '' }}"

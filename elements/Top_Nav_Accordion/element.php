@@ -261,7 +261,7 @@ class Topnavaccordion extends \Breakdance\Elements\Element
         "tab_icon_svg",
         "Tab Icon SVG Code",
         [],
-        ['type' => 'text', 'layout' => 'vertical', 'textOptions' => ['multiline' => true], 'placeholder' => '<svg viewBox="0 0 16 16">...</svg>'],
+        ['type' => 'text', 'layout' => 'vertical', 'textOptions' => ['multiline' => true], 'placeholder' => '<svg viewBox="0 0 16 16">...</svg>', 'condition' => [[['path' => 'design.styles.style', 'operand' => 'equals', 'value' => 'style-2']]]],
         false,
         false,
         [],
@@ -270,6 +270,15 @@ class Topnavaccordion extends \Breakdance\Elements\Element
         "accordion",
         "Accordion",
         [c(
+        "content_icon",
+        "Content Icon",
+        [],
+        ['type' => 'wpmedia', 'layout' => 'vertical', 'mediaOptions' => ['acceptedFileTypes' => ['image'], 'multiple' => false], 'condition' => [[['path' => 'design.styles.style', 'operand' => 'equals', 'value' => 'style-1']], [['path' => 'design.styles.style', 'operand' => 'is not set', 'value' => '']]]],
+        false,
+        false,
+        [],
+        
+      ), c(
         "content_title",
         "Content Title",
         [],
