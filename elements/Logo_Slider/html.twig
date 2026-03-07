@@ -1,44 +1,11 @@
-<div class="module-container">
-  {# EYEBROW #}
+{% set variant = design.style.variant|default('style1') %}
+
+<div class="module-container logoslider--{{ variant }}">
+  {% set use_container = design.layout.width|default('full_width') == 'container' %}
+  {% if use_container %}<div class="container">{% endif %}
+
+  {# COMMON DATA #}
   {% set eyebrow = content.eyebrow.text %}
-  {% if eyebrow %}
-    <div class="eyebrow">{{ eyebrow }}</div>
-  {% endif %}
-
-  {# HEADING #}
-  {% set heading = content.heading.text %}
-  {% if heading %}
-    <h2>{{ heading }}</h2>
-  {% endif %}
-
-  {# SUBHEAD #}
-  {% set subhead = content.subhead.text %}
-  {% if subhead %}
-    <h4>{{ subhead }}</h4>
-  {% endif %}
-
-  {# BODY #}
-  {% set body = content.content.text %}
-  {% if body %}
-    <p>{{ body }}</p>
-  {% endif %}
-
-  {# BUTTONS #}
-  {% set pb = content.buttons.primary_button|default({}) %}
-  {% set sb = content.buttons.secondary_button|default({}) %}
-
-  {% if pb.text|default('')|trim or sb.text|default('')|trim %}
-    <div class="content-module module-buttons">
-      {% if pb.text|default('')|trim %}
-        {{ macros.atomV1ButtonHtml(pb, 'opkey-primary', path.to.button_design_preset_section, 'primary', pb.text|trim) }}
-      {% endif %}
-      {% if sb.text|default('')|trim %}
-        {{ macros.atomV1ButtonHtml(sb, 'opkey-link-text', path.to.button_design_preset_section, 'secondary', sb.text|trim) }}
-      {% endif %}
-    </div>
-  {% endif %}
-
-  {# SLIDER #}
   {% set site_url = site.url %}
   {% set raw_logos = content.logos.logo ?? content.logos.logos ?? content.logos ?? [] %}
   {% set logo_items = [] %}
@@ -58,28 +25,97 @@
     ] %}
   {% endif %}
 
-  <div class="un-logo-bar__marquee-content carousel-type__marquee" data-logo-count="{{ logo_items|length }}">
-    {# Repeat the logo list 6x for seamless scrolling #}
-    {% for repeat in [1,2,3,4,5,6] %}
-      {% for item in logo_items %}
-        {% if item is iterable %}
-          {% if item.link %}
-            <a href="{{ item.link.url }}"
-               class="un-logo-bar__logo-wrapper"
-               {% if item.link.target == '_blank' %}target="_blank" rel="noopener"{% endif %}>
-              {{ macros.image(item.image, item.size, item.alt, true) }}
-            </a>
+  {% if variant == 'style2' %}
+    {# STYLE 2: Minimal marquee based on opkey-homepage LOGO MARQUEE #}
+    {% if eyebrow %}
+      <p class="logo-marquee-label">{{ eyebrow }}</p>
+    {% endif %}
+    <div class="logo-marquee-track-wrap">
+      <div class="logo-marquee-track" role="list" aria-label="Customer logos">
+        {% for repeat in [1,2,3] %}
+          {% for item in logo_items %}
+            {% if item is iterable %}
+              <div class="logo-marquee-logo">
+                {{ macros.image(item.image, item.size, item.alt, true) }}
+              </div>
+            {% else %}
+              <div class="logo-marquee-logo">
+                <img src="{{ site_url ~ item }}" alt="Logo" loading="lazy" />
+              </div>
+            {% endif %}
+          {% endfor %}
+        {% endfor %}
+      </div>
+    </div>
+  {% else %}
+    {# STYLE 1: Existing layout with heading, content, buttons + marquee #}
+
+    {# EYEBROW #}
+    {% if eyebrow %}
+      <div class="eyebrow">{{ eyebrow }}</div>
+    {% endif %}
+
+    {# HEADING #}
+    {% set heading = content.heading.text %}
+    {% if heading %}
+      <h2>{{ heading }}</h2>
+    {% endif %}
+
+    {# SUBHEAD #}
+    {% set subhead = content.subhead.text %}
+    {% if subhead %}
+      <h4>{{ subhead }}</h4>
+    {% endif %}
+
+    {# BODY #}
+    {% set body = content.content.text %}
+    {% if body %}
+      <p>{{ body }}</p>
+    {% endif %}
+
+    {# BUTTONS #}
+    {% set pb = content.buttons.primary_button|default({}) %}
+    {% set sb = content.buttons.secondary_button|default({}) %}
+
+    {% if pb.text|default('')|trim or sb.text|default('')|trim %}
+      <div class="content-module module-buttons">
+        {% if pb.text|default('')|trim %}
+          {{ macros.atomV1ButtonHtml(pb, 'opkey-primary', path.to.button_design_preset_section, 'primary', pb.text|trim) }}
+        {% endif %}
+        {% if sb.text|default('')|trim %}
+          {{ macros.atomV1ButtonHtml(sb, 'opkey-link-text', path.to.button_design_preset_section, 'secondary', sb.text|trim) }}
+        {% endif %}
+      </div>
+    {% endif %}
+
+    {# SLIDER (existing marquee) #}
+    {% set marquee_speed = design.slider.settings.speed.number|default(design.slider.settings.speed|default(525)) %}
+    {% set autoplay_disabled = design.slider.settings.autoplay|default('enabled') == 'disabled' %}
+    <div class="un-logo-bar__marquee-content carousel-type__marquee {{ autoplay_disabled ? 'marquee-paused' : '' }}" data-logo-count="{{ logo_items|length }}" data-marquee-duration="{{ marquee_speed }}">
+      {# Repeat the logo list 6x for seamless scrolling #}
+      {% for repeat in [1,2,3,4,5,6] %}
+        {% for item in logo_items %}
+          {% if item is iterable %}
+            {% if item.link %}
+              <a href="{{ item.link.url }}"
+                 class="un-logo-bar__logo-wrapper"
+                 {% if item.link.target == '_blank' %}target="_blank" rel="noopener"{% endif %}>
+                {{ macros.image(item.image, item.size, item.alt, true) }}
+              </a>
+            {% else %}
+              <div class="un-logo-bar__logo-wrapper">
+                {{ macros.image(item.image, item.size, item.alt, true) }}
+              </div>
+            {% endif %}
           {% else %}
             <div class="un-logo-bar__logo-wrapper">
-              {{ macros.image(item.image, item.size, item.alt, true) }}
+              <img src="{{ site_url ~ item }}" alt="Logo placeholder" />
             </div>
           {% endif %}
-        {% else %}
-          <div class="un-logo-bar__logo-wrapper">
-            <img src="{{ site_url ~ item }}" alt="Logo placeholder" />
-          </div>
-        {% endif %}
+        {% endfor %}
       {% endfor %}
-    {% endfor %}
-  </div>
+    </div>
+  {% endif %}
+
+  {% if use_container %}</div>{% endif %}
 </div>

@@ -1,0 +1,106 @@
+{% set default_slides = [
+  {
+    eyebrow: 'Use Case',
+    title: 'Certify every update without the fire drill.',
+    description: '<p>Oracle and Workday push regular platform updates. Validate the entire landscape and reduce production risk with confidence.</p>',
+    cta_label: 'Read Case Study',
+    cta_text: 'See how global teams certify updates with confidence.',
+    tags: [{label: 'Impact Analysis'}, {label: 'Testing'}]
+  }
+] %}
+
+{% set slides = (content.slides is defined and content.slides|length > 0) ? content.slides : default_slides %}
+
+<div class="ucs-wrap">
+  <div class="ucs-stack">
+    {% for slide in slides %}
+      <div class="ucs-stack-card-wrap" style="z-index: {{ loop.index }}">
+        <article class="ucs-stack-card">
+          <div class="ucs-stack-inner">
+            <div class="ucs-left">
+              {% if slide.eyebrow|default('')|trim %}
+                <p class="ucs-eyebrow">{{ slide.eyebrow }}</p>
+              {% endif %}
+
+              {% if slide.title|default('')|trim %}
+                <h3>{{ slide.title }}</h3>
+              {% endif %}
+
+              {% if slide.description|default('')|trim %}
+                <div class="ucs-desc breakdance-rich-text-styles">{{ slide.description }}</div>
+              {% endif %}
+
+              {% if slide.cta_label|default('')|trim %}
+                <div class="ucs-cta">
+                  <span class="ucs-cta-label">{{ slide.cta_label }}</span>
+                  {% if slide.cta_text|default('')|trim %}
+                    <span class="ucs-cta-text">{{ slide.cta_text }}</span>
+                  {% endif %}
+                </div>
+              {% endif %}
+
+              {% if slide.tags is defined and slide.tags|length > 0 %}
+                <div class="ucs-tags">
+                  {% for tag in slide.tags %}
+                    {% if tag.label|default('')|trim %}
+                      <span>{{ tag.label }}</span>
+                    {% endif %}
+                  {% endfor %}
+                </div>
+              {% endif %}
+            </div>
+
+            <div class="ucs-right">
+              {% if slide.right_image is defined and slide.right_image is not empty and (slide.right_image.url is defined or slide.right_image.ID is defined or slide.right_image.id is defined) %}
+                {{ macros.image(slide.right_image, content.content.size, alt, lazyLoad) }}
+              {% else %}
+                <div class="ucs-image-placeholder" aria-hidden="true"></div>
+              {% endif %}
+            </div>
+          </div>
+        </article>
+      </div>
+    {% endfor %}
+    <div class="ucs-bottom-spacer" aria-hidden="true"></div>
+  </div>
+
+  <div class="ucs-mobile">
+    {% for slide in slides %}
+      <article class="ucs-mobile-card">
+        {% if slide.eyebrow|default('')|trim %}
+          <p class="ucs-eyebrow">{{ slide.eyebrow }}</p>
+        {% endif %}
+        {% if slide.title|default('')|trim %}
+          <h4>{{ slide.title }}</h4>
+        {% endif %}
+        {% if slide.description|default('')|trim %}
+          <div class="ucs-desc breakdance-rich-text-styles">{{ slide.description }}</div>
+        {% endif %}
+        {% if slide.cta_label|default('')|trim %}
+          <div class="ucs-cta">
+            <span class="ucs-cta-label">{{ slide.cta_label }}</span>
+            {% if slide.cta_text|default('')|trim %}
+              <span class="ucs-cta-text">{{ slide.cta_text }}</span>
+            {% endif %}
+          </div>
+        {% endif %}
+        {% if slide.tags is defined and slide.tags|length > 0 %}
+          <div class="ucs-tags">
+            {% for tag in slide.tags %}
+              {% if tag.label|default('')|trim %}
+                <span>{{ tag.label }}</span>
+              {% endif %}
+            {% endfor %}
+          </div>
+        {% endif %}
+        <div class="ucs-right">
+          {% if slide.right_image is defined and slide.right_image is not empty and (slide.right_image.url is defined or slide.right_image.ID is defined or slide.right_image.id is defined) %}
+            {{ macros.image(slide.right_image, content.content.size, alt, lazyLoad) }}
+          {% else %}
+            <div class="ucs-image-placeholder" aria-hidden="true"></div>
+          {% endif %}
+        </div>
+      </article>
+    {% endfor %}
+  </div>
+</div>

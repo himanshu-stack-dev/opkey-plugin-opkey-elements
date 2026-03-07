@@ -1,0 +1,27 @@
+{% set selected_style = design.styles.style|default('style-1') %}
+<div class="module-container emailbarbutton--{{ selected_style }}">
+  <div class="emailbar-inner {% if selected_style == 'style-2' %}hero-form-like{% endif %}">
+    {# EMAIL FORM FROM SHORTCODE #}
+    {% set email_embed = content.shortcode.full_shortcode %}
+    {% if email_embed %}
+      <div class="emailbar-form">
+        %%SSR%%
+      </div>
+    {% endif %}
+
+    {# BUTTON USING ATOM BUTTON PRESET #}
+    {% set btn = content.button.button|default({}) %}
+    {% if selected_style != 'style-2' and btn.text|default('')|trim %}
+      <div class="emailbar-button">
+        {{ macros.atomV1ButtonHtml(
+             btn,
+             'opkey-primary',
+             path.to.button_design_preset_section,
+             'primary',
+             btn.text|trim
+        ) }}
+      </div>
+    {% endif %}
+  </div>
+</div>
+

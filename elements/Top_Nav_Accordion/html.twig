@@ -1,4 +1,5 @@
-<div class="module-container">
+{% set selected_style = design.styles.style|default('style-1') %}
+<div class="module-container top-nav-accordion--{{ selected_style }}">
   <div class="module-top-nav-accordion module-text">
     {# EYEBROW #}
     {% set eyebrow = content.eyebrow.text %}
@@ -31,15 +32,14 @@
     : [
         {
           tab_title: 'Lorem ipsum dolor',
+          tab_icon_svg: '<svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="2"/><path d="M5 8l2 2 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
           accordion: [
             {
-              content_icon: '/wp-content/uploads/2025/07/Icon_Automate-1.svg',
               content_image: '/wp-content/uploads/2025/06/Placeholder-620x500-1.png',
               content_title: 'First accordion item',
               content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
             },
             {
-              content_icon: '/wp-content/uploads/2025/07/Icon_Automate-1.svg',
               content_image: '/wp-content/uploads/2025/06/Placeholder-620x500-1.png',
               content_title: 'Second accordion item',
               content: 'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.'
@@ -48,15 +48,14 @@
         },
         {
           tab_title: 'Dolor sit amet',
+          tab_icon_svg: '<svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="2"/><path d="M5 8l2 2 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
           accordion: [
             {
-              content_icon: '/wp-content/uploads/2025/07/Icon_Automate-1.svg',
               content_image: '/wp-content/uploads/2025/06/Placeholder-620x500-1.png',
               content_title: 'Third accordion item',
               content: 'Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Duis aute irure dolor in reprehenderit.'
             },
             {
-              content_icon: '/wp-content/uploads/2025/07/Icon_Automate-1.svg',
               content_image: '/wp-content/uploads/2025/06/Placeholder-620x500-1.png',
               content_title: 'Fourth accordion item',
               content: 'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
@@ -98,14 +97,9 @@
             <div class="swiper-wrapper">
               {% for item in tab.accordion %}
                 <div class="swiper-slide">
-                  <div class="bde-accordion-item has-icon open">
+                  <div class="bde-accordion-item open">
                     <div class="bde-accordion-row">
                       <div class="bde-mobile-accordion-item">
-                        {% if item.content_icon %}
-                          <span class="bde-accordion-icon">
-                            <img src="{{ item.content_icon is iterable ? item.content_icon.url : item.content_icon }}" alt="" role="presentation" style="width:36px;height:36px;" />
-                          </span>
-                        {% endif %}
                         <h3>{{ item.content_title }}</h3>
                       </div>
                       <div class="bde-accordion-content breakdance-rich-text-styles">
@@ -165,6 +159,52 @@
       {% endfor %}
     </div>
 
+    {% if selected_style == 'style-2' %}
+    <div class="topnav-style2-mobile-cards" aria-label="Mobile tab cards">
+      {% for tab in tabs %}
+        {% set accordion_items = (tab.accordion is defined and tab.accordion|length > 0)
+          ? tab.accordion
+          : [{
+              content_title: 'First item',
+              content: 'Lorem ipsum dolor sit amet.'
+            }] %}
+        {% set first_icon_svg = tab.tab_icon_svg|default('') %}
+        {% set first_icon_src = '' %}
+        {# Legacy fallback for older saved data that used media upload field #}
+        {% if tab.tab_icon is defined and tab.tab_icon is not empty %}
+          {% if tab.tab_icon is iterable %}
+            {% set first_icon_src = tab.tab_icon.url|default('') %}
+          {% else %}
+            {% set first_icon_src = tab.tab_icon %}
+          {% endif %}
+        {% endif %}
+        <article class="topnav-style2-mobile-card">
+          <div class="topnav-style2-mobile-head">
+            {% if first_icon_svg %}
+              <span class="topnav-style2-mobile-icon">{{ first_icon_svg|raw }}</span>
+            {% elseif first_icon_src %}
+              <span class="topnav-style2-mobile-icon">
+                <img src="{{ first_icon_src }}" alt="" role="presentation" style="width:16px;height:16px;" />
+              </span>
+            {% endif %}
+            <p class="topnav-style2-mobile-title">{{ tab.tab_title }}</p>
+          </div>
+          <div class="topnav-style2-mobile-body">
+            {% for item in accordion_items %}
+              <div class="topnav-style2-mobile-feature">
+                <div class="topnav-style2-mobile-dot"></div>
+                <div class="topnav-style2-mobile-copy">
+                  <strong>{{ item.content_title }}</strong>
+                  <div class="topnav-style2-mobile-desc breakdance-rich-text-styles">{{ item.content }}</div>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        </article>
+      {% endfor %}
+    </div>
+    {% endif %}
+
     <div class="bde-accordion-tabs show-desktop">
       {% if tab_count > 1 %}
       <div class="bde-tab-list" role="tablist">
@@ -190,7 +230,6 @@
           {% set accordion_items = (tab.accordion is defined and tab.accordion|length > 0) 
             ? tab.accordion 
             : [{
-                content_icon: '/wp-content/uploads/2025/07/Icon_Automate-1.svg',
                 content_image: '/wp-content/uploads/2025/06/Placeholder-620x500-1.png',
                 content_title: 'Lorem ipsum dolor sit amet consectetur sed do eiusmod',
                 content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
@@ -199,16 +238,9 @@
           <div class="bde-accordion-column">
             <div class="bde-accordion-list">
               {% for item in accordion_items %}
-                {% set has_icon = (item.content_icon is iterable and item.content_icon.url is defined)
-                  or (item.content_icon is defined and item.content_icon is not empty) %}
                 <div class="bde-accordion-item">
                   <div class="bde-accordion-content">
                     <button class="bde-accordion-trigger" aria-expanded="false">
-                      {% if has_icon %}
-                        <span class="bde-accordion-icon{{ is_active ? ' active' : '' }}">
-                          <img src="{{ item.content_icon is iterable ? item.content_icon.url : item.content_icon }}" alt="" role="presentation" style="width:36px;height:36px;" />
-                        </span>
-                      {% endif %}
                       <span class="bde-accordion-title">{{ item.content_title }}</span>
                     </button>
                     <div class="bde-accordion-panel">
