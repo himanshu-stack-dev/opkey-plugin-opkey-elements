@@ -219,23 +219,14 @@ class Quoteslidercenterheadshot extends \Breakdance\Elements\Element
     static function dependencies()
     {
         return ['0' =>  ['scripts' => ['%%BREAKDANCE_ELEMENTS_PLUGIN_URL%%dependencies-files/swiper@8/swiper-bundle.min.js','%%BREAKDANCE_ELEMENTS_PLUGIN_URL%%dependencies-files/breakdance-swiper/breakdance-swiper.js'],'inlineScripts' => [';(function(){
-  function syncNavHeadshot(swiperEl, activeIndex) {
-    const nav = swiperEl.closest(\'.module-quote\')?.querySelector(\'.slider-nav-headshot\');
-    if (!nav) return;
+  function resetNavProgress(swiper) {
+    const fill = swiper?.el?.closest(\'.module-quote\')?.querySelector(\'.slider-nav-progress-fill\');
+    if (!fill) return;
 
-    const slides = swiperEl.querySelectorAll(\'.swiper-slide\');
-    const source = slides[activeIndex]?.querySelector(\'.headshot-source img\');
-    if (!source) {
-      nav.innerHTML = \'\';
-      return;
-    }
-
-    const clone = source.cloneNode(true);
-    clone.removeAttribute(\'srcset\');
-    clone.removeAttribute(\'sizes\');
-    clone.loading = \'lazy\';
-    nav.innerHTML = \'\';
-    nav.appendChild(clone);
+    const delay = swiper?.params?.autoplay?.delay || 5000;
+    fill.style.animation = \'none\';
+    void fill.offsetWidth;
+    fill.style.animation = \'quoteSliderProgress \' + delay + \'ms linear forwards\';
   }
 
   const config = {
@@ -258,10 +249,10 @@ class Quoteslidercenterheadshot extends \Breakdance\Elements\Element
     },
     on: {
       init: function(swiper) {
-        syncNavHeadshot(swiper.el, swiper.realIndex || 0);
+        resetNavProgress(swiper);
       },
       slideChange: function(swiper) {
-        syncNavHeadshot(swiper.el, swiper.realIndex || 0);
+        resetNavProgress(swiper);
       }
     }
   };
@@ -273,7 +264,7 @@ class Quoteslidercenterheadshot extends \Breakdance\Elements\Element
         if (!el.swiper) {
           new Swiper(el, config);
         } else {
-          syncNavHeadshot(el, el.swiper.realIndex || 0);
+          resetNavProgress(el.swiper);
         }
       });
   }

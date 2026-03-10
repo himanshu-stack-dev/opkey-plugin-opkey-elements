@@ -52,7 +52,7 @@
 
             <div class="ucs-right">
               {% if slide.right_image is defined and slide.right_image is not empty and (slide.right_image.url is defined or slide.right_image.ID is defined or slide.right_image.id is defined) %}
-                {{ macros.image(slide.right_image, content.content.size, alt, lazyLoad) }}
+                {{ macros.image(slide.right_image, content.content.size, slide.right_image_alt|default(''), lazyLoad) }}
               {% else %}
                 <div class="ucs-image-placeholder" aria-hidden="true"></div>
               {% endif %}
@@ -95,7 +95,7 @@
         {% endif %}
         <div class="ucs-right">
           {% if slide.right_image is defined and slide.right_image is not empty and (slide.right_image.url is defined or slide.right_image.ID is defined or slide.right_image.id is defined) %}
-            {{ macros.image(slide.right_image, content.content.size, alt, lazyLoad) }}
+            {{ macros.image(slide.right_image, content.content.size, slide.right_image_alt|default(''), lazyLoad) }}
           {% else %}
             <div class="ucs-image-placeholder" aria-hidden="true"></div>
           {% endif %}

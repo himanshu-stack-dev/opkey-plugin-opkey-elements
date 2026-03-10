@@ -39,15 +39,14 @@
                       <h4 class="bde-basicslider__title">{{ item.title }}</h4>
                       <div class="bde-basicslider__text">{{ item.text }}</div>
 
-                      <div class="headshot-source" aria-hidden="true">
-                        {% if item.headshot is defined and item.headshot is not empty and (item.headshot.url is defined or item.headshot.ID is defined or item.headshot.id is defined) %}
-                          {{ macros.image(item.headshot, content.content.size, alt, lazyLoad) }}
-                        {% else %}
-                          <img src="{{ defaults.quote.headshot }}" alt="Placeholder headshot" loading="lazy">
-                        {% endif %}
-                      </div>
-
                       <div class="quote-attribution">
+                        <div class="quote-headshot">
+                          {% if item.headshot is defined and item.headshot is not empty and (item.headshot.url is defined or item.headshot.ID is defined or item.headshot.id is defined) %}
+                            {{ macros.image(item.headshot, content.content.size, alt, lazyLoad) }}
+                          {% else %}
+                            <img src="{{ defaults.quote.headshot }}" alt="Placeholder headshot" loading="lazy">
+                          {% endif %}
+                        </div>
                         <div class="name-company">
                           <div class="name">{{ item.name }}</div>
                           <div class="company">{{ item.role_company }}</div>
@@ -81,9 +80,8 @@
           aria-label="Previous slide">
         </button>
 
-        <div
-          class="slider-nav-headshot"
-          aria-hidden="true">
+        <div class="slider-nav-progress" aria-hidden="true">
+          <span class="slider-nav-progress-fill"></span>
         </div>
 
         <button

@@ -81,7 +81,8 @@ class Usecasescustomscroll extends \Breakdance\Elements\Element
                             ['label' => 'Impact Analysis'],
                             ['label' => 'Testing'],
                             ['label' => 'Configuration']
-                        ]
+                        ],
+                        'right_image_alt' => ''
                     ],
                     [
                         'eyebrow' => 'Use Case',
@@ -93,7 +94,8 @@ class Usecasescustomscroll extends \Breakdance\Elements\Element
                             ['label' => 'Discovery'],
                             ['label' => 'Design'],
                             ['label' => 'Training']
-                        ]
+                        ],
+                        'right_image_alt' => ''
                     ]
                 ]
             ]
@@ -225,6 +227,14 @@ class Usecasescustomscroll extends \Breakdance\Elements\Element
         false,
         false,
         [],
+      ), c(
+        "right_image_alt",
+        "Right Side Image Alt Text",
+        [],
+        ['type' => 'text', 'layout' => 'vertical', 'placeholder' => 'Describe the image for accessibility'],
+        false,
+        false,
+        [],
       )],
         ['type' => 'repeater', 'layout' => 'vertical', 'repeaterOptions' => ['titleTemplate' => '{title}', 'defaultTitle' => 'Slide', 'buttonName' => 'Add Slide']],
         false,
@@ -290,7 +300,8 @@ class Usecasescustomscroll extends \Breakdance\Elements\Element
             ['accepts' => 'string', 'path' => 'content.slides.description'],
             ['accepts' => 'string', 'path' => 'content.slides.cta_label'],
             ['accepts' => 'string', 'path' => 'content.slides.cta_text'],
-            ['accepts' => 'string', 'path' => 'content.slides.tags.label']
+            ['accepts' => 'string', 'path' => 'content.slides.tags.label'],
+            ['accepts' => 'string', 'path' => 'content.slides.right_image_alt']
         ];
     }
 

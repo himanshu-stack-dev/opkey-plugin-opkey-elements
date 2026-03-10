@@ -32,6 +32,7 @@
     : [
         {
           tab_title: 'Lorem ipsum dolor',
+          tab_description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. This is a short tab description.',
           tab_icon_svg: '<svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="2"/><path d="M5 8l2 2 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
           accordion: [
             {
@@ -50,6 +51,7 @@
         },
         {
           tab_title: 'Dolor sit amet',
+          tab_description: 'Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
           tab_icon_svg: '<svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="2"/><path d="M5 8l2 2 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
           accordion: [
             {
@@ -120,8 +122,9 @@
                     {% set media_src = item.media is iterable ? item.media.url|default('') : item.media|default('') %}
                     {% set legacy_image_src = item.content_image is iterable ? item.content_image.url|default('') : item.content_image|default('') %}
                     {% set src = media_src ? media_src : legacy_image_src %}
+                    {% set src_clean = src|split('?')|first|lower %}
 
-                    {% if src|lower ends with '.json' %}
+                    {% if src_clean ends with '.json' %}
                       <div class="bde-accordion-media">
                         <div
                           class="bde-lottie-animation bde-lottie-target lottie-wrapper"
@@ -132,6 +135,18 @@
                           data-speed="{{ item.animation_speed ?? 1 }}"
                           data-renderer="{{ content.lottie_settings.renderer ?? 'svg' }}">
                         </div>
+                      </div>
+                    {% elseif src_clean ends with '.webm' or src_clean ends with '.mp4' or src_clean ends with '.ogg' %}
+                      <div class="bde-accordion-media">
+                        <video
+                          src="{{ src }}"
+                          autoplay
+                          muted
+                          loop
+                          playsinline
+                          preload="metadata"
+                          style="max-width:100%; height:auto; display:block;">
+                        </video>
                       </div>
                     {% elseif src %}
                       <div class="bde-accordion-media">
@@ -199,7 +214,13 @@
                 <img src="{{ first_icon_src }}" alt="" role="presentation" style="width:16px;height:16px;" />
               </span>
             {% endif %}
-            <p class="topnav-style2-mobile-title">{{ tab.tab_title }}</p>
+            <div class="mobile-head-heading">
+              <p class="topnav-style2-mobile-title">{{ tab.tab_title }}</p>
+              {% if tab.tab_description %}
+                <div class="topnav-style2-tab-description breakdance-rich-text-styles">{{ tab.tab_description }}</div>
+              {% endif %}
+            </div>
+
           </div>
           <div class="topnav-style2-mobile-body">
             {% for item in accordion_items %}
@@ -221,16 +242,57 @@
       {% if tab_count > 1 %}
       <div class="bde-tab-list" role="tablist">
         {% for tab in tabs %}
-          <button
-            class="bde-tab"
-            id="tab-{{ loop.index }}"
-            type="button"
-            role="tab"
-            aria-controls="tabpanel-{{ loop.index }}"
-            aria-selected="{{ loop.first ? 'true' : 'false' }}"
-          >
-            {{ tab.tab_title }}
-          </button>
+          {% set desktop_tab_icon_svg = tab.tab_icon_svg|default('') %}
+          {% set desktop_tab_icon_src = '' %}
+          {% if tab.tab_icon is defined and tab.tab_icon is not empty %}
+            {% if tab.tab_icon is iterable %}
+              {% set desktop_tab_icon_src = tab.tab_icon.url|default('') %}
+            {% else %}
+              {% set desktop_tab_icon_src = tab.tab_icon %}
+            {% endif %}
+          {% endif %}
+
+          {% if selected_style == 'style-2' %}
+            <h2
+              class="bde-tab topnav-style2-tab-heading"
+              id="tab-{{ loop.index }}"
+              role="tab"
+              tabindex="{{ loop.first ? '0' : '-1' }}"
+              aria-controls="tabpanel-{{ loop.index }}"
+              aria-selected="{{ loop.first ? 'true' : 'false' }}"
+            >
+              {% if desktop_tab_icon_svg or desktop_tab_icon_src %}
+                <span class="topnav-style2-desktop-tab-icon" aria-hidden="true" style="display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;margin-right:8px;flex:0 0 auto;">
+                  {% if desktop_tab_icon_svg %}
+                    {{ desktop_tab_icon_svg|raw }}
+                  {% else %}
+                    <img src="{{ desktop_tab_icon_src }}" alt="" role="presentation" style="width:16px;height:16px;display:block;" />
+                  {% endif %}
+                </span>
+              {% endif %}
+              {{ tab.tab_title }}
+            </h2>
+          {% else %}
+            <button
+              class="bde-tab"
+              id="tab-{{ loop.index }}"
+              type="button"
+              role="tab"
+              aria-controls="tabpanel-{{ loop.index }}"
+              aria-selected="{{ loop.first ? 'true' : 'false' }}"
+            >
+              {% if desktop_tab_icon_svg or desktop_tab_icon_src %}
+                <span class="topnav-style2-desktop-tab-icon" aria-hidden="true" style="display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;margin-right:8px;flex:0 0 auto;">
+                  {% if desktop_tab_icon_svg %}
+                    {{ desktop_tab_icon_svg|raw }}
+                  {% else %}
+                    <img src="{{ desktop_tab_icon_src }}" alt="" role="presentation" style="width:16px;height:16px;display:block;" />
+                  {% endif %}
+                </span>
+              {% endif %}
+              {{ tab.tab_title }}
+            </button>
+          {% endif %}
         {% endfor %}
       </div>
       {% endif %}
@@ -250,6 +312,9 @@
 
           <div class="bde-accordion-column">
             <div class="bde-accordion-list">
+              {% if selected_style == 'style-2' and tab.tab_description %}
+                <div class="topnav-style2-tab-description breakdance-rich-text-styles">{{ tab.tab_description }}</div>
+              {% endif %}
               {% for item in accordion_items %}
                 {% set content_icon_src = item.content_icon is iterable ? item.content_icon.url|default('') : item.content_icon|default('') %}
                 <div class="bde-accordion-item{{ content_icon_src ? ' has-icon' : '' }}">
@@ -279,8 +344,9 @@
               {% set media_src = item.media is iterable ? item.media.url|default('') : item.media|default('') %}
               {% set legacy_image_src = item.content_image is iterable ? item.content_image.url|default('') : item.content_image|default('') %}
               {% set src = media_src ? media_src : legacy_image_src %}
+              {% set src_clean = src|split('?')|first|lower %}
 
-              {% if src|lower ends with '.json' %}
+              {% if src_clean ends with '.json' %}
                 <div class="bde-lottie-animation bde-lottie-target lottie-wrapper{{ is_active ? ' active' : '' }}"
                      style="{{ not is_active ? 'display: none;' : '' }}"
                      data-src="{{ src }}"
@@ -289,6 +355,19 @@
                      data-autoplay="{{ content.lottie_settings.autoplay ? 'true' : 'false' }}"
                      data-speed="{{ item.animation_speed ?? 1 }}"
                      data-renderer="{{ content.lottie_settings.renderer ?? 'svg' }}">
+                </div>
+              {% elseif src_clean ends with '.webm' or src_clean ends with '.mp4' or src_clean ends with '.ogg' %}
+                <div class="bde-accordion-image{{ is_active ? ' active' : '' }}"
+                     style="{{ not is_active ? 'display: none;' : '' }}">
+                  <video
+                    src="{{ src }}"
+                    autoplay
+                    muted
+                    loop
+                    playsinline
+                    preload="metadata"
+                    style="max-width:100%; height:auto; display:block;">
+                  </video>
                 </div>
               {% else %}
                 <div class="bde-accordion-image{{ is_active ? ' active' : '' }}"

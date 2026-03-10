@@ -258,6 +258,15 @@ class Topnavaccordion extends \Breakdance\Elements\Element
         [],
         
       ), c(
+        "tab_description",
+        "Tab Description",
+        [],
+        ['type' => 'text', 'layout' => 'vertical', 'textOptions' => ['multiline' => true], 'condition' => [[['path' => 'design.styles.style', 'operand' => 'equals', 'value' => 'style-2']]]],
+        false,
+        false,
+        [],
+        
+      ), c(
         "tab_icon_svg",
         "Tab Icon SVG Code",
         [],
@@ -412,6 +421,8 @@ class Topnavaccordion extends \Breakdance\Elements\Element
   }
 
   const AUTO_ACCORDION_MS = 5000;
+  const AUTO_ACCORDION_VIDEO_FALLBACK_MS = 12000;
+  const AUTO_ACCORDION_MAX_MS = 20000;
   const AUTO_TICK_MS = 30;
   let autoAccordionTimer = null;
 
@@ -430,7 +441,8 @@ class Topnavaccordion extends \Breakdance\Elements\Element
     const panel = getVisibleDesktopPanel(tabPanels);
     if (!panel) return null;
 
-    panel.querySelectorAll(\'.bde-auto-progress\').forEach(el => el.remove());
+    // Remove any existing auto-progress bars inside this module so
+    module.querySelectorAll(\'.bde-auto-progress\').forEach(el => el.remove());
 
     const activeTrigger = panel.querySelector(\'.bde-accordion-trigger[aria-expanded="true"]\')
       || panel.querySelector(\'.bde-accordion-trigger\');
@@ -445,6 +457,28 @@ class Topnavaccordion extends \Breakdance\Elements\Element
     return progress;
   }
 
+  function getAutoAccordionDurationMs(activePanel, activeTriggers) {
+    const currentIndex = activeTriggers.findIndex(t => t.getAttribute(\'aria-expanded\') === \'true\');
+    if (currentIndex === -1) return AUTO_ACCORDION_MS;
+
+    const mediaItems = Array.from(
+      activePanel.querySelectorAll(\'.bde-accordion-media > .bde-accordion-image, .bde-accordion-media > .bde-lottie-animation\')
+    );
+    const activeMedia = mediaItems[currentIndex];
+    if (!activeMedia) return AUTO_ACCORDION_MS;
+
+    const videoEl = activeMedia.querySelector(\'video\');
+    if (!videoEl) return AUTO_ACCORDION_MS;
+
+    const durationSeconds = Number(videoEl.duration);
+    if (Number.isFinite(durationSeconds) && durationSeconds > 0) {
+      const durationMs = Math.round(durationSeconds * 1000 + 1200);
+      return Math.min(Math.max(durationMs, AUTO_ACCORDION_VIDEO_FALLBACK_MS), AUTO_ACCORDION_MAX_MS);
+    }
+
+    return AUTO_ACCORDION_VIDEO_FALLBACK_MS;
+  }
+
   function startAutoAccordion(tabPanels) {
     clearAutoAccordionTimer();
     if (isMobile() || isBuilderEditor()) return;
@@ -457,6 +491,7 @@ class Topnavaccordion extends \Breakdance\Elements\Element
 
     let progressEl = mountProgressBar(tabPanels);
     let startTime = Date.now();
+    let cycleDurationMs = getAutoAccordionDurationMs(panel, triggers);
 
     autoAccordionTimer = setInterval(() => {
       const activePanel = getVisibleDesktopPanel(tabPanels);
@@ -465,13 +500,20 @@ class Topnavaccordion extends \Breakdance\Elements\Element
       const activeTriggers = Array.from(activePanel.querySelectorAll(\'.bde-accordion-trigger\'));
       if (activeTriggers.length < 2) return;
 
+      const nextDurationMs = getAutoAccordionDurationMs(activePanel, activeTriggers);
+      if (nextDurationMs !== cycleDurationMs) {
+        cycleDurationMs = nextDurationMs;
+        startTime = Date.now();
+        if (progressEl) progressEl.style.width = \'0%\';
+      }
+
       if (!progressEl || !document.body.contains(progressEl)) {
         progressEl = mountProgressBar(tabPanels);
         startTime = Date.now();
       }
 
       const elapsed = Date.now() - startTime;
-      const pct = Math.min(elapsed / AUTO_ACCORDION_MS, 1);
+      const pct = Math.min(elapsed / cycleDurationMs, 1);
       if (progressEl) progressEl.style.width = (pct * 100) + \'%\';
 
       if (pct < 1) return;
@@ -548,8 +590,9 @@ class Topnavaccordion extends \Breakdance\Elements\Element
           b.setAttribute(\'aria-selected\', active);
           tabPanels[j].style.display = active ? \'\' : \'none\';
         });
+        // Open the first accordion item in the newly active tab;
+        // its click handler will restart the auto-accordion.
         tabPanels[ti].querySelector(\'.bde-accordion-trigger\')?.click();
-        startAutoAccordion(tabPanels);
       });
     });
   }
