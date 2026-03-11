@@ -241,6 +241,7 @@ class Bannercards extends \Breakdance\Elements\Element
     const cards = Array.from(root.querySelectorAll(".bde-banner-card"));
     if (cards.length < 2) return;
 
+    // Order is back-to-front; last index in this array is the visible front card.
     let order = cards.map((_, i) => i);
     const gap = parseInt(root.dataset.stackOffset || "36", 10) || 36;
     const desktopHorizontalStep = Math.max(10, Math.round(gap * 0.55));
@@ -254,9 +255,18 @@ class Bannercards extends \Breakdance\Elements\Element
 
     root.style.setProperty("--bde-stack-right-space", maxXOffset + "px");
 
+    // Move a clicked card to the front, and send the previously front card to the very back.
     function moveCardToFront(index) {
-      order = order.filter(i => i !== index);
-      order.push(index);
+      const currentFront = getFrontIndex();
+      if (index === currentFront) {
+        // Nothing to change if the already-front card is clicked.
+        return;
+      }
+
+      const middle = order.filter(i => i !== index && i !== currentFront);
+      // New order: previous front at the very back of the stack,
+      // middle cards keep their relative order, clicked card becomes new front.
+      order = [currentFront, ...middle, index];
       render();
       scheduleNext();
     }
@@ -292,9 +302,16 @@ class Bannercards extends \Breakdance\Elements\Element
       return order[order.length - 1];
     }
 
-    function getNextIndex() {
-      const frontIndex = getFrontIndex();
-      return (frontIndex + 1) % cards.length;
+    // Rotate automatically: current front goes to very back,
+    // next card in the stack becomes the new front.
+    function advanceAuto() {
+      const currentFront = getFrontIndex();
+      const withoutFront = order.filter(i => i !== currentFront);
+      // Put previous front at the back of the stack (first in array),
+      // so visually it appears behind all others.
+      order = [currentFront, ...withoutFront];
+      render();
+      scheduleNext();
     }
 
     function getFrontDelayMs() {
@@ -322,7 +339,7 @@ class Bannercards extends \Breakdance\Elements\Element
       clearAutoTimer();
       const waitMs = getFrontDelayMs();
       autoTimer = setTimeout(function () {
-        moveCardToFront(getNextIndex());
+        advanceAuto();
       }, waitMs);
     }
 

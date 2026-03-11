@@ -31,15 +31,27 @@
       <p class="logo-marquee-label">{{ eyebrow }}</p>
     {% endif %}
     <div class="logo-marquee-track-wrap">
-      <div class="logo-marquee-track" role="list" aria-label="Customer logos">
-        {% for repeat in [1,2,3] %}
+      {% set marquee_speed = design.slider.settings.speed.number|default(design.slider.settings.speed|default(525)) %}
+      {% set autoplay_disabled = design.slider.settings.autoplay|default('enabled') == 'disabled' %}
+      <div
+        class="un-logo-bar__marquee-content carousel-type__marquee logo-marquee-track {{ autoplay_disabled ? 'marquee-paused' : '' }}"
+        role="list"
+        aria-label="Customer logos"
+        data-logo-count="{{ logo_items|length }}"
+        data-marquee-duration="{{ marquee_speed }}"
+      >
+        {# Use same slider structure as style 1 (for JS/loop behaviour) #}
+        {% for repeat in [1,2,3,4,5,6] %}
           {% for item in logo_items %}
             {% if item is iterable %}
-              <div class="logo-marquee-logo">
-                {{ macros.image(item.image, item.size, item.alt, true) }}
+              {% set media = item.image is defined and item.image ? item.image : item %}
+              {% set size  = item.size  is defined ? item.size  : null %}
+              {% set alt   = item.alt   is defined ? item.alt   : 'Logo' %}
+              <div class="un-logo-bar__logo-wrapper logo-marquee-logo">
+                {{ macros.image(media, size, alt, true) }}
               </div>
             {% else %}
-              <div class="logo-marquee-logo">
+              <div class="un-logo-bar__logo-wrapper logo-marquee-logo">
                 <img src="{{ site_url ~ item }}" alt="Logo" loading="lazy" />
               </div>
             {% endif %}
