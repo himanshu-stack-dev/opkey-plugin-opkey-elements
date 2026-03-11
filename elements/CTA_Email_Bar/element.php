@@ -70,7 +70,23 @@ class CTAemailbar extends \Breakdance\Elements\Element
 
     static function defaultProperties()
     {
-        return ['content' => ['eyebrow' => ['text' => 'Lorem ipsum dolor'], 'heading' => ['text' => 'Lorem ipsum dolor sit amet'], 'subhead' => ['text' => 'Lorem ipsum dolor sit amet consectetur adipiscing elit'], 'content' => ['text' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.'], 'buttons' => ['primary_button' => ['text' => 'Contact sales', 'link' => '#'], 'secondary_button' => ['text' => 'Learn more', 'link' => '#']]]];
+        return [
+            'content' => [
+                'eyebrow' => ['text' => 'Lorem ipsum dolor'],
+                'heading' => ['text' => 'Lorem ipsum dolor sit amet'],
+                'subhead' => ['text' => 'Lorem ipsum dolor sit amet consectetur adipiscing elit'],
+                'content' => ['text' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.'],
+                'buttons' => [
+                    'primary_button' => ['text' => 'Contact sales', 'link' => '#'],
+                    'secondary_button' => ['text' => 'Learn more', 'link' => '#']
+                ]
+            ],
+            'design' => [
+                'styles' => [
+                    'style' => 'style-1'
+                ]
+            ]
+        ];
     }
 
     static function defaultChildren()
@@ -87,6 +103,22 @@ class CTAemailbar extends \Breakdance\Elements\Element
     static function designControls()
     {
         return [c(
+        "styles",
+        "Style",
+        [c(
+        "style",
+        "Style",
+        [],
+        ['type' => 'button_bar', 'layout' => 'vertical', 'items' => [['value' => 'style-1', 'text' => 'Style 1'], ['value' => 'style-2', 'text' => 'Style 2']], 'buttonBarOptions' => ['size' => 'small', 'layout' => 'default']],
+        false,
+        false,
+        [],
+      )],
+        ['type' => 'section'],
+        false,
+        false,
+        [],
+      ), c(
         "theme_color",
         "Theme Color",
         [c(

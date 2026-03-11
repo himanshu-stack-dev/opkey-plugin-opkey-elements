@@ -1,0 +1,144 @@
+{% set has_cards = content.cards is defined and content.cards|length > 0 %}
+{% set cards = has_cards
+  ? content.cards
+  : [
+      {
+        title: 'Performance Testing',
+        media: '/wp-content/plugins/opkey-elements/assets/Placeholder-1280x500.svg'
+      },
+      {
+        title: 'AI Powered API Testing',
+        media: '/wp-content/plugins/opkey-elements/assets/Placeholder-1280x500.svg'
+      },
+      {
+        title: 'Record Replay API Traffic',
+        media: '/wp-content/plugins/opkey-elements/assets/Placeholder-1280x500.svg'
+      },
+      {
+        title: 'Coverage Reporting',
+        media: '/wp-content/plugins/opkey-elements/assets/Placeholder-1280x500.svg'
+      }
+    ]
+%}
+
+<div class="bde-banner-cards">
+  <div class="bde-banner-cards-stack" style="--bde-card-count: {{ cards|length }};" data-stack-offset="{{ design.layout.stack_offset|default(36) }}" data-image-delay-ms="{{ design.layout.image_delay_ms|default(5000) }}">
+    {% for card in cards %}
+      {% set media_obj = card.media|default('') %}
+      {% set media_src = media_obj is iterable
+        ? (
+          media_obj.url
+            |default(
+              media_obj.src
+                |default(
+                  media_obj.file
+                    |default(
+                      media_obj.source_url
+                        |default(
+                          media_obj.mediaUrl
+                            |default(
+                              media_obj.original.url
+                                |default(
+                                  media_obj.sizes.full.url
+                                    |default('')
+                                )
+                            )
+                        )
+                    )
+                )
+            )
+        )
+        : media_obj|default('') %}
+      {% set src = media_src ?: '/wp-content/plugins/opkey-elements/assets/Placeholder-1280x500.svg' %}
+      {% set src_clean = src|split('?')|first|lower %}
+      {% set media_mime = media_obj is iterable
+        ? (
+          media_obj.mime
+            |default(
+              media_obj.mime_type
+                |default(
+                  media_obj.mimetype
+                    |default('')
+                )
+            )
+        )|lower
+        : '' %}
+      {% set is_video = src_clean ends with '.webm'
+        or src_clean ends with '.mp4'
+        or src_clean ends with '.ogg'
+        or src_clean ends with '.mov'
+        or src_clean ends with '.m4v'
+        or (media_mime and media_mime starts with 'video/') %}
+      {% set video_poster = '' %}
+      {% if is_video and media_obj is iterable %}
+        {#
+          Try to resolve a poster/thumbnail image for the video from common
+          WordPress attachment shapes (image poster, sizes, etc.).
+        #}
+        {% set poster_source = media_obj.image
+          |default(
+            media_obj.poster
+              |default(
+                media_obj.thumb
+                  |default(
+                    media_obj.sizes.poster
+                      |default(
+                        media_obj.sizes.medium
+                          |default(
+                            media_obj.sizes.large
+                              |default(
+                                media_obj.sizes.full
+                                  |default(null)
+                              )
+                          )
+                      )
+                  )
+              )
+          )
+        %}
+        {% if poster_source is iterable %}
+          {% set video_poster = poster_source.url
+            |default(
+              poster_source.src
+                |default(
+                  poster_source.file
+                    |default(
+                      poster_source.source_url
+                        |default('')
+                    )
+                )
+            )
+          %}
+        {% elseif poster_source is not empty %}
+          {% set video_poster = poster_source %}
+        {% endif %}
+      {% endif %}
+
+      <article class="bde-banner-card{{ loop.last ? ' is-front' : '' }}">
+        <button class="bde-banner-card-bar" type="button" aria-label="{{ card.title|default('Banner card') }}">
+          <span class="bde-banner-card-title">{{ card.title|default('Banner card') }}</span>
+        </button>
+
+        <div class="bde-banner-card-media">
+          {% if is_video and media_src %}
+            <video
+              class="bde-banner-card-video"
+              src="{{ src }}"
+              {% if video_poster %}poster="{{ video_poster }}"{% endif %}
+              autoplay
+              muted
+              loop
+              playsinline
+              preload="metadata">
+            </video>
+          {% elseif media_obj is iterable and media_obj is not empty and (media_obj.url is defined or media_obj.ID is defined or media_obj.id is defined) %}
+            {{ macros.image(media_obj, content.content.size, card.title|default('Banner card media'), false) }}
+          {% else %}
+            <img src="{{ src }}" alt="{{ card.title|default('Banner card media') }}" />
+          {% endif %}
+        </div>
+      </article>
+    {% endfor %}
+  </div>
+</div>
+

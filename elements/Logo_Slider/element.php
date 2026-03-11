@@ -70,7 +70,29 @@ class Logoslider extends \Breakdance\Elements\Element
 
     static function defaultProperties()
     {
-        return ['content' => ['eyebrow' => ['text' => 'Lorem ipsum dolor'], 'heading' => ['text' => 'Lorem ipsum dolor sit amet'], 'subhead' => ['text' => 'Lorem ipsum dolor sit amet consectetur adipiscing elit'], 'content' => ['text' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.'], 'buttons' => ['primary_button' => ['text' => 'Contact sales', 'link' => '#'], 'secondary_button' => ['text' => 'Learn more', 'link' => '#']]]];
+        return [
+            'content' => [
+                'eyebrow' => ['text' => 'Lorem ipsum dolor'],
+                'heading' => ['text' => 'Lorem ipsum dolor sit amet'],
+                'subhead' => ['text' => 'Lorem ipsum dolor sit amet consectetur adipiscing elit'],
+                'content' => ['text' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.'],
+                'buttons' => [
+                    'primary_button' => ['text' => 'Contact sales', 'link' => '#'],
+                    'secondary_button' => ['text' => 'Learn more', 'link' => '#']
+                ],
+            ],
+            'design' => [
+                'style' => [
+                    'variant' => 'style1',
+                ],
+                'slider' => [
+                    'settings' => [
+                        'speed' => ['number' => 525, 'unit' => 's', 'style' => '525s'],
+                        'autoplay' => 'enabled',
+                    ],
+                ],
+            ],
+        ];
     }
 
     static function defaultChildren()
@@ -87,13 +109,77 @@ class Logoslider extends \Breakdance\Elements\Element
     static function designControls()
     {
         return [c(
+        "style",
+        "Style",
+        [c(
+        "variant",
+        "Variant",
+        [],
+        ['type' => 'button_bar', 'layout' => 'vertical', 'items' => [['value' => 'style1', 'text' => 'Style 1'], ['value' => 'style2', 'text' => 'Style 2']], 'buttonBarOptions' => ['size' => 'small', 'layout' => 'default']],
+        false,
+        false,
+        [],
+      )],
+        ['type' => 'section'],
+        false,
+        false,
+        [],
+      ), c(
+        "layout",
+        "Layout",
+        [c(
+        "width",
+        "Width",
+        [],
+        ['type' => 'dropdown', 'layout' => 'vertical', 'items' => [['value' => 'full_width', 'text' => 'Full width'], ['value' => 'container', 'text' => 'Container']]],
+        false,
+        false,
+        [],
+      )],
+        ['type' => 'section'],
+        false,
+        false,
+        [],
+      ), c(
+        "slider",
+        "Slider",
+        [c(
+        "settings",
+        "Settings",
+        [c(
+        "speed",
+        "Speed",
+        [],
+        ['type' => 'unit', 'layout' => 'inline', 'unitOptions' => ['types' => ['s'], 'defaultType' => 's'], 'rangeOptions' => ['min' => 10, 'max' => 600, 'step' => 10]],
+        false,
+        false,
+        [],
+      ), c(
+        "autoplay",
+        "Autoplay",
+        [],
+        ['type' => 'dropdown', 'layout' => 'inline', 'items' => [['value' => 'disabled', 'text' => 'Disabled'], ['value' => 'enabled', 'text' => 'Enabled']]],
+        false,
+        false,
+        [],
+      )],
+        ['type' => 'section', 'layout' => 'vertical', 'sectionOptions' => ['type' => 'popout']],
+        false,
+        false,
+        [],
+      )],
+        ['type' => 'section'],
+        false,
+        false,
+        [],
+      ), c(
         "theme_color",
         "Theme Color",
         [c(
         "color",
         "Color",
         [],
-        ['type' => 'button_bar', 'layout' => 'vertical', 'items' => [['value' => 'white', 'text' => 'White'], ['text' => 'Light Gray', 'value' => 'light-gray'], ['text' => 'Purple', 'value' => 'purple']], 'buttonBarOptions' => ['size' => 'small', 'layout' => 'default']],
+        ['type' => 'button_bar', 'layout' => 'vertical', 'items' => [['value' => 'white', 'text' => 'White'], ['text' => 'Light Gray', 'value' => 'light-gray'], ['text' => 'Purple', 'value' => 'purple'], ['text' => 'Transparent', 'value' => 'transparent']], 'buttonBarOptions' => ['size' => 'small', 'layout' => 'default']],
         false,
         false,
         [],
@@ -147,7 +233,8 @@ class Logoslider extends \Breakdance\Elements\Element
         false,
         false,
         [],
-      ), c(
+      ),
+      c(
         "heading",
         "Heading",
         [c(
@@ -159,7 +246,7 @@ class Logoslider extends \Breakdance\Elements\Element
         false,
         [],
       )],
-        ['type' => 'section', 'layout' => 'vertical'],
+        ['type' => 'section', 'layout' => 'vertical', 'condition' => [[['path' => 'design.style.variant', 'operand' => 'equals', 'value' => 'style1']]]],
         false,
         false,
         [],
@@ -175,7 +262,7 @@ class Logoslider extends \Breakdance\Elements\Element
         false,
         [],
       )],
-        ['type' => 'section', 'layout' => 'vertical'],
+        ['type' => 'section', 'layout' => 'vertical', 'condition' => [[['path' => 'design.style.variant', 'operand' => 'equals', 'value' => 'style1']]]],
         false,
         false,
         [],
@@ -191,7 +278,7 @@ class Logoslider extends \Breakdance\Elements\Element
         false,
         [],
       )],
-        ['type' => 'section', 'layout' => 'vertical'],
+        ['type' => 'section', 'layout' => 'vertical', 'condition' => [[['path' => 'design.style.variant', 'operand' => 'equals', 'value' => 'style1']]]],
         false,
         false,
         [],
@@ -209,7 +296,7 @@ class Logoslider extends \Breakdance\Elements\Element
       "secondary_button",
        ['condition' => [[['path' => 'content.buttons.remove_', 'operand' => 'is not set', 'value' => '']]], 'type' => 'popout']
      )],
-        ['type' => 'section', 'layout' => 'vertical'],
+        ['type' => 'section', 'layout' => 'vertical', 'condition' => [[['path' => 'design.style.variant', 'operand' => 'equals', 'value' => 'style1']]]],
         false,
         false,
         [],
@@ -249,13 +336,15 @@ class Logoslider extends \Breakdance\Elements\Element
     {
         return ['0' =>  ['inlineScripts' => ['function updateLogoBarMarquee() {
   document.querySelectorAll(\'.un-logo-bar__marquee-content.carousel-type__marquee\').forEach(function(el) {
-    const logos = el.querySelectorAll(".un-logo-bar__logo-wrapper");
-    const numLogos = logos.length / 3;
-    const target = 525;         
-    const secondsPerLogo = target / numLogos;
-    const min = 0, max = 10000; 
-    const duration = Math.max(min, Math.min(max, numLogos * secondsPerLogo)); // = 525
-    el.style.setProperty(\'--marquee-duration\', `${duration}s`);
+    var wrapper = el.closest(\'.autogenerated-bce-logoslider\');
+    var isStyle2 = wrapper && wrapper.classList.contains(\'logoslider--style2\');
+
+    // Style 2: fixed fast speed, independent of editor control
+    var durationSec = isStyle2
+      ? 525
+      : (parseFloat(el.getAttribute(\'data-marquee-duration\')) || 525);
+
+    el.style.setProperty(\'--marquee-duration\', durationSec + \'s\');
   });
 }
 window.addEventListener(\'DOMContentLoaded\', updateLogoBarMarquee);
@@ -313,8 +402,17 @@ setTimeout(updateLogoBarMarquee, 100);
 
     static function additionalClasses()
     {
-        return [['name' => 'theme--white', 'template' => '{{ design.theme_color.color == \'white\' or not design.theme_color.color }}
-'], ['name' => 'theme--light-gray', 'template' => '{{ design.theme_color.color == \'light-gray\' }}'], ['name' => 'theme--purple', 'template' => '{{ design.theme_color.color == \'purple\' }}']];
+        return [
+            ['name' => 'layout--full-width', 'template' => '{{ design.layout.width == \'full_width\' or not design.layout.width }}'],
+            ['name' => 'layout--container', 'template' => '{{ design.layout.width == \'container\' }}'],
+            ['name' => 'logoslider--style1', 'template' => '{{ design.style.variant == \'style1\' or not design.style.variant }}'],
+            ['name' => 'logoslider--style2', 'template' => '{{ design.style.variant == \'style2\' }}'],
+            ['name' => 'theme--white', 'template' => '{{ design.theme_color.color == \'white\' or not design.theme_color.color }}
+'],
+            ['name' => 'theme--light-gray', 'template' => '{{ design.theme_color.color == \'light-gray\' }}'],
+            ['name' => 'theme--purple', 'template' => '{{ design.theme_color.color == \'purple\' }}'],
+            ['name' => 'theme--transparent', 'template' => '{{ design.theme_color.color == \'transparent\' }}'],
+        ];
     }
 
     static function projectManagement()

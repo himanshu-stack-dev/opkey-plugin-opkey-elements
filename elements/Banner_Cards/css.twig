@@ -1,0 +1,15 @@
+%%SELECTOR%% .bde-banner-cards-stack {
+  --bde-banner-height: {{ design.layout.card_height|default(310) }}px;
+  --bde-banner-bar-height: {{ design.layout.bar_height|default(60) }}px;
+  --bde-banner-gap: {{ design.layout.stack_offset|default(36) }}px;
+}
+
+/* PADDING */
+{% if design.remove_padding.remove_top and design.remove_padding.remove_bottom %}
+    %%SELECTOR%% { padding-top: 0 !important; padding-bottom: 0 !important; }
+{% elseif design.remove_padding.remove_top %}
+    %%SELECTOR%% { padding-top: 0 !important; }
+{% elseif design.remove_padding.remove_bottom %}
+    %%SELECTOR%% { padding-bottom: 0 !important; }
+{% endif %}
+

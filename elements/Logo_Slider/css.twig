@@ -1,3 +1,39 @@
+/* LAYOUT: Container (Bootstrap-style) when "Container" is selected */
+{% if design.layout.width|default('full_width') == 'container' %}
+%%SELECTOR%% .container {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 12px;
+  padding-right: 12px;
+  box-sizing: border-box;
+}
+@media (min-width: 576px) {
+  %%SELECTOR%% .container { max-width: 540px; }
+}
+@media (min-width: 768px) {
+  %%SELECTOR%% .container { max-width: 720px; padding-left: 15px; padding-right: 15px; }
+}
+@media (min-width: 992px) {
+  %%SELECTOR%% .container { max-width: 960px; }
+}
+@media (min-width: 1200px) {
+  %%SELECTOR%% .container { max-width: 1140px; }
+}
+@media (min-width: 1400px) {
+  %%SELECTOR%% .container { max-width: 1320px; padding-left: 15px; padding-right: 15px; }
+}
+{% endif %}
+
+/* SLIDER SETTINGS: Speed (duration in seconds) and Autoplay */
+{% set slider_speed = design.slider.settings.speed.number|default(design.slider.settings.speed|default(525)) %}
+%%SELECTOR%% .un-logo-bar__marquee-content.carousel-type__marquee {
+  --marquee-duration: {{ slider_speed }}s;
+}
+%%SELECTOR%% .un-logo-bar__marquee-content.carousel-type__marquee.marquee-paused {
+  animation-play-state: paused;
+}
+
 /* PADDING */
 {% if design.remove_padding.remove_top and design.remove_padding.remove_bottom %}
   %%SELECTOR%% { padding-top: 0 !important; padding-bottom: 0 !important; }
@@ -52,6 +88,8 @@
   %%SELECTOR%% { background: #EDF7F9!important; }
 {% elseif design.theme_color.color == 'white' %}
   %%SELECTOR%% { background: #fff!important; }
+{% elseif design.theme_color.color == 'transparent' %}
+  %%SELECTOR%% { background: transparent; }
 {% else %}
 	%%SELECTOR%% { background: transparent; }
 {% endif %}

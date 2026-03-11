@@ -1,0 +1,32 @@
+/* PADDING */
+{% if design.remove_padding.remove_top and design.remove_padding.remove_bottom %}
+    %%SELECTOR%% { padding-top: 0 !important; padding-bottom: 0 !important; }
+{% elseif design.remove_padding.remove_top %}
+    %%SELECTOR%% { padding-top: 0 !important; }
+{% elseif design.remove_padding.remove_bottom %}
+    %%SELECTOR%% { padding-bottom: 0 !important; }
+{% endif %}
+
+/* THEME */
+{% if design.theme_color.color == 'purple' %}
+    %%SELECTOR%%,
+    %%SELECTOR%% .ucs-stack-card,
+    %%SELECTOR%% .ucs-mobile-card {
+      background: #190D2C;
+      color: #fff;
+    }
+    %%SELECTOR%% h3,
+    %%SELECTOR%% h4,
+    %%SELECTOR%% .ucs-desc,
+    %%SELECTOR%% .ucs-cta { color: #fff; }
+    %%SELECTOR%% .ucs-tags span {
+      background: rgba(129, 240, 253, 0.1);
+      border-color: rgba(129, 240, 253, 0.45);
+      color: #81F0FD;
+    }
+{% elseif design.theme_color.color == 'light-gray' %}
+    %%SELECTOR%% .ucs-stack-card,
+    %%SELECTOR%% .ucs-mobile-card {
+      background: #EDF7F9;
+    }
+{% endif %}

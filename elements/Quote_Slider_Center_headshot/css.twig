@@ -1,0 +1,44 @@
+/* PADDING */
+{% if design.remove_padding.remove_top and design.remove_padding.remove_bottom %}
+    %%SELECTOR%% { padding-top: 0 !important; padding-bottom: 0 !important; }
+{% elseif design.remove_padding.remove_top %}
+    %%SELECTOR%% { padding-top: 0 !important; }
+{% elseif design.remove_padding.remove_bottom %}
+    %%SELECTOR%% { padding-bottom: 0 !important; }
+{% endif %}
+
+/* THEME */
+{% if design.theme_color.color == 'purple' %}
+    %%SELECTOR%%, %%SELECTOR%% .gradient-wrapper { background: #190D2C; color: #fff; }
+    %%SELECTOR%% .quote-content { background: linear-gradient(90deg, #190D2C 0%, #81F0FD 100%); }
+    %%SELECTOR%% h4 { color: #fff; }
+    %%SELECTOR%% .name, %%SELECTOR%% .company { color: #CEDDDF; }
+
+    %%SELECTOR%% .opkey-link-text .button-atom__text,
+    %%SELECTOR%% .module-quote .opkey-link-text { color: #fff !important; }
+    %%SELECTOR%% .opkey-link-text .button-atom__text::before,
+    %%SELECTOR%% .opkey-link-text .button-atom__text::after,
+    %%SELECTOR%% .module-quote .opkey-link-text .button-atom__text::before,
+    %%SELECTOR%% .module-quote .opkey-link-text .button-atom__text::after {
+      border-top: 2px solid #fff !important;
+      border-right: 2px solid #fff !important;
+    }
+    %%SELECTOR%% .opkey-link-text:hover .button-atom__text,
+    %%SELECTOR%% .opkey-link-text .button-atom__text:hover,
+    %%SELECTOR%% .opkey-link-text .button-atom__text:focus { color: #81F0FD !important; }
+    %%SELECTOR%% .opkey-link-text .button-atom__text:hover::before,
+    %%SELECTOR%% .opkey-link-text .button-atom__text:focus::before,
+    %%SELECTOR%% .opkey-link-text .button-atom__text:hover::after,
+    %%SELECTOR%% .opkey-link-text .button-atom__text:focus::after {
+      border-top: 2px solid #81F0FD !important;
+      border-right: 2px solid #81F0FD !important;
+    }
+
+    %%SELECTOR%% .custom-nav-btn { background: #fff; }
+    %%SELECTOR%% .custom-nav-btn::after { border-color: black; }
+    %%SELECTOR%% .slider-navigation .swiper-pagination-bullet { background: transparent; border: 2px solid white; }
+    %%SELECTOR%% .slider-navigation .swiper-pagination-bullet-active { background: white; }
+{% elseif design.theme_color.color == 'light-gray' %}
+    %%SELECTOR%% .quote-content { background: linear-gradient(90deg, #EDF7F9 0%, #be72f8 100%); }
+    %%SELECTOR%%, %%SELECTOR%% .gradient-wrapper { background: #EDF7F9; }
+{% endif %}

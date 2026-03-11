@@ -70,7 +70,23 @@ class Topnavaccordion extends \Breakdance\Elements\Element
 
     static function defaultProperties()
     {
-        return ['content' => ['eyebrow' => ['text' => 'Lorem ipsum dolor'], 'heading' => ['text' => 'Lorem ipsum dolor sit amet'], 'subhead' => ['text' => 'Lorem ipsum dolor sit amet consectetur adipiscing elit'], 'content' => ['text' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.'], 'buttons' => ['primary_button' => ['text' => 'Contact sales', 'link' => '#'], 'secondary_button' => ['text' => 'Learn more', 'link' => '#']]]];
+        return [
+            'content' => [
+                'eyebrow' => ['text' => 'Lorem ipsum dolor'],
+                'heading' => ['text' => 'Lorem ipsum dolor sit amet'],
+                'subhead' => ['text' => 'Lorem ipsum dolor sit amet consectetur adipiscing elit'],
+                'content' => ['text' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.'],
+                'buttons' => [
+                    'primary_button' => ['text' => 'Contact sales', 'link' => '#'],
+                    'secondary_button' => ['text' => 'Learn more', 'link' => '#']
+                ]
+            ],
+            'design' => [
+                'styles' => [
+                    'style' => 'style-1'
+                ]
+            ]
+        ];
     }
 
     static function defaultChildren()
@@ -94,6 +110,24 @@ class Topnavaccordion extends \Breakdance\Elements\Element
         "Color",
         [],
         ['type' => 'button_bar', 'layout' => 'vertical', 'items' => [['value' => 'white', 'text' => 'White'], ['text' => 'Light Gray', 'value' => 'light-gray'], ['text' => 'Purple', 'value' => 'purple']], 'buttonBarOptions' => ['size' => 'small', 'layout' => 'default']],
+        false,
+        false,
+        [],
+        
+      )],
+        ['type' => 'section'],
+        false,
+        false,
+        [],
+        
+      ), c(
+        "styles",
+        "Styles",
+        [c(
+        "style",
+        "Style",
+        [],
+        ['type' => 'button_bar', 'layout' => 'vertical', 'items' => [['value' => 'style-1', 'text' => 'Style 1'], ['value' => 'style-2', 'text' => 'Style 2']], 'buttonBarOptions' => ['size' => 'small', 'layout' => 'default']],
         false,
         false,
         [],
@@ -224,13 +258,31 @@ class Topnavaccordion extends \Breakdance\Elements\Element
         [],
         
       ), c(
+        "tab_description",
+        "Tab Description",
+        [],
+        ['type' => 'text', 'layout' => 'vertical', 'textOptions' => ['multiline' => true], 'condition' => [[['path' => 'design.styles.style', 'operand' => 'equals', 'value' => 'style-2']]]],
+        false,
+        false,
+        [],
+        
+      ), c(
+        "tab_icon_svg",
+        "Tab Icon SVG Code",
+        [],
+        ['type' => 'text', 'layout' => 'vertical', 'textOptions' => ['multiline' => true], 'placeholder' => '<svg viewBox="0 0 16 16">...</svg>', 'condition' => [[['path' => 'design.styles.style', 'operand' => 'equals', 'value' => 'style-2']]]],
+        false,
+        false,
+        [],
+        
+      ), c(
         "accordion",
         "Accordion",
         [c(
         "content_icon",
         "Content Icon",
         [],
-        ['type' => 'wpmedia', 'layout' => 'vertical'],
+        ['type' => 'wpmedia', 'layout' => 'vertical', 'mediaOptions' => ['acceptedFileTypes' => ['image'], 'multiple' => false], 'condition' => [[['path' => 'design.styles.style', 'operand' => 'equals', 'value' => 'style-1']], [['path' => 'design.styles.style', 'operand' => 'is not set', 'value' => '']]]],
         false,
         false,
         [],
@@ -363,6 +415,115 @@ class Topnavaccordion extends \Breakdance\Elements\Element
     return window.matchMedia(\'(max-width: 1023px)\').matches;
   }
 
+  function isBuilderEditor() {
+    return document.body.classList.contains(\'breakdance-builder-active\')
+      || (window.BREAKDANCE && window.BREAKDANCE.builder && window.BREAKDANCE.builder.isBuilder);
+  }
+
+  const AUTO_ACCORDION_MS = 5000;
+  const AUTO_ACCORDION_VIDEO_FALLBACK_MS = 12000;
+  const AUTO_ACCORDION_MAX_MS = 20000;
+  const AUTO_TICK_MS = 30;
+  let autoAccordionTimer = null;
+
+  function clearAutoAccordionTimer() {
+    if (autoAccordionTimer) {
+      clearInterval(autoAccordionTimer);
+      autoAccordionTimer = null;
+    }
+  }
+
+  function getVisibleDesktopPanel(tabPanels) {
+    return tabPanels.find(p => p.style.display !== \'none\' && !p.hasAttribute(\'hidden\')) || tabPanels[0];
+  }
+
+  function mountProgressBar(tabPanels) {
+    const panel = getVisibleDesktopPanel(tabPanels);
+    if (!panel) return null;
+
+    // Remove any existing auto-progress bars inside this module so
+    module.querySelectorAll(\'.bde-auto-progress\').forEach(el => el.remove());
+
+    const activeTrigger = panel.querySelector(\'.bde-accordion-trigger[aria-expanded="true"]\')
+      || panel.querySelector(\'.bde-accordion-trigger\');
+
+    if (!activeTrigger) return null;
+
+    const progress = document.createElement(\'div\');
+    progress.className = \'progress bde-auto-progress\';
+    progress.id = \'calm-progress\';
+    progress.style.width = \'0%\';
+    activeTrigger.appendChild(progress);
+    return progress;
+  }
+
+  function getAutoAccordionDurationMs(activePanel, activeTriggers) {
+    const currentIndex = activeTriggers.findIndex(t => t.getAttribute(\'aria-expanded\') === \'true\');
+    if (currentIndex === -1) return AUTO_ACCORDION_MS;
+
+    const mediaItems = Array.from(
+      activePanel.querySelectorAll(\'.bde-accordion-media > .bde-accordion-image, .bde-accordion-media > .bde-lottie-animation\')
+    );
+    const activeMedia = mediaItems[currentIndex];
+    if (!activeMedia) return AUTO_ACCORDION_MS;
+
+    const videoEl = activeMedia.querySelector(\'video\');
+    if (!videoEl) return AUTO_ACCORDION_MS;
+
+    const durationSeconds = Number(videoEl.duration);
+    if (Number.isFinite(durationSeconds) && durationSeconds > 0) {
+      const durationMs = Math.round(durationSeconds * 1000 + 1200);
+      return Math.min(Math.max(durationMs, AUTO_ACCORDION_VIDEO_FALLBACK_MS), AUTO_ACCORDION_MAX_MS);
+    }
+
+    return AUTO_ACCORDION_VIDEO_FALLBACK_MS;
+  }
+
+  function startAutoAccordion(tabPanels) {
+    clearAutoAccordionTimer();
+    if (isMobile() || isBuilderEditor()) return;
+
+    const panel = getVisibleDesktopPanel(tabPanels);
+    if (!panel) return;
+
+    const triggers = Array.from(panel.querySelectorAll(\'.bde-accordion-trigger\'));
+    if (triggers.length < 2) return;
+
+    let progressEl = mountProgressBar(tabPanels);
+    let startTime = Date.now();
+    let cycleDurationMs = getAutoAccordionDurationMs(panel, triggers);
+
+    autoAccordionTimer = setInterval(() => {
+      const activePanel = getVisibleDesktopPanel(tabPanels);
+      if (!activePanel) return;
+
+      const activeTriggers = Array.from(activePanel.querySelectorAll(\'.bde-accordion-trigger\'));
+      if (activeTriggers.length < 2) return;
+
+      const nextDurationMs = getAutoAccordionDurationMs(activePanel, activeTriggers);
+      if (nextDurationMs !== cycleDurationMs) {
+        cycleDurationMs = nextDurationMs;
+        startTime = Date.now();
+        if (progressEl) progressEl.style.width = \'0%\';
+      }
+
+      if (!progressEl || !document.body.contains(progressEl)) {
+        progressEl = mountProgressBar(tabPanels);
+        startTime = Date.now();
+      }
+
+      const elapsed = Date.now() - startTime;
+      const pct = Math.min(elapsed / cycleDurationMs, 1);
+      if (progressEl) progressEl.style.width = (pct * 100) + \'%\';
+
+      if (pct < 1) return;
+
+      const currentIndex = activeTriggers.findIndex(t => t.getAttribute(\'aria-expanded\') === \'true\');
+      const nextIndex = currentIndex === -1 ? 0 : (currentIndex + 1) % activeTriggers.length;
+      activeTriggers[nextIndex].click();
+    }, AUTO_TICK_MS);
+  }
+
   // ────────────────────────────────────────────────────────────────────────────
   // MOBILE: dropdown‑style tabs + per‑panel Swiper instances
   function initMobileTabs() {
@@ -429,6 +590,8 @@ class Topnavaccordion extends \Breakdance\Elements\Element
           b.setAttribute(\'aria-selected\', active);
           tabPanels[j].style.display = active ? \'\' : \'none\';
         });
+        // Open the first accordion item in the newly active tab;
+        // its click handler will restart the auto-accordion.
         tabPanels[ti].querySelector(\'.bde-accordion-trigger\')?.click();
       });
     });
@@ -475,6 +638,8 @@ class Topnavaccordion extends \Breakdance\Elements\Element
             l.style.display = \'none\';
           }
         });
+
+        startAutoAccordion(tabPanels);
       });
     });
   }
@@ -526,6 +691,7 @@ class Topnavaccordion extends \Breakdance\Elements\Element
 
     initDesktopTabs(tabButtons, tabPanels);
     initDesktopAccordions(tabPanels);
+    startAutoAccordion(tabPanels);
 
     //
     // **FALLBACK**: if for any reason the first image still
@@ -543,8 +709,12 @@ class Topnavaccordion extends \Breakdance\Elements\Element
   // ────────────────────────────────────────────────────────────────────────────
   // OVERALL INIT (mobile vs desktop)
   function initAll() {
-    if (isMobile()) initMobileTabs();
-    else            initDesktop();
+    if (isMobile()) {
+      clearAutoAccordionTimer();
+      initMobileTabs();
+    } else {
+      initDesktop();
+    }
   }
 
   initAll();
@@ -554,6 +724,8 @@ class Topnavaccordion extends \Breakdance\Elements\Element
     if (now !== wasMobile) {
       wasMobile = now;
       initAll();
+    } else if (now) {
+      clearAutoAccordionTimer();
     }
   });
 
